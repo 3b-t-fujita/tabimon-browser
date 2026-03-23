@@ -1,0 +1,73 @@
+{
+  "items": [
+    { "poolId": "pool_w1_easy",   "enemies": [
+      { "monsterMasterId": "mon_002", "level": 2,  "displayName": "ミドリウルフ" }
+    ]},
+    { "poolId": "pool_w1_normal", "enemies": [
+      { "monsterMasterId": "mon_001", "level": 6,  "displayName": "モリドラゴン" },
+      { "monsterMasterId": "mon_002", "level": 7,  "displayName": "ミドリウルフ" }
+    ]},
+    { "poolId": "pool_w1_hard",   "enemies": [
+      { "monsterMasterId": "mon_001", "level": 14, "displayName": "ボスドラゴン" },
+      { "monsterMasterId": "mon_003", "level": 15, "displayName": "コケゴーレム" },
+      { "monsterMasterId": "mon_002", "level": 14, "displayName": "ミドリウルフ" }
+    ]},
+    { "poolId": "boss_w1_1",      "enemies": [
+      { "monsterMasterId": "mon_001", "level": 5,  "displayName": "ドラゴンキング" }
+    ]},
+    { "poolId": "boss_w1_2",      "enemies": [
+      { "monsterMasterId": "mon_003", "level": 12, "displayName": "ジャイアントゴーレム" },
+      { "monsterMasterId": "mon_001", "level": 10, "displayName": "モリドラゴン" }
+    ]},
+    { "poolId": "boss_w1_3",      "enemies": [
+      { "monsterMasterId": "mon_001", "level": 20, "displayName": "エルダードラゴン" },
+      { "monsterMasterId": "mon_003", "level": 18, "displayName": "コケゴーレム" }
+    ]},
+    { "poolId": "pool_w2_easy",   "enemies": [
+      { "monsterMasterId": "mon_004", "level": 2,  "displayName": "ホムラサラマンダ" }
+    ]},
+    { "poolId": "pool_w2_normal", "enemies": [
+      { "monsterMasterId": "mon_004", "level": 6,  "displayName": "ホムラサラマンダ" },
+      { "monsterMasterId": "mon_005", "level": 6,  "displayName": "バーンフェニックス" }
+    ]},
+    { "poolId": "pool_w2_hard",   "enemies": [
+      { "monsterMasterId": "mon_004", "level": 14, "displayName": "ホムラサラマンダ" },
+      { "monsterMasterId": "mon_005", "level": 14, "displayName": "バーンフェニックス" },
+      { "monsterMasterId": "mon_006", "level": 15, "displayName": "マグマロック" }
+    ]},
+    { "poolId": "boss_w2_1",      "enemies": [
+      { "monsterMasterId": "mon_005", "level": 5,  "displayName": "フェニックスキング" }
+    ]},
+    { "poolId": "boss_w2_2",      "enemies": [
+      { "monsterMasterId": "mon_006", "level": 12, "displayName": "マグマタイタン" },
+      { "monsterMasterId": "mon_005", "level": 10, "displayName": "バーンフェニックス" }
+    ]},
+    { "poolId": "boss_w2_3",      "enemies": [
+      { "monsterMasterId": "mon_005", "level": 20, "displayName": "エルダーフェニックス" },
+      { "monsterMasterId": "mon_006", "level": 18, "displayName": "マグマタイタン" }
+    ]},
+    { "poolId": "pool_w3_easy",   "enemies": [
+      { "monsterMasterId": "mon_007", "level": 2,  "displayName": "コオリウィング" }
+    ]},
+    { "poolId": "pool_w3_normal", "enemies": [
+      { "monsterMasterId": "mon_007", "level": 6,  "displayName": "コオリウィング" },
+      { "monsterMasterId": "mon_008", "level": 6,  "displayName": "フリーズベア" }
+    ]},
+    { "poolId": "pool_w3_hard",   "enemies": [
+      { "monsterMasterId": "mon_007", "level": 14, "displayName": "コオリウィング" },
+      { "monsterMasterId": "mon_008", "level": 15, "displayName": "フリーズベア" },
+      { "monsterMasterId": "mon_009", "level": 14, "displayName": "ブリザードフォックス" }
+    ]},
+    { "poolId": "boss_w3_1",      "enemies": [
+      { "monsterMasterId": "mon_008", "level": 5,  "displayName": "アイスキング" }
+    ]},
+    { "poolId": "boss_w3_2",      "enemies": [
+      { "monsterMasterId": "mon_008", "level": 12, "displayName": "フリーズタイタン" },
+      { "monsterMasterId": "mon_007", "level": 10, "displayName": "コオリウィング" }
+    ]},
+    { "poolId": "boss_w3_3",      "enemies": [
+      { "monsterMasterId": "mon_008", "level": 20, "displayName": "エルダーアイスベア" },
+      { "monsterMasterId": "mon_009", "level": 18, "displayName": "ブリザードフォックス" }
+    ]}
+  ]
+}

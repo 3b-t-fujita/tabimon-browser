@@ -1,0 +1,13 @@
+{
+  "items": [
+    { "poolId": "pool_drop_w1", "monsterId": "mon_001", "weight": 0.4 },
+    { "poolId": "pool_drop_w1", "monsterId": "mon_002", "weight": 0.4 },
+    { "poolId": "pool_drop_w1", "monsterId": "mon_003", "weight": 0.2 },
+    { "poolId": "pool_drop_w2", "monsterId": "mon_004", "weight": 0.4 },
+    { "poolId": "pool_drop_w2", "monsterId": "mon_005", "weight": 0.2 },
+    { "poolId": "pool_drop_w2", "monsterId": "mon_006", "weight": 0.4 },
+    { "poolId": "pool_drop_w3", "monsterId": "mon_007", "weight": 0.4 },
+    { "poolId": "pool_drop_w3", "monsterId": "mon_008", "weight": 0.3 },
+    { "poolId": "pool_drop_w3", "monsterId": "mon_009", "weight": 0.3 }
+  ]
+}

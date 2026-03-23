@@ -1,0 +1,16 @@
+{
+  "items": [
+    { "monsterId": "mon_001", "displayName": "モリドラゴン",   "worldId": 1, "role": 3, "baseHp": 100, "baseAtk": 20, "baseDef": 15, "baseSpd": 12, "hpGrowth": 8, "atkGrowth": 2, "defGrowth": 2, "spdGrowth": 1, "initialSkillId": "skill_heal_001", "dropRate": 0.5 },
+    { "monsterId": "mon_002", "displayName": "ミドリウルフ",   "worldId": 1, "role": 1, "baseHp": 90,  "baseAtk": 25, "baseDef": 12, "baseSpd": 15, "hpGrowth": 7, "atkGrowth": 3, "defGrowth": 1, "spdGrowth": 2, "initialSkillId": "skill_atk_001",  "dropRate": 0.5 },
+    { "monsterId": "mon_003", "displayName": "コケゴーレム",   "worldId": 1, "role": 2, "baseHp": 120, "baseAtk": 15, "baseDef": 25, "baseSpd":  8, "hpGrowth": 10,"atkGrowth": 1, "defGrowth": 3, "spdGrowth": 0, "initialSkillId": "skill_def_001",  "dropRate": 0.4 },
+    { "monsterId": "mon_004", "displayName": "ホムラサラマンダ","worldId": 2, "role": 1, "baseHp": 85,  "baseAtk": 30, "baseDef": 10, "baseSpd": 14, "hpGrowth": 6, "atkGrowth": 4, "defGrowth": 1, "spdGrowth": 2, "initialSkillId": "skill_atk_002",  "dropRate": 0.5 },
+    { "monsterId": "mon_005", "displayName": "バーンフェニックス","worldId": 2,"role": 1, "baseHp": 80,  "baseAtk": 35, "baseDef":  8, "baseSpd": 16, "hpGrowth": 5, "atkGrowth": 5, "defGrowth": 0, "spdGrowth": 3, "initialSkillId": "skill_atk_all_001","dropRate": 0.3 },
+    { "monsterId": "mon_006", "displayName": "マグマロック",    "worldId": 2, "role": 2, "baseHp": 110, "baseAtk": 18, "baseDef": 22, "baseSpd":  9, "hpGrowth": 9, "atkGrowth": 2, "defGrowth": 3, "spdGrowth": 0, "initialSkillId": "skill_def_001",  "dropRate": 0.4 },
+    { "monsterId": "mon_007", "displayName": "コオリウィング",  "worldId": 3, "role": 2, "baseHp": 105, "baseAtk": 16, "baseDef": 28, "baseSpd": 10, "hpGrowth": 8, "atkGrowth": 1, "defGrowth": 4, "spdGrowth": 1, "initialSkillId": "skill_debuff_001","dropRate": 0.5 },
+    { "monsterId": "mon_008", "displayName": "フリーズベア",    "worldId": 3, "role": 2, "baseHp": 115, "baseAtk": 14, "baseDef": 30, "baseSpd":  7, "hpGrowth": 10,"atkGrowth": 1, "defGrowth": 4, "spdGrowth": 0, "initialSkillId": "skill_buff_001",  "dropRate": 0.4 },
+    { "monsterId": "mon_009", "displayName": "ブリザードフォックス","worldId": 3,"role": 3,"baseHp": 95, "baseAtk": 22, "baseDef": 20, "baseSpd": 13, "hpGrowth": 7, "atkGrowth": 2, "defGrowth": 2, "spdGrowth": 2, "initialSkillId": "skill_heal_001",  "dropRate": 0.4 },
+    { "monsterId": "MON_GRASS_001", "displayName": "グリーニョ",    "worldId": 1, "role": 1, "baseHp": 95,  "baseAtk": 22, "baseDef": 15, "baseSpd": 13, "hpGrowth": 7, "atkGrowth": 3, "defGrowth": 2, "spdGrowth": 2, "initialSkillId": "skill_atk_001",  "dropRate": 0.0 },
+    { "monsterId": "MON_FIRE_001",  "displayName": "フレイム",      "worldId": 2, "role": 1, "baseHp": 85,  "baseAtk": 28, "baseDef": 10, "baseSpd": 15, "hpGrowth": 6, "atkGrowth": 4, "defGrowth": 1, "spdGrowth": 2, "initialSkillId": "skill_atk_002",  "dropRate": 0.0 },
+    { "monsterId": "MON_ICE_001",   "displayName": "フロスト",      "worldId": 3, "role": 3, "baseHp": 100, "baseAtk": 18, "baseDef": 22, "baseSpd": 11, "hpGrowth": 8, "atkGrowth": 2, "defGrowth": 3, "spdGrowth": 1, "initialSkillId": "skill_heal_001", "dropRate": 0.0 }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "items": [
+    { "eventId": "evt_heal_001",   "eventType": 1, "displayName": "いやしの泉",      "description": "HPが少し回復した。" },
+    { "eventId": "evt_gather_001", "eventType": 2, "displayName": "宝の木の実",      "description": "おいしそうな木の実を発見した。" },
+    { "eventId": "evt_trap_001",   "eventType": 3, "displayName": "落とし穴",         "description": "足元が崩れてHPが少し減った。" },
+    { "eventId": "evt_chest_001",  "eventType": 5, "displayName": "古びた宝箱",      "description": "宝箱を発見した！" },
+    { "eventId": "evt_special_001","eventType": 6, "displayName": "謎の光",           "description": "不思議な光に包まれた。" }
+  ]
+}
