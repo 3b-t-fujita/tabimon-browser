@@ -22,6 +22,8 @@ import BattleStatusView from '@/components/battle/BattleStatusView';
 import BattleLogPanel from '@/components/battle/BattleLogPanel';
 import MainSkillButton from '@/components/battle/MainSkillButton';
 import { useBattleStore } from '@/stores/battleStore';
+import { useBGM } from '@/hooks/useBGM';
+import { useBattleSE } from '@/hooks/useBattleSE';
 import { GetCurrentAdventureSessionUseCase } from '@/application/adventure/getCurrentAdventureSessionUseCase';
 import { InitializeBattleUseCase } from '@/application/battle/initializeBattleUseCase';
 import { ApplyBattleResultUseCase } from '@/application/battle/applyBattleResultUseCase';
@@ -37,6 +39,10 @@ export default function AdventureBattlePage() {
     battleState, battlePhase,
     setBattleState, setBattlePhase, setError, reset,
   } = useBattleStore();
+
+  // BGM・SE
+  useBGM('battle');
+  useBattleSE(battleState);
 
   // セッション参照（tick コールバック内で参照するため ref で保持）
   const sessionRef        = useRef<AdventureSession | null>(null);

@@ -16,8 +16,11 @@ import { AdventureResultType, AdventureSessionStatus } from '@/common/constants/
 import { HomeScreen } from '@/components/home/HomeScreen';
 import { GameLayout } from '@/components/common/GameLayout';
 import { ErrorBanner } from '@/components/common/ErrorBanner';
+import { useBGM } from '@/hooks/useBGM';
 
 export default function HomePage() {
+  useBGM('home');
+
   const router = useRouter();
   const {
     homeViewModel,
