@@ -5,7 +5,7 @@
  * URL パラメータ stageId + monsterStore.selectedSupportIds から確認 ViewModel を構築する。
  * 冒険開始ボタン → StartAdventureUseCase → /adventure/play へ遷移。
  */
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMonsterStore } from '@/stores/monsterStore';
 import { useAdventureStore } from '@/stores/adventureStore';
@@ -18,7 +18,7 @@ import { ErrorBanner } from '@/components/common/ErrorBanner';
 const confirmUC = new GetAdventureConfirmViewStateUseCase();
 const startUC   = new StartAdventureUseCase();
 
-export default function AdventureConfirmPage() {
+function AdventureConfirmContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const stageId      = searchParams.get('stageId') ?? '';
@@ -96,5 +96,13 @@ export default function AdventureConfirmPage() {
         />
       )}
     </GameLayout>
+  );
+}
+
+export default function AdventureConfirmPage() {
+  return (
+    <Suspense>
+      <AdventureConfirmContent />
+    </Suspense>
   );
 }

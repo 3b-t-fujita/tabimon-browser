@@ -14,7 +14,7 @@
  * 二重反映防止:
  *   - resultPendingFlag=false の場合は ResultAlreadyFinal → /home へリダイレクト
  */
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GameLayout } from '@/components/common/GameLayout';
 import ResultSummaryView from '@/components/result/ResultSummaryView';
@@ -33,7 +33,7 @@ function parseResultType(raw: string | null): AdventureResultType | null {
   return null;
 }
 
-export default function AdventureResultPage() {
+function AdventureResultContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const {
@@ -177,5 +177,13 @@ export default function AdventureResultPage() {
         )}
       </div>
     </GameLayout>
+  );
+}
+
+export default function AdventureResultPage() {
+  return (
+    <Suspense>
+      <AdventureResultContent />
+    </Suspense>
   );
 }
