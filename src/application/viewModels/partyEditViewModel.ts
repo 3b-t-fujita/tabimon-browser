@@ -2,26 +2,29 @@
  * 編成画面用 ViewModel。
  */
 export interface PartyMainViewModel {
-  readonly uniqueId:      string;
-  readonly displayName:   string;
-  readonly level:         number;
-  readonly roleLabel:     string;
+  readonly uniqueId:        string;
+  readonly displayName:     string;
+  readonly level:           number;
+  readonly roleLabel:       string;
+  readonly monsterMasterId: string;
 }
 
 export interface PartySupportCandidateViewModel {
-  readonly supportId:     string;
-  readonly displayName:   string;
-  readonly level:         number;
-  readonly roleLabel:     string;
-  readonly worldLabel:    string;
+  readonly supportId:       string;
+  readonly displayName:     string;
+  readonly level:           number;
+  readonly roleLabel:       string;
+  readonly worldLabel:      string;
   /** 既に編成選択済みか */
-  readonly isSelected:    boolean;
+  readonly isSelected:      boolean;
+  readonly monsterMasterId: string;
 }
 
 export interface SelectedSupportViewModel {
-  readonly supportId:     string;
-  readonly displayName:   string;
-  readonly level:         number;
+  readonly supportId:       string;
+  readonly displayName:     string;
+  readonly level:           number;
+  readonly monsterMasterId: string;
 }
 
 export interface PartyEditViewModel {

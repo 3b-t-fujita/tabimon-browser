@@ -8,6 +8,7 @@
 import { useRouter } from 'next/navigation';
 import { GameConstants } from '@/common/constants/GameConstants';
 import type { HomeViewModel } from '@/application/viewModels/homeViewModel';
+import { getMonsterStandUrl } from '@/infrastructure/assets/monsterImageService';
 
 interface Props {
   vm: HomeViewModel;
@@ -16,6 +17,7 @@ interface Props {
 
 export function HomeScreen({ vm, onContinue }: Props) {
   const router = useRouter();
+  const mainStandUrl = getMonsterStandUrl(vm.mainMonsterId);
   return (
     <div className="flex flex-1 flex-col gap-0">
       {/* ホーム背景バナー */}
@@ -38,9 +40,17 @@ export function HomeScreen({ vm, onContinue }: Props) {
         <section className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
           <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-stone-400">主役</p>
           {vm.mainMonsterId ? (
-            <p className="text-lg font-bold text-stone-800">
-              {vm.mainMonsterName || vm.mainMonsterId}
-            </p>
+            <div className="flex items-center gap-3">
+              {mainStandUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={mainStandUrl} alt={vm.mainMonsterName ?? ''} className="h-16 w-16 object-contain" />
+              ) : (
+                <div className="flex h-16 w-16 items-center justify-center text-4xl">🐾</div>
+              )}
+              <p className="text-lg font-bold text-stone-800">
+                {vm.mainMonsterName || vm.mainMonsterId}
+              </p>
+            </div>
           ) : (
             <p className="text-sm text-stone-400">未設定</p>
           )}

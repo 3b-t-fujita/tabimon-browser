@@ -21,12 +21,13 @@ export class GetOwnedMonstersUseCase {
     const owned = result.value?.ownedMonsters ?? [];
     return ok({
       monsters: owned.map((m) => ({
-        uniqueId:    m.uniqueId,
-        displayName: m.displayName,
-        level:       m.level,
-        worldLabel:  worldLabel(m.worldId),
-        roleLabel:   roleLabel(m.role),
-        isMain:      m.isMain,
+        uniqueId:        m.uniqueId,
+        displayName:     m.displayName,
+        level:           m.level,
+        worldLabel:      worldLabel(m.worldId),
+        roleLabel:       roleLabel(m.role),
+        isMain:          m.isMain,
+        monsterMasterId: m.monsterMasterId as string,
       })),
       count:    owned.length,
       capacity: GameConstants.OWNED_MONSTER_CAPACITY,

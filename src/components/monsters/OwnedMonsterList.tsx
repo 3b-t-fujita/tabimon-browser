@@ -6,6 +6,7 @@
 
 import { useRouter } from 'next/navigation';
 import type { OwnedMonsterListViewModel } from '@/application/viewModels/ownedMonsterListViewModel';
+import { getMonsterIconUrl } from '@/infrastructure/assets/monsterImageService';
 
 interface Props {
   vm: OwnedMonsterListViewModel;
@@ -40,10 +41,16 @@ export function OwnedMonsterList({ vm }: Props) {
                 onClick={() => router.push(`/monsters/${m.uniqueId}`)}
                 className="flex w-full items-center gap-4 px-5 py-4 text-left transition hover:bg-stone-50 active:bg-stone-100"
               >
-                {/* アイコンプレースホルダー */}
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-200 text-xl">
-                  🐾
-                </div>
+                {/* モンスターアイコン */}
+                {(() => {
+                  const iconUrl = getMonsterIconUrl(m.monsterMasterId);
+                  return iconUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={iconUrl} alt={m.displayName} className="h-12 w-12 rounded-full object-cover" />
+                  ) : (
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-200 text-xl">🐾</div>
+                  );
+                })()}
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-stone-800">{m.displayName}</span>

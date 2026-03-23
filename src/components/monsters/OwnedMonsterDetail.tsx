@@ -5,6 +5,7 @@
 'use client';
 
 import type { OwnedMonsterDetailViewModel } from '@/application/viewModels/ownedMonsterDetailViewModel';
+import { getMonsterStandUrl } from '@/infrastructure/assets/monsterImageService';
 
 interface Props {
   vm:              OwnedMonsterDetailViewModel;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function OwnedMonsterDetail({ vm, onSetMain, onRelease, onBack, onQrGenerate, isSaving }: Props) {
+  const standUrl = getMonsterStandUrl(vm.monsterMasterId);
   return (
     <div className="flex flex-1 flex-col">
       {/* ヘッダー */}
@@ -34,6 +36,15 @@ export function OwnedMonsterDetail({ vm, onSetMain, onRelease, onBack, onQrGener
       </header>
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-5">
+        {/* 立ち絵 */}
+        <div className="flex justify-center">
+          {standUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={standUrl} alt={vm.displayName} className="h-40 w-40 object-contain" />
+          ) : (
+            <div className="flex h-40 w-40 items-center justify-center text-6xl">🐾</div>
+          )}
+        </div>
         {/* 基本情報カード */}
         <section className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
           <div className="grid grid-cols-2 gap-3 text-sm">

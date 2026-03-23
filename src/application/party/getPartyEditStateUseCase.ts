@@ -31,22 +31,24 @@ export class GetPartyEditStateUseCase {
 
     const main = mainMonster
       ? {
-          uniqueId:    mainMonster.uniqueId,
-          displayName: mainMonster.displayName,
-          level:       mainMonster.level,
-          roleLabel:   roleLabel(mainMonster.role),
+          uniqueId:        mainMonster.uniqueId,
+          displayName:     mainMonster.displayName,
+          level:           mainMonster.level,
+          roleLabel:       roleLabel(mainMonster.role),
+          monsterMasterId: mainMonster.monsterMasterId as string,
         }
       : null;
 
     // 助っ人候補
     const selectedSet = new Set(selectedSupportIds);
     const supportCandidates = supports.map((s) => ({
-      supportId:   s.supportId,
-      displayName: s.displayName,
-      level:       s.level,
-      roleLabel:   roleLabel(s.role),
-      worldLabel:  worldLabel(s.worldId),
-      isSelected:  selectedSet.has(s.supportId),
+      supportId:       s.supportId,
+      displayName:     s.displayName,
+      level:           s.level,
+      roleLabel:       roleLabel(s.role),
+      worldLabel:      worldLabel(s.worldId),
+      isSelected:      selectedSet.has(s.supportId),
+      monsterMasterId: s.monsterMasterId as string,
     }));
 
     // 選択中
@@ -54,9 +56,10 @@ export class GetPartyEditStateUseCase {
       .map((id) => supports.find((s) => s.supportId === id))
       .filter((s): s is NonNullable<typeof s> => s !== undefined)
       .map((s) => ({
-        supportId:   s.supportId,
-        displayName: s.displayName,
-        level:       s.level,
+        supportId:       s.supportId,
+        displayName:     s.displayName,
+        level:           s.level,
+        monsterMasterId: s.monsterMasterId as string,
       }));
 
     return ok({

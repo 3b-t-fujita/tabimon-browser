@@ -7,6 +7,7 @@
 'use client';
 
 import type { PartyEditViewModel, PartySupportCandidateViewModel } from '@/application/viewModels/partyEditViewModel';
+import { getMonsterIconUrl } from '@/infrastructure/assets/monsterImageService';
 
 interface Props {
   vm:             PartyEditViewModel;
@@ -32,7 +33,13 @@ export function PartyEditPanel({ vm, onAddSupport, onRemoveSupport, onBack }: Pr
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-400">主役</p>
           {vm.main ? (
             <div className="flex items-center gap-3 rounded-xl border-2 border-emerald-200 bg-emerald-50 px-4 py-3">
-              <span className="text-2xl">⭐</span>
+              {(() => {
+                const url = getMonsterIconUrl(vm.main.monsterMasterId);
+                return url
+                  // eslint-disable-next-line @next/next/no-img-element
+                  ? <img src={url} alt={vm.main.displayName} className="h-10 w-10 object-contain" />
+                  : <span className="text-2xl">⭐</span>;
+              })()}
               <div>
                 <p className="font-bold text-stone-800">{vm.main.displayName}</p>
                 <p className="text-sm text-stone-500">Lv.{vm.main.level} ／ {vm.main.roleLabel}</p>
@@ -53,7 +60,13 @@ export function PartyEditPanel({ vm, onAddSupport, onRemoveSupport, onBack }: Pr
           <div className="flex flex-col gap-2">
             {vm.selectedSupports.map((s) => (
               <div key={s.supportId} className="flex items-center gap-3 rounded-xl border border-stone-200 bg-white px-4 py-3">
-                <span className="text-xl">🤝</span>
+                {(() => {
+                  const url = getMonsterIconUrl(s.monsterMasterId);
+                  return url
+                    // eslint-disable-next-line @next/next/no-img-element
+                    ? <img src={url} alt={s.displayName} className="h-10 w-10 object-contain" />
+                    : <span className="text-xl">🤝</span>;
+                })()}
                 <div className="flex-1">
                   <p className="font-semibold text-stone-800">{s.displayName}</p>
                   <p className="text-sm text-stone-500">Lv.{s.level}</p>
@@ -112,9 +125,17 @@ function SupportCandidateRow({
   onAdd:   () => void;
 }) {
   const selected = support.isSelected;
+  const iconUrl = getMonsterIconUrl(support.monsterMasterId);
   return (
     <li className={`flex items-center gap-3 rounded-xl border px-4 py-3 ${selected ? 'border-stone-200 bg-stone-50' : 'border-stone-200 bg-white'}`}>
-      <span className="text-xl">{selected ? '✅' : '🐾'}</span>
+      {selected ? (
+        <span className="text-xl">✅</span>
+      ) : iconUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={iconUrl} alt={support.displayName} className="h-10 w-10 object-contain" />
+      ) : (
+        <span className="text-xl">🐾</span>
+      )}
       <div className="flex-1">
         <p className="font-semibold text-stone-800">{support.displayName}</p>
         <p className="text-sm text-stone-500">Lv.{support.level} ／ {support.roleLabel} ／ {support.worldLabel}</p>

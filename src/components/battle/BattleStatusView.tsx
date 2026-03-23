@@ -6,23 +6,7 @@
  * キャラ画像は HP バーの上に表示する（画像がない場合は絵文字フォールバック）。
  */
 import type { BattleActor } from '@/domain/battle/BattleActor';
-
-// ---------------------------------------------------------------------------
-// モンスター画像マッピング
-// ---------------------------------------------------------------------------
-
-/** monsterId → スタンド画像パス。
- * 将来モンスター画像が増えたらここに追記するだけでよい。 */
-const STAND_IMAGE_MAP: Record<string, string> = {
-  MON_GRASS_001: '/assets/monsters/stands/monster_stand_initial_01_v1.png',
-  MON_FIRE_001:  '/assets/monsters/stands/monster_stand_initial_02_v1.png',
-  MON_ICE_001:   '/assets/monsters/stands/monster_stand_initial_03_v1.png',
-};
-
-function getStandImageUrl(monsterId?: string): string | null {
-  if (!monsterId) return null;
-  return STAND_IMAGE_MAP[monsterId] ?? null;
-}
+import { getMonsterStandUrl } from '@/infrastructure/assets/monsterImageService';
 
 // ---------------------------------------------------------------------------
 // ActorStatus コンポーネント
@@ -37,7 +21,7 @@ function ActorStatus({ actor }: ActorStatusProps) {
   const hpPercent  = Math.max(0, Math.round(hpRatio * 100));
   const barColor   = hpRatio > 0.5 ? 'bg-green-500' : hpRatio > 0.25 ? 'bg-yellow-500' : 'bg-red-500';
   const isDead     = actor.currentHp <= 0;
-  const imageUrl   = getStandImageUrl(actor.monsterId);
+  const imageUrl   = getMonsterStandUrl(actor.monsterId);
 
   return (
     <div className={`p-2 rounded border ${isDead ? 'opacity-40 border-gray-600' : 'border-gray-500'}`}>
