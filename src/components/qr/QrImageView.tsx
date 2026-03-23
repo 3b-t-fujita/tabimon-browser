@@ -11,7 +11,7 @@ interface QrImageViewProps {
   size?: number;
 }
 
-export default function QrImageView({ dataUrl, altText = 'QRコード', size = 240 }: QrImageViewProps) {
+export default function QrImageView({ dataUrl, altText = 'QRコード', size = 300 }: QrImageViewProps) {
   return (
     <div className="flex flex-col items-center gap-2">
       {/* eslint-disable-next-line @next/next/no-img-element */}

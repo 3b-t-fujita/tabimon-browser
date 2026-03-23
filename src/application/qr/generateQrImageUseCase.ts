@@ -26,8 +26,8 @@ export class GenerateQrImageUseCase {
       const jsonStr = JSON.stringify(payload);
       const dataUrl = await QRCode.toDataURL(jsonStr, {
         errorCorrectionLevel: 'M',
-        width: 300,
-        margin: 2,
+        width: 512,
+        margin: 4,
       });
       return ok({ dataUrl });
     } catch (err) {

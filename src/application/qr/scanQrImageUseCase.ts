@@ -56,11 +56,19 @@ export class ScanQrImageUseCase {
 
 async function fileToImageData(file: File): Promise<ImageData> {
   const bitmap = await createImageBitmap(file);
+
+  // モバイルのcanvasサイズ制限対策: 長辺を最大1500pxにダウンスケール。
+  // QRコードの読取精度には影響しない（jsQRは部分QRも認識可能）。
+  const MAX_SIDE = 1500;
+  const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+  const w = Math.round(bitmap.width  * scale);
+  const h = Math.round(bitmap.height * scale);
+
   const canvas = document.createElement('canvas');
-  canvas.width  = bitmap.width;
-  canvas.height = bitmap.height;
+  canvas.width  = w;
+  canvas.height = h;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Canvas context を取得できませんでした');
-  ctx.drawImage(bitmap, 0, 0);
-  return ctx.getImageData(0, 0, bitmap.width, bitmap.height);
+  ctx.drawImage(bitmap, 0, 0, w, h);
+  return ctx.getImageData(0, 0, w, h);
 }
