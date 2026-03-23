@@ -44,6 +44,8 @@ function makeSession(status: AdventureSession['status']): AdventureSession {
     resultPendingFlag:         status === AdventureSessionStatus.PendingResult,
     status,
     pendingResultType:         null,
+    nextBattleBuffMultiplier:  1.0,
+    randomEventBattle:         false,
   };
 }
 

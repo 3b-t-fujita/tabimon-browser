@@ -188,6 +188,7 @@ describe('ValidateAdventureStartUseCase', () => {
         },
         battleCheckpointNodeIndex: -1, resultPendingFlag: true,
         status: AdventureSessionStatus.Active, pendingResultType: null,
+        nextBattleBuffMultiplier: 1.0, randomEventBattle: false,
       },
     });
     const uc = new ValidateAdventureStartUseCase();

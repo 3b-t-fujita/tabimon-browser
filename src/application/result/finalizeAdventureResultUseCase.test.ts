@@ -109,6 +109,8 @@ function makeSession(overrides: Partial<AdventureSession> = {}): AdventureSessio
     resultPendingFlag:         true,   // 未確定
     status:                    AdventureSessionStatus.PendingResult,
     pendingResultType:         AdventureResultType.Success,
+    nextBattleBuffMultiplier:  1.0,
+    randomEventBattle:         false,
     ...overrides,
   };
 }

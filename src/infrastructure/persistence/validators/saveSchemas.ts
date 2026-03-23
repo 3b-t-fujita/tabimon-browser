@@ -60,6 +60,9 @@ export const AdventureSessionSchema = z.object({
   status:                   nonEmptyString,
   // クラッシュ復旧用。既存セーブとの後方互換のため optional + default(null)
   pendingResultType:        z.enum(['SUCCESS', 'FAILURE', 'RETIRE']).nullable().optional().default(null),
+  // ランダムイベント用。既存セーブとの後方互換のため optional + default
+  nextBattleBuffMultiplier: z.number().min(1.0).max(2.0).optional().default(1.0),
+  randomEventBattle:        z.boolean().optional().default(false),
 });
 
 // --- Player ---

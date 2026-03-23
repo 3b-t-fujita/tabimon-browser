@@ -107,6 +107,8 @@ async function seedSave(
       resultPendingFlag:         false,
       status:                    'SESSION_COMPLETED' as AdventureSession['status'],
       pendingResultType:         null,
+      nextBattleBuffMultiplier:  1.0,
+      randomEventBattle:         false,
     },
   });
 }

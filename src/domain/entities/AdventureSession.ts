@@ -57,4 +57,18 @@ export interface AdventureSession {
    * 詳細設計 v4 §10.6 二重反映防止に準拠。
    */
   readonly pendingResultType: AdventureResultType | null;
+
+  /**
+   * 次の戦闘のステータス倍率（やる気アップイベント用）。
+   * 1.0 = 通常、1.2 = 全ステータス×1.2。
+   * 戦闘後は 1.0 にリセットする。
+   */
+  readonly nextBattleBuffMultiplier: number;
+
+  /**
+   * ランダムイベント戦闘フラグ。
+   * true = イベント経由のランダム戦闘（ボスプールを0.7倍で使用）。
+   * 戦闘後は false にリセットする。
+   */
+  readonly randomEventBattle: boolean;
 }

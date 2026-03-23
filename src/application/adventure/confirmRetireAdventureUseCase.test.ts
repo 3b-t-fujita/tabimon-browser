@@ -36,7 +36,7 @@ function makeSession(status: AdventureSessionStatus): AdventureSession {
       supporters: [],
     },
     battleCheckpointNodeIndex: -1, resultPendingFlag: true,
-    status, pendingResultType: null,
+    status, pendingResultType: null, nextBattleBuffMultiplier: 1.0, randomEventBattle: false,
   };
 }
 

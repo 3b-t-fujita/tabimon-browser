@@ -11,6 +11,12 @@
     { "skillId": "skill_buff_002",    "displayName": "ちからだめ",      "skillType": 4, "power": 0.0,  "cooldownSec": 8.0, "targetCount": 1 },
     { "skillId": "skill_buff_003",    "displayName": "こうそくいどう",  "skillType": 4, "power": 0.0,  "cooldownSec": 8.0, "targetCount": 1 },
     { "skillId": "skill_debuff_001",  "displayName": "こおりのいき",    "skillType": 5, "power": 0.0,  "cooldownSec": 6.0, "targetCount": 1 },
-    { "skillId": "skill_def_001",     "displayName": "いわのよろい",    "skillType": 4, "power": 0.0,  "cooldownSec": 9.0, "targetCount": 1 }
+    { "skillId": "skill_def_001",     "displayName": "いわのよろい",    "skillType": 4, "power": 0.0,  "cooldownSec": 9.0, "targetCount": 1 },
+    { "skillId": "skill_atk_008", "displayName": "ドラゴンクロー",      "skillType": 1, "power": 1.73, "cooldownSec": 5.0, "targetCount": 1 },
+    { "skillId": "skill_atk_009", "displayName": "インフェルノバースト", "skillType": 1, "power": 1.73, "cooldownSec": 5.0, "targetCount": 1 },
+    { "skillId": "skill_def_002", "displayName": "ブリザードアーマー",   "skillType": 4, "power": 0.0,  "cooldownSec": 7.0, "targetCount": 1 },
+    { "skillId": "skill_atk_010", "displayName": "エンシェントファング", "skillType": 1, "power": 1.95, "cooldownSec": 5.0, "targetCount": 1 },
+    { "skillId": "skill_atk_011", "displayName": "マグナブレイズ",       "skillType": 1, "power": 1.95, "cooldownSec": 5.0, "targetCount": 1 },
+    { "skillId": "skill_def_003", "displayName": "グレイシャーウォール", "skillType": 4, "power": 0.0,  "cooldownSec": 6.0, "targetCount": 1 }
   ]
 }

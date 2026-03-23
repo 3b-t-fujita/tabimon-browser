@@ -3,6 +3,7 @@
 /**
  * キャラクター図鑑ページ。
  * 全モンスターの立ち絵・アイコン・名前・属性を一覧表示する。
+ * レアキャラ（mon_010〜015）はシルエット表示で隠しキャラとして扱う。
  */
 import { useRouter } from 'next/navigation';
 import { getMonsterStandUrl, getMonsterIconUrl } from '@/infrastructure/assets/monsterImageService';
@@ -20,6 +21,7 @@ interface MonsterEntry {
   world:        WorldLabel;
   role:         RoleLabel;
   isInitial:    boolean;
+  isHidden?:    boolean;
 }
 
 const MONSTERS: MonsterEntry[] = [
@@ -39,6 +41,14 @@ const MONSTERS: MonsterEntry[] = [
   { monsterId: 'mon_007',       displayName: 'コオリウィング',    world: '雪原', role: 'タンク',       isInitial: false },
   { monsterId: 'mon_008',       displayName: 'フリーズベア',      world: '雪原', role: 'タンク',       isInitial: false },
   { monsterId: 'mon_009',       displayName: 'ブリザードフォックス',world:'雪原', role: 'サポーター',   isInitial: false },
+  // 隠しキャラ（レアA）
+  { monsterId: 'mon_010',       displayName: 'ヴァインドレイク',    world: '森',   role: 'アタッカー',   isInitial: false, isHidden: true },
+  { monsterId: 'mon_011',       displayName: 'インフェルノリザード',world: '砂漠', role: 'アタッカー',   isInitial: false, isHidden: true },
+  { monsterId: 'mon_012',       displayName: 'グラシャルタイタン',  world: '雪原', role: 'タンク',       isInitial: false, isHidden: true },
+  // 隠しキャラ（レアB）
+  { monsterId: 'mon_013',       displayName: 'エンシェントドラゴン',world: '森',   role: 'アタッカー',   isInitial: false, isHidden: true },
+  { monsterId: 'mon_014',       displayName: 'マグナフェニックス',  world: '砂漠', role: 'アタッカー',   isInitial: false, isHidden: true },
+  { monsterId: 'mon_015',       displayName: 'グレイシャーキング',  world: '雪原', role: 'タンク',       isInitial: false, isHidden: true },
 ];
 
 // ---------------------------------------------------------------------------
@@ -64,6 +74,50 @@ const ROLE_COLOR: Record<RoleLabel, string> = {
 function MonsterCard({ m }: { m: MonsterEntry }) {
   const standUrl = getMonsterStandUrl(m.monsterId);
   const iconUrl  = getMonsterIconUrl(m.monsterId);
+
+  if (m.isHidden) {
+    return (
+      <div className="rounded-2xl border-2 border-stone-300 bg-stone-100 shadow-sm overflow-hidden flex flex-col">
+        {/* シルエットエリア */}
+        <div className="flex items-center justify-center bg-stone-200 py-4" style={{ minHeight: 140 }}>
+          {standUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={standUrl}
+              alt="???"
+              className="h-32 w-32 object-contain"
+              style={{ filter: 'brightness(0)' }}
+            />
+          ) : (
+            <div className="h-32 w-32 rounded-full bg-stone-400" />
+          )}
+        </div>
+
+        {/* 情報エリア */}
+        <div className="flex items-center gap-2 px-3 py-3">
+          {/* シルエットアイコン */}
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-stone-300">
+            {iconUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={iconUrl}
+                alt="???"
+                className="h-10 w-10 rounded-full object-cover"
+                style={{ filter: 'brightness(0)' }}
+              />
+            ) : (
+              <span className="text-stone-500 text-sm font-bold">?</span>
+            )}
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-stone-400 text-sm leading-tight">???</p>
+            <p className="text-xs text-stone-400 mt-0.5">隠しキャラ</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`rounded-2xl border-2 bg-white shadow-sm overflow-hidden flex flex-col ${WORLD_COLOR[m.world].split(' ').find(c => c.startsWith('border')) ?? 'border-stone-200'}`}>
@@ -112,11 +166,12 @@ function MonsterCard({ m }: { m: MonsterEntry }) {
 // ページ本体
 // ---------------------------------------------------------------------------
 
-const SECTIONS: { label: string; world?: WorldLabel; initial?: boolean }[] = [
+const SECTIONS: { label: string; world?: WorldLabel; initial?: boolean; hidden?: boolean }[] = [
   { label: '初期主役',     initial: true  },
   { label: '森ワールド',   world:  '森'   },
   { label: '砂漠ワールド', world:  '砂漠' },
   { label: '雪原ワールド', world:  '雪原' },
+  { label: '隠しキャラ',   hidden: true   },
 ];
 
 export default function MonsterGalleryPage() {
@@ -135,9 +190,14 @@ export default function MonsterGalleryPage() {
 
       <div className="flex flex-col gap-8 p-5 pb-10">
         {SECTIONS.map((sec) => {
-          const items = sec.initial
-            ? MONSTERS.filter((m) => m.isInitial)
-            : MONSTERS.filter((m) => m.world === sec.world && !m.isInitial);
+          let items: MonsterEntry[];
+          if (sec.initial) {
+            items = MONSTERS.filter((m) => m.isInitial);
+          } else if (sec.hidden) {
+            items = MONSTERS.filter((m) => m.isHidden);
+          } else {
+            items = MONSTERS.filter((m) => m.world === sec.world && !m.isInitial && !m.isHidden);
+          }
           return (
             <section key={sec.label}>
               <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-stone-400">{sec.label}</h2>

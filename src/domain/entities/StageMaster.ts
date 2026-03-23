@@ -15,4 +15,6 @@ export interface StageMaster {
   readonly candidateMonsterPoolId:   string;          // 成功時候補抽選プールID
   readonly unlockStageId:            string | null;  // クリア時に解放する次ステージID
   readonly baseExp:                  number;
+  readonly rareAPoolId?:             string;          // レアエンカウント Aプール（任意）
+  readonly rareBPoolId?:             string;          // レアエンカウント Bプール（任意）
 }

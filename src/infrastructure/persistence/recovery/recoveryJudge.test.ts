@@ -54,6 +54,8 @@ function makeSession(
     resultPendingFlag,
     status,
     pendingResultType: null,
+    nextBattleBuffMultiplier: 1.0,
+    randomEventBattle: false,
   };
 }
 

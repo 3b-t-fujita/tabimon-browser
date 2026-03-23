@@ -4,9 +4,9 @@
       "patternId": "pattern_w1_1",
       "nodes": [
         { "nodeIndex": 0, "nodeType": "NODE_PASS",   "nextNodeIndex": 1 },
-        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_heal_001",   "nextNodeIndex": 2 },
+        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
-        { "nodeIndex": 3, "nodeType": "NODE_PASS",   "nextNodeIndex": 4 },
+        { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
         { "nodeIndex": 4, "nodeType": "NODE_GOAL" }
       ]
     },
@@ -14,40 +14,32 @@
       "patternId": "pattern_w1_2",
       "nodes": [
         { "nodeIndex": 0, "nodeType": "NODE_PASS",   "nextNodeIndex": 1 },
-        { "nodeIndex": 1, "nodeType": "NODE_BATTLE", "nextNodeIndex": 2 },
-        { "nodeIndex": 2, "nodeType": "NODE_EVENT",  "eventId": "evt_gather_001", "nextNodeIndex": 3 },
-        { "nodeIndex": 3, "nodeType": "NODE_BRANCH", "branchOptions": [
-          { "label": "安全な道", "nextNodeIndex": 4 },
-          { "label": "険しい道", "nextNodeIndex": 5 }
-        ]},
-        { "nodeIndex": 4, "nodeType": "NODE_PASS",   "nextNodeIndex": 6 },
-        { "nodeIndex": 5, "nodeType": "NODE_BATTLE", "nextNodeIndex": 6 },
-        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
+        { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
+        { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
+        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_BOSS" }
       ]
     },
     {
       "patternId": "pattern_w1_3",
       "nodes": [
         { "nodeIndex": 0, "nodeType": "NODE_PASS",   "nextNodeIndex": 1 },
-        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_heal_001",   "nextNodeIndex": 2 },
+        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
-        { "nodeIndex": 3, "nodeType": "NODE_BRANCH", "branchOptions": [
-          { "label": "泉の道",   "nextNodeIndex": 4 },
-          { "label": "荒れ地の道", "nextNodeIndex": 5 }
-        ]},
-        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_chest_001",  "nextNodeIndex": 6 },
-        { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_trap_001",   "nextNodeIndex": 6 },
-        { "nodeIndex": 6, "nodeType": "NODE_BATTLE", "nextNodeIndex": 7 },
-        { "nodeIndex": 7, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
+        { "nodeIndex": 4, "nodeType": "NODE_BATTLE", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 6 },
+        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
       ]
     },
     {
       "patternId": "pattern_w2_1",
       "nodes": [
         { "nodeIndex": 0, "nodeType": "NODE_PASS",   "nextNodeIndex": 1 },
-        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_trap_001",   "nextNodeIndex": 2 },
+        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
-        { "nodeIndex": 3, "nodeType": "NODE_PASS",   "nextNodeIndex": 4 },
+        { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
         { "nodeIndex": 4, "nodeType": "NODE_GOAL" }
       ]
     },
@@ -55,40 +47,32 @@
       "patternId": "pattern_w2_2",
       "nodes": [
         { "nodeIndex": 0, "nodeType": "NODE_PASS",   "nextNodeIndex": 1 },
-        { "nodeIndex": 1, "nodeType": "NODE_BATTLE", "nextNodeIndex": 2 },
-        { "nodeIndex": 2, "nodeType": "NODE_EVENT",  "eventId": "evt_trap_001",   "nextNodeIndex": 3 },
-        { "nodeIndex": 3, "nodeType": "NODE_BRANCH", "branchOptions": [
-          { "label": "迂回路", "nextNodeIndex": 4 },
-          { "label": "溶岩帯", "nextNodeIndex": 5 }
-        ]},
-        { "nodeIndex": 4, "nodeType": "NODE_PASS",   "nextNodeIndex": 6 },
-        { "nodeIndex": 5, "nodeType": "NODE_BATTLE", "nextNodeIndex": 6 },
-        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
+        { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
+        { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
+        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_BOSS" }
       ]
     },
     {
       "patternId": "pattern_w2_3",
       "nodes": [
         { "nodeIndex": 0, "nodeType": "NODE_PASS",   "nextNodeIndex": 1 },
-        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_trap_001",   "nextNodeIndex": 2 },
+        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
-        { "nodeIndex": 3, "nodeType": "NODE_BRANCH", "branchOptions": [
-          { "label": "冷却泉の道", "nextNodeIndex": 4 },
-          { "label": "火口の道",   "nextNodeIndex": 5 }
-        ]},
-        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_heal_001",   "nextNodeIndex": 6 },
-        { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_trap_001",   "nextNodeIndex": 6 },
-        { "nodeIndex": 6, "nodeType": "NODE_BATTLE", "nextNodeIndex": 7 },
-        { "nodeIndex": 7, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
+        { "nodeIndex": 4, "nodeType": "NODE_BATTLE", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 6 },
+        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
       ]
     },
     {
       "patternId": "pattern_w3_1",
       "nodes": [
         { "nodeIndex": 0, "nodeType": "NODE_PASS",   "nextNodeIndex": 1 },
-        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_gather_001", "nextNodeIndex": 2 },
+        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
-        { "nodeIndex": 3, "nodeType": "NODE_PASS",   "nextNodeIndex": 4 },
+        { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
         { "nodeIndex": 4, "nodeType": "NODE_GOAL" }
       ]
     },
@@ -96,31 +80,23 @@
       "patternId": "pattern_w3_2",
       "nodes": [
         { "nodeIndex": 0, "nodeType": "NODE_PASS",   "nextNodeIndex": 1 },
-        { "nodeIndex": 1, "nodeType": "NODE_BATTLE", "nextNodeIndex": 2 },
-        { "nodeIndex": 2, "nodeType": "NODE_EVENT",  "eventId": "evt_heal_001",   "nextNodeIndex": 3 },
-        { "nodeIndex": 3, "nodeType": "NODE_BRANCH", "branchOptions": [
-          { "label": "氷の回廊", "nextNodeIndex": 4 },
-          { "label": "吹雪の道", "nextNodeIndex": 5 }
-        ]},
-        { "nodeIndex": 4, "nodeType": "NODE_PASS",   "nextNodeIndex": 6 },
-        { "nodeIndex": 5, "nodeType": "NODE_BATTLE", "nextNodeIndex": 6 },
-        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
+        { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
+        { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
+        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_BOSS" }
       ]
     },
     {
       "patternId": "pattern_w3_3",
       "nodes": [
         { "nodeIndex": 0, "nodeType": "NODE_PASS",   "nextNodeIndex": 1 },
-        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_gather_001", "nextNodeIndex": 2 },
+        { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
-        { "nodeIndex": 3, "nodeType": "NODE_BRANCH", "branchOptions": [
-          { "label": "温泉の洞窟", "nextNodeIndex": 4 },
-          { "label": "極寒の断崖", "nextNodeIndex": 5 }
-        ]},
-        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_chest_001",  "nextNodeIndex": 6 },
-        { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_trap_001",   "nextNodeIndex": 6 },
-        { "nodeIndex": 6, "nodeType": "NODE_BATTLE", "nextNodeIndex": 7 },
-        { "nodeIndex": 7, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
+        { "nodeIndex": 4, "nodeType": "NODE_BATTLE", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 6 },
+        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
       ]
     }
   ]

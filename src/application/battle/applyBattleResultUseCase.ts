@@ -6,12 +6,15 @@
  * 勝利 (WIN):
  *   - BATTLE ノード（nextNodeIndex あり）: currentNodeIndex を進め、status = SESSION_ACTIVE
  *   - BOSS ノード（nextNodeIndex なし）:   resultPendingFlag = true, status = SESSION_PENDING_RESULT
+ *   - randomEventBattle === true:         EVENT ノードの nextNodeIndex へ進み、SESSION_ACTIVE
  *
  * 敗北 (LOSE):
  *   - どのノードでも:  resultPendingFlag = true, status = SESSION_PENDING_RESULT
  *
  * 共通:
  *   - battleCheckpointNodeIndex = -1（戦闘後はチェックポイント不要）
+ *   - nextBattleBuffMultiplier = 1.0（戦闘後リセット）
+ *   - randomEventBattle = false（戦闘後リセット）
  *
  * 重要:
  *   - 保存前に outcome を確認すること（NONE のまま呼ばないこと）
@@ -77,34 +80,57 @@ export class ApplyBattleResultUseCase {
       );
     }
 
+    const isRandomEventBattle = session.randomEventBattle ?? false;
+
     // ---- 結果に応じてセッション更新 ----
     let updatedSession: AdventureSession;
     let transition: BattleResultTransition;
 
     if (battleState.outcome === 'WIN') {
-      const isBoss = currentNode.nodeType === NodeType.Boss;
-      const hasNext = currentNode.nextNodeIndex !== undefined;
-
-      if (!isBoss && hasNext) {
-        // 勝利 + 通常戦闘 → 次ノードへ進む
+      if (isRandomEventBattle) {
+        // ランダムイベント戦闘勝利: EVENT ノードの nextNodeIndex へ進む
+        if (currentNode.nextNodeIndex === undefined || currentNode.nextNodeIndex === null) {
+          return fail(AdventureErrorCode.SessionCorrupt, 'イベントノードに nextNodeIndex がありません');
+        }
         updatedSession = {
           ...session,
-          currentNodeIndex:          currentNode.nextNodeIndex!,
+          currentNodeIndex:          currentNode.nextNodeIndex,
           battleCheckpointNodeIndex: -1,
           status:                    AdventureSessionStatus.Active,
           pendingResultType:         null,
+          nextBattleBuffMultiplier:  1.0,
+          randomEventBattle:         false,
         };
         transition = 'CONTINUE_EXPLORE';
       } else {
-        // 勝利 + BOSS、またはnextNodeIndexなし → リザルト待ち
-        updatedSession = {
-          ...session,
-          battleCheckpointNodeIndex: -1,
-          resultPendingFlag:         true,
-          status:                    AdventureSessionStatus.PendingResult,
-          pendingResultType:         AdventureResultType.Success,
-        };
-        transition = 'PENDING_RESULT';
+        const isBoss = currentNode.nodeType === NodeType.Boss;
+        const hasNext = currentNode.nextNodeIndex !== undefined;
+
+        if (!isBoss && hasNext) {
+          // 勝利 + 通常戦闘 → 次ノードへ進む
+          updatedSession = {
+            ...session,
+            currentNodeIndex:          currentNode.nextNodeIndex!,
+            battleCheckpointNodeIndex: -1,
+            status:                    AdventureSessionStatus.Active,
+            pendingResultType:         null,
+            nextBattleBuffMultiplier:  1.0,
+            randomEventBattle:         false,
+          };
+          transition = 'CONTINUE_EXPLORE';
+        } else {
+          // 勝利 + BOSS、またはnextNodeIndexなし → リザルト待ち
+          updatedSession = {
+            ...session,
+            battleCheckpointNodeIndex: -1,
+            resultPendingFlag:         true,
+            status:                    AdventureSessionStatus.PendingResult,
+            pendingResultType:         AdventureResultType.Success,
+            nextBattleBuffMultiplier:  1.0,
+            randomEventBattle:         false,
+          };
+          transition = 'PENDING_RESULT';
+        }
       }
     } else {
       // 敗北 → リザルト待ち
@@ -114,6 +140,8 @@ export class ApplyBattleResultUseCase {
         resultPendingFlag:         true,
         status:                    AdventureSessionStatus.PendingResult,
         pendingResultType:         AdventureResultType.Failure,
+        nextBattleBuffMultiplier:  1.0,
+        randomEventBattle:         false,
       };
       transition = 'PENDING_RESULT';
     }

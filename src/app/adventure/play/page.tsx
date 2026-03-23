@@ -29,7 +29,6 @@ import { ConfirmRetireAdventureUseCase } from '@/application/adventure/confirmRe
 import { ReachGoalUseCase } from '@/application/adventure/reachGoalUseCase';
 import { getStageMasterById } from '@/infrastructure/master/stageMasterRepository';
 import { getNodePatternById } from '@/infrastructure/master/nodePatternRepository';
-import { getEventMessage } from '@/application/adventure/eventMessageHelper';
 import type { AdventureSession } from '@/domain/entities/AdventureSession';
 import type { AdventureNode } from '@/domain/entities/NodePattern';
 
@@ -71,7 +70,7 @@ export default function AdventurePlayPage() {
           break;
         case NodeType.Event:
           setExplorePhase('EVENT_RESOLVING');
-          setEventMessage(getEventMessage(node.eventId ?? ''));
+          setEventMessage('✨ 何かが起きそうだ... 確認ボタンを押してみよう！');
           break;
         case NodeType.Battle:
         case NodeType.Boss:
@@ -214,7 +213,21 @@ export default function AdventurePlayPage() {
         setSaveError(`イベント処理失敗: ${result.message ?? result.errorCode}`);
         return;
       }
-      const { updatedSession } = result.value;
+      const { updatedSession, triggerBattle } = result.value;
+
+      if (triggerBattle) {
+        // ランダムイベント戦闘: メッセージを表示してから prepareBattleUC を呼んで /adventure/battle へ
+        setEventMessage(result.value.eventMessage);
+        setExplorePhase('BATTLE_PREPARING');
+        const prepResult = await prepareBattleUC.execute(updatedSession);
+        if (!prepResult.ok) {
+          setSaveError(`戦闘準備失敗: ${prepResult.message ?? prepResult.errorCode}`);
+          return;
+        }
+        router.push('/adventure/battle');
+        return;
+      }
+
       const nodeResult = await resolveNodeUC.execute(updatedSession);
       if (!nodeResult.ok) {
         setSaveError(`ノード解決失敗: ${nodeResult.message ?? nodeResult.errorCode}`);

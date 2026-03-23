@@ -58,6 +58,8 @@ function makeActiveSession(status: AdventureSession['status'], checkpoint = -1):
     resultPendingFlag:         false,
     status,
     pendingResultType:         null,
+    nextBattleBuffMultiplier:  1.0,
+    randomEventBattle:         false,
   };
 }
 

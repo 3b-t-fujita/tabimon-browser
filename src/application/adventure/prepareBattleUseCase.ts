@@ -49,8 +49,9 @@ export class PrepareBattleUseCase {
       return fail(AdventureErrorCode.SessionCorrupt, `ノードが見つかりません: index=${session.currentNodeIndex}`);
     }
 
-    // ---- BATTLE / BOSS ノードのみ受け付ける ----
-    if (currentNode.nodeType !== NodeType.Battle && currentNode.nodeType !== NodeType.Boss) {
+    // ---- BATTLE / BOSS ノードのみ受け付ける（randomEventBattle の場合はスキップ） ----
+    const isRandomEventBattle = session.randomEventBattle ?? false;
+    if (!isRandomEventBattle && currentNode.nodeType !== NodeType.Battle && currentNode.nodeType !== NodeType.Boss) {
       return fail(
         AdventureErrorCode.SessionCorrupt,
         `戦闘ノードではありません: type=${currentNode.nodeType}`,
@@ -60,6 +61,8 @@ export class PrepareBattleUseCase {
     // ---- battleCheckpointNodeIndex を現在位置に設定 ----
     const updatedSession: AdventureSession = {
       ...session,
+      nextBattleBuffMultiplier: session.nextBattleBuffMultiplier ?? 1.0,
+      randomEventBattle: isRandomEventBattle,
       battleCheckpointNodeIndex: session.currentNodeIndex,
       status: AdventureSessionStatus.ActiveBattle,
     };

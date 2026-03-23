@@ -26,6 +26,24 @@
     { "monsterId": "mon_008", "unlockLevel": 25, "skillId": "skill_buff_002"    },
     { "monsterId": "mon_009", "unlockLevel":  5, "skillId": "skill_buff_003"    },
     { "monsterId": "mon_009", "unlockLevel": 15, "skillId": "skill_heal_002"    },
-    { "monsterId": "mon_009", "unlockLevel": 25, "skillId": "skill_atk_001"     }
+    { "monsterId": "mon_009", "unlockLevel": 25, "skillId": "skill_atk_001"     },
+    { "monsterId": "mon_010", "unlockLevel":  5, "skillId": "skill_buff_001"    },
+    { "monsterId": "mon_010", "unlockLevel": 15, "skillId": "skill_atk_all_001" },
+    { "monsterId": "mon_010", "unlockLevel": 25, "skillId": "skill_atk_008"     },
+    { "monsterId": "mon_011", "unlockLevel":  5, "skillId": "skill_atk_002"     },
+    { "monsterId": "mon_011", "unlockLevel": 15, "skillId": "skill_buff_002"    },
+    { "monsterId": "mon_011", "unlockLevel": 25, "skillId": "skill_atk_009"     },
+    { "monsterId": "mon_012", "unlockLevel":  5, "skillId": "skill_def_001"     },
+    { "monsterId": "mon_012", "unlockLevel": 15, "skillId": "skill_heal_002"    },
+    { "monsterId": "mon_012", "unlockLevel": 25, "skillId": "skill_def_002"     },
+    { "monsterId": "mon_013", "unlockLevel":  5, "skillId": "skill_atk_001"     },
+    { "monsterId": "mon_013", "unlockLevel": 15, "skillId": "skill_atk_all_001" },
+    { "monsterId": "mon_013", "unlockLevel": 25, "skillId": "skill_atk_010"     },
+    { "monsterId": "mon_014", "unlockLevel":  5, "skillId": "skill_atk_all_001" },
+    { "monsterId": "mon_014", "unlockLevel": 15, "skillId": "skill_buff_002"    },
+    { "monsterId": "mon_014", "unlockLevel": 25, "skillId": "skill_atk_011"     },
+    { "monsterId": "mon_015", "unlockLevel":  5, "skillId": "skill_def_001"     },
+    { "monsterId": "mon_015", "unlockLevel": 15, "skillId": "skill_heal_002"    },
+    { "monsterId": "mon_015", "unlockLevel": 25, "skillId": "skill_def_003"     }
   ]
 }

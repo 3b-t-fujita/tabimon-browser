@@ -68,6 +68,12 @@
     { "poolId": "boss_w3_3",      "enemies": [
       { "monsterMasterId": "mon_008", "level": 20, "displayName": "エルダーアイスベア" },
       { "monsterMasterId": "mon_009", "level": 18, "displayName": "ブリザードフォックス" }
-    ]}
+    ]},
+    { "poolId": "pool_rare_A_w1", "enemies": [{ "monsterMasterId": "mon_010", "level": 18, "displayName": "ヴァインドレイク" }]},
+    { "poolId": "pool_rare_A_w2", "enemies": [{ "monsterMasterId": "mon_011", "level": 18, "displayName": "インフェルノリザード" }]},
+    { "poolId": "pool_rare_A_w3", "enemies": [{ "monsterMasterId": "mon_012", "level": 18, "displayName": "グラシャルタイタン" }]},
+    { "poolId": "pool_rare_B_w1", "enemies": [{ "monsterMasterId": "mon_013", "level": 24, "displayName": "エンシェントドラゴン" }]},
+    { "poolId": "pool_rare_B_w2", "enemies": [{ "monsterMasterId": "mon_014", "level": 24, "displayName": "マグナフェニックス" }]},
+    { "poolId": "pool_rare_B_w3", "enemies": [{ "monsterMasterId": "mon_015", "level": 24, "displayName": "グレイシャーキング" }]}
   ]
 }

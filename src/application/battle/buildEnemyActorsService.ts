@@ -46,12 +46,14 @@ const ENEMY_STRENGTH_MULTIPLIER = 0.95;
 /**
  * 指定 poolId の敵グループを構築して返す。
  * poolId が存在しない場合は空配列を返す。
+ * strengthMultiplier は ENEMY_STRENGTH_MULTIPLIER に追加で乗算される（ランダムイベント戦闘の0.7倍など）。
  */
-export async function buildEnemyActors(poolId: string): Promise<BattleActor[]> {
+export async function buildEnemyActors(poolId: string, strengthMultiplier = 1.0): Promise<BattleActor[]> {
   const group = await getEnemyGroupByPoolId(poolId);
   if (!group) return [];
 
   const actors: BattleActor[] = [];
+  const combinedMultiplier = ENEMY_STRENGTH_MULTIPLIER * strengthMultiplier;
 
   for (let i = 0; i < group.enemies.length; i++) {
     const entry  = group.enemies[i];
@@ -59,9 +61,9 @@ export async function buildEnemyActors(poolId: string): Promise<BattleActor[]> {
     const stats  = computeStats(master, entry.level);
 
     // バランス調整: HP / ATK / DEF に倍率を適用（SPD は変えない）
-    const adjHp  = Math.max(1, Math.round(stats.maxHp * ENEMY_STRENGTH_MULTIPLIER));
-    const adjAtk = Math.max(1, Math.round(stats.atk   * ENEMY_STRENGTH_MULTIPLIER));
-    const adjDef = Math.max(1, Math.round(stats.def   * ENEMY_STRENGTH_MULTIPLIER));
+    const adjHp  = Math.max(1, Math.round(stats.maxHp * combinedMultiplier));
+    const adjAtk = Math.max(1, Math.round(stats.atk   * combinedMultiplier));
+    const adjDef = Math.max(1, Math.round(stats.def   * combinedMultiplier));
 
     // スキル構築（マスタに initialSkillId がある場合のみ）
     const skills: BattleSkillState[] = [];

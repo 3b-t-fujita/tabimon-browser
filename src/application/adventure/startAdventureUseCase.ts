@@ -120,6 +120,8 @@ export class StartAdventureUseCase {
       resultPendingFlag:         true,
       status:                    AdventureSessionStatus.Active,
       pendingResultType:         null,
+      nextBattleBuffMultiplier:  1.0,
+      randomEventBattle:         false,
     };
 
     // -------- 5. 保存 --------

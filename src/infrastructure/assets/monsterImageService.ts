@@ -27,6 +27,14 @@ const STAND_MAP: Record<string, string> = {
   mon_007: '/assets/monsters/stands/monster_stand_mon007_v1.png', // コオリウィング
   mon_008: '/assets/monsters/stands/monster_stand_mon008_v1.png', // フリーズベア
   mon_009: '/assets/monsters/stands/monster_stand_mon009_v1.png', // ブリザードフォックス
+  // レアキャラ（Aランク）
+  mon_010: '/assets/monsters/stands/monster_stand_mon010_v1.png', // ヴァインドレイク
+  mon_011: '/assets/monsters/stands/monster_stand_mon011_v1.png', // インフェルノリザード
+  mon_012: '/assets/monsters/stands/monster_stand_mon012_v1.png', // グラシャルタイタン
+  // レアキャラ（Bランク）
+  mon_013: '/assets/monsters/stands/monster_stand_mon013_v1.png', // エンシェントドラゴン
+  mon_014: '/assets/monsters/stands/monster_stand_mon014_v1.png', // マグナフェニックス
+  mon_015: '/assets/monsters/stands/monster_stand_mon015_v1.png', // グレイシャーキング
 };
 
 /** アイコン（小サイズ正方形）マップ */
@@ -47,6 +55,14 @@ const ICON_MAP: Record<string, string> = {
   mon_007: '/assets/monsters/icons/monster_icon_mon007_v1.png',
   mon_008: '/assets/monsters/icons/monster_icon_mon008_v1.png',
   mon_009: '/assets/monsters/icons/monster_icon_mon009_v1.png',
+  // レアキャラ（Aランク）
+  mon_010: '/assets/monsters/icons/monster_icon_mon010_v1.png', // ヴァインドレイク
+  mon_011: '/assets/monsters/icons/monster_icon_mon011_v1.png', // インフェルノリザード
+  mon_012: '/assets/monsters/icons/monster_icon_mon012_v1.png', // グラシャルタイタン
+  // レアキャラ（Bランク）
+  mon_013: '/assets/monsters/icons/monster_icon_mon013_v1.png', // エンシェントドラゴン
+  mon_014: '/assets/monsters/icons/monster_icon_mon014_v1.png', // マグナフェニックス
+  mon_015: '/assets/monsters/icons/monster_icon_mon015_v1.png', // グレイシャーキング
 };
 
 // ---------------------------------------------------------------------------

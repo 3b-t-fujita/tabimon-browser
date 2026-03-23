@@ -73,6 +73,8 @@ function makeSession(nodeIndex: number): AdventureSession {
     resultPendingFlag:         true,
     status:                    AdventureSessionStatus.Active,
     pendingResultType:         null,
+    nextBattleBuffMultiplier:  1.0,
+    randomEventBattle:         false,
   };
 }
 
