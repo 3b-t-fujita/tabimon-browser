@@ -6,6 +6,7 @@
 import { create } from 'zustand';
 import { AdventureResultType } from '@/common/constants/enums';
 import type { PendingCandidate } from '@/domain/entities/PendingCandidate';
+import type { StatGains } from '@/application/result/finalizeAdventureResultUseCase';
 
 /** リザルトフェーズ */
 export type ResultPhase =
@@ -22,6 +23,7 @@ interface ResultStoreState {
   newLevel:       number;
   leveledUp:      boolean;
   stageUnlocked:  boolean;
+  statGains:      StatGains | null;
   candidate:      PendingCandidate | null;
   errorMessage:   string | null;
   isSaving:       boolean;
@@ -32,7 +34,7 @@ interface ResultStoreState {
 interface ResultStoreActions {
   setResultType(t: AdventureResultType | null): void;
   setResultPhase(p: ResultPhase): void;
-  setRewardInfo(info: { expGained: number; newLevel: number; leveledUp: boolean; stageUnlocked: boolean }): void;
+  setRewardInfo(info: { expGained: number; newLevel: number; leveledUp: boolean; stageUnlocked: boolean; statGains: StatGains | null }): void;
   setCandidate(c: PendingCandidate | null): void;
   setError(msg: string | null): void;
   setIsSaving(v: boolean): void;
@@ -48,6 +50,7 @@ const INITIAL: ResultStoreState = {
   newLevel:        1,
   leveledUp:       false,
   stageUnlocked:   false,
+  statGains:       null,
   candidate:       null,
   errorMessage:    null,
   isSaving:        false,

@@ -2,9 +2,10 @@
 
 /**
  * リザルト概要表示コンポーネント。
- * 結果種別・獲得経験値・レベルアップ・ステージ解放を表示する。
+ * 結果種別・獲得経験値・レベルアップ・ステータス上昇・ステージ解放を表示する。
  */
 import { AdventureResultType } from '@/common/constants/enums';
+import type { StatGains } from '@/application/result/finalizeAdventureResultUseCase';
 
 interface ResultSummaryViewProps {
   resultType:    AdventureResultType;
@@ -13,6 +14,7 @@ interface ResultSummaryViewProps {
   newLevel:      number;
   leveledUp:     boolean;
   stageUnlocked: boolean;
+  statGains:     StatGains | null;
 }
 
 const RESULT_CONFIG: Record<AdventureResultType, { label: string; color: string; banner: string }> = {
@@ -22,7 +24,7 @@ const RESULT_CONFIG: Record<AdventureResultType, { label: string; color: string;
 };
 
 export default function ResultSummaryView({
-  resultType, stageId, expGained, newLevel, leveledUp, stageUnlocked,
+  resultType, stageId, expGained, newLevel, leveledUp, stageUnlocked, statGains,
 }: ResultSummaryViewProps) {
   const cfg = RESULT_CONFIG[resultType];
 
@@ -48,9 +50,26 @@ export default function ResultSummaryView({
 
       {/* レベルアップ */}
       {leveledUp && (
-        <div className="flex items-center gap-2 bg-yellow-50 rounded p-2 text-sm">
-          <span>⬆️</span>
-          <span className="font-bold text-yellow-700">Lv. {newLevel} にレベルアップ！</span>
+        <div className="flex flex-col gap-2 bg-yellow-50 rounded p-3 text-sm">
+          <div className="flex items-center gap-2">
+            <span>⬆️</span>
+            <span className="font-bold text-yellow-700">Lv. {newLevel} にレベルアップ！</span>
+          </div>
+          {statGains && (
+            <div className="grid grid-cols-4 gap-1 mt-1">
+              {([
+                { key: 'HP',  val: statGains.hp,  color: 'text-emerald-600' },
+                { key: 'ATK', val: statGains.atk, color: 'text-red-600'     },
+                { key: 'DEF', val: statGains.def, color: 'text-blue-600'    },
+                { key: 'SPD', val: statGains.spd, color: 'text-yellow-600'  },
+              ] as const).map(({ key, val, color }) => (
+                <div key={key} className="flex flex-col items-center rounded bg-white py-1 px-0.5 border border-yellow-200">
+                  <span className="text-xs text-stone-400">{key}</span>
+                  <span className={`text-xs font-bold ${color}`}>+{val}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

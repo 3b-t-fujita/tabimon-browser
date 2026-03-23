@@ -37,7 +37,7 @@ function AdventureResultContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const {
-    resultType, resultPhase, expGained, newLevel, leveledUp, stageUnlocked,
+    resultType, resultPhase, expGained, newLevel, leveledUp, stageUnlocked, statGains,
     errorMessage, isSaving,
     setResultType, setResultPhase, setRewardInfo, setError, setIsSaving, reset,
   } = useResultStore();
@@ -82,8 +82,8 @@ function AdventureResultContent() {
           return;
         }
 
-        const { updatedSession, expGained: exp, newLevel: lvl, leveledUp: lu, stageUnlocked: su } = finalizeResult.value;
-        setRewardInfo({ expGained: exp, newLevel: lvl, leveledUp: lu, stageUnlocked: su });
+        const { updatedSession, expGained: exp, newLevel: lvl, leveledUp: lu, stageUnlocked: su, statGains: sg } = finalizeResult.value;
+        setRewardInfo({ expGained: exp, newLevel: lvl, leveledUp: lu, stageUnlocked: su, statGains: sg });
         setResultPhase('RESULT_FINALIZED');
 
         // ---- 3. 候補抽選（SUCCESS のみ） ----
@@ -156,6 +156,7 @@ function AdventureResultContent() {
           newLevel={newLevel}
           leveledUp={leveledUp}
           stageUnlocked={stageUnlocked}
+          statGains={statGains}
         />
 
         {resultPhase === 'RESULT_FINALIZED' && (

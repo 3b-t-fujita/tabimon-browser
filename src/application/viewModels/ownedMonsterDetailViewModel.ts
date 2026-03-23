@@ -1,6 +1,14 @@
 /**
  * 仲間詳細画面用 ViewModel。
  */
+
+export interface MonsterStatsViewModel {
+  readonly hp:  number;
+  readonly atk: number;
+  readonly def: number;
+  readonly spd: number;
+}
+
 export interface OwnedMonsterDetailViewModel {
   readonly uniqueId:         string;
   readonly displayName:      string;
@@ -14,4 +22,6 @@ export interface OwnedMonsterDetailViewModel {
   readonly isMain:           boolean;
   /** 手放し可否（主役は false） */
   readonly canRelease:       boolean;
+  /** 現在レベルのステータス */
+  readonly stats:            MonsterStatsViewModel;
 }

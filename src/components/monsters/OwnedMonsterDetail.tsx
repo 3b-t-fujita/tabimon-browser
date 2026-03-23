@@ -75,6 +75,17 @@ export function OwnedMonsterDetail({ vm, onSetMain, onRelease, onBack, onQrGener
           </div>
         </section>
 
+        {/* ステータスカード */}
+        <section className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-stone-400">ステータス</p>
+          <div className="flex flex-col gap-2">
+            <StatRow label="HP"  value={vm.stats.hp}  max={300} color="bg-emerald-500" />
+            <StatRow label="ATK" value={vm.stats.atk} max={100} color="bg-red-500"     />
+            <StatRow label="DEF" value={vm.stats.def} max={100} color="bg-blue-500"    />
+            <StatRow label="SPD" value={vm.stats.spd} max={50}  color="bg-yellow-500"  />
+          </div>
+        </section>
+
         {/* スキル */}
         <section className="rounded-xl border border-stone-200 bg-white p-4 shadow-sm">
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-400">スキル</p>
@@ -125,6 +136,33 @@ export function OwnedMonsterDetail({ vm, onSetMain, onRelease, onBack, onQrGener
           {vm.canRelease ? '手放す' : '手放し不可（主役）'}
         </button>
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// StatRow サブコンポーネント
+// ---------------------------------------------------------------------------
+
+function StatRow({
+  label, value, max, color,
+}: {
+  label: string;
+  value: number;
+  max:   number;
+  color: string;
+}) {
+  const pct = Math.min(100, Math.round((value / max) * 100));
+  return (
+    <div className="flex items-center gap-2">
+      <span className="w-8 text-xs font-bold text-stone-500">{label}</span>
+      <div className="flex-1 h-2 rounded-full bg-stone-100 overflow-hidden">
+        <div
+          className={`h-full rounded-full ${color} transition-all duration-500`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <span className="w-8 text-right text-xs font-bold text-stone-700">{value}</span>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { SaveErrorCode, MonsterErrorCode } from '@/common/errors/AppErrorCode';
 import { canRelease } from '@/domain/policies/MainMonsterPolicy';
 import { SaveTransactionService } from '@/infrastructure/persistence/transaction/saveTransactionService';
 import { worldLabel, roleLabel, personalityLabel } from '@/application/shared/labelHelpers';
+import { getMonsterMasterById, computeStats } from '@/infrastructure/master/monsterMasterRepository';
 import type { OwnedMonsterDetailViewModel } from '@/application/viewModels/ownedMonsterDetailViewModel';
 
 export type GetDetailErrorCode = SaveErrorCode | typeof MonsterErrorCode.NotFound;
@@ -23,6 +24,10 @@ export class GetOwnedMonsterDetailUseCase {
     const monster = (result.value?.ownedMonsters ?? []).find((m) => m.uniqueId === uniqueId);
     if (!monster) return fail(MonsterErrorCode.NotFound, `Monster not found: ${uniqueId}`);
 
+    // ステータス計算
+    const master = await getMonsterMasterById(monster.monsterMasterId as string);
+    const raw    = computeStats(master, monster.level);
+
     return ok({
       uniqueId:          monster.uniqueId,
       displayName:       monster.displayName,
@@ -35,6 +40,7 @@ export class GetOwnedMonsterDetailUseCase {
       skillIds:          [...monster.skillIds],
       isMain:            monster.isMain,
       canRelease:        canRelease(monster),
+      stats: { hp: raw.maxHp, atk: raw.atk, def: raw.def, spd: raw.spd },
     });
   }
 }

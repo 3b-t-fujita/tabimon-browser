@@ -22,6 +22,7 @@ import type { AdventureSession } from '@/domain/entities/AdventureSession';
 import type { OwnedMonster } from '@/domain/entities/OwnedMonster';
 import { toStageId } from '@/types/ids';
 import { getStageMasterById } from '@/infrastructure/master/stageMasterRepository';
+import { getMonsterMasterById, computeStats } from '@/infrastructure/master/monsterMasterRepository';
 import { SaveTransactionService } from '@/infrastructure/persistence/transaction/saveTransactionService';
 import { calculateAdventureRewards } from './calculateAdventureRewardsService';
 
@@ -33,6 +34,13 @@ export type FinalizeAdventureResultErrorCode =
   | typeof SaveErrorCode.LoadFailed
   | typeof SaveErrorCode.SaveFailed;
 
+export interface StatGains {
+  hp:  number;
+  atk: number;
+  def: number;
+  spd: number;
+}
+
 export interface FinalizeResultPayload {
   updatedSession: AdventureSession;
   expGained:      number;
@@ -40,6 +48,8 @@ export interface FinalizeResultPayload {
   leveledUp:      boolean;
   stageUnlocked:  boolean;
   resultType:     AdventureResultType;
+  /** レベルアップ時のステータス上昇量。レベルアップしなかった場合は null */
+  statGains:      StatGains | null;
 }
 
 export class FinalizeAdventureResultUseCase {
@@ -73,12 +83,27 @@ export class FinalizeAdventureResultUseCase {
     const mainMon  = save.ownedMonsters.find((m) => m.uniqueId === mainId);
 
     // ---- 経験値計算 ----
+    const oldLevel = mainMon?.level ?? 1;
     const { expGained, newLevel, newExp, leveledUp } = await calculateAdventureRewards(
       stageMaster.baseExp,
       resultType,
-      mainMon?.level  ?? 1,
-      mainMon?.exp    ?? 0,
+      oldLevel,
+      mainMon?.exp ?? 0,
     );
+
+    // ---- レベルアップ時のステータス上昇量を計算 ----
+    let statGains: StatGains | null = null;
+    if (leveledUp && mainMon) {
+      const master   = await getMonsterMasterById(mainMon.monsterMasterId as string);
+      const oldStats = computeStats(master, oldLevel);
+      const newStats = computeStats(master, newLevel);
+      statGains = {
+        hp:  newStats.maxHp - oldStats.maxHp,
+        atk: newStats.atk   - oldStats.atk,
+        def: newStats.def   - oldStats.def,
+        spd: newStats.spd   - oldStats.spd,
+      };
+    }
 
     // ---- 主役モンスター更新 ----
     const updatedOwned: OwnedMonster[] = save.ownedMonsters.map((m) => {
@@ -123,6 +148,6 @@ export class FinalizeAdventureResultUseCase {
       return fail(SaveErrorCode.SaveFailed, saveResult.message);
     }
 
-    return ok({ updatedSession, expGained, newLevel, leveledUp, stageUnlocked, resultType });
+    return ok({ updatedSession, expGained, newLevel, leveledUp, stageUnlocked, resultType, statGains });
   }
 }
