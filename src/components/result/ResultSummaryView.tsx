@@ -15,10 +15,10 @@ interface ResultSummaryViewProps {
   stageUnlocked: boolean;
 }
 
-const RESULT_CONFIG: Record<AdventureResultType, { label: string; icon: string; color: string }> = {
-  [AdventureResultType.Success]: { label: '冒険成功！',  icon: '🎉', color: 'text-emerald-600' },
-  [AdventureResultType.Failure]: { label: '冒険失敗...',  icon: '💀', color: 'text-red-500' },
-  [AdventureResultType.Retire]:  { label: 'リタイア',    icon: '🏳️', color: 'text-gray-500' },
+const RESULT_CONFIG: Record<AdventureResultType, { label: string; color: string; banner: string }> = {
+  [AdventureResultType.Success]: { label: '冒険成功！', color: 'text-emerald-600', banner: '/assets/result/ui_result_banner_success_v1.png' },
+  [AdventureResultType.Failure]: { label: '冒険失敗...', color: 'text-red-500',     banner: '/assets/result/ui_result_banner_fail_v1.png'    },
+  [AdventureResultType.Retire]:  { label: 'リタイア',   color: 'text-gray-500',    banner: '/assets/result/ui_result_banner_retire_v1.png'  },
 };
 
 export default function ResultSummaryView({
@@ -27,10 +27,14 @@ export default function ResultSummaryView({
   const cfg = RESULT_CONFIG[resultType];
 
   return (
-    <div className="flex flex-col gap-3 p-4 rounded-xl border border-stone-200 bg-white">
+    <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white overflow-hidden">
+      {/* リザルトバナー画像 */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={cfg.banner} alt={cfg.label} className="w-full object-contain" style={{ maxHeight: 120 }} />
+
+      <div className="flex flex-col gap-3 p-4">
       {/* 結果見出し */}
-      <div className="flex items-center gap-2">
-        <span className="text-3xl">{cfg.icon}</span>
+      <div className="flex items-center justify-center">
         <span className={`text-xl font-bold ${cfg.color}`}>{cfg.label}</span>
       </div>
 
@@ -57,6 +61,7 @@ export default function ResultSummaryView({
           <span className="font-bold text-blue-700">新ステージが解放されました！</span>
         </div>
       )}
+      </div>
     </div>
   );
 }

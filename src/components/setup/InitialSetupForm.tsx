@@ -27,6 +27,13 @@ const STARTER_BY_WORLD: Record<string, { id: string; label: string }[]> = {
   [WorldId.Ice]:     [{ id: 'MON_ICE_001',   label: 'フロスト (氷)' }],
 };
 
+// モンスターID → 立ち絵画像パス
+const MONSTER_STAND_IMG: Record<string, string> = {
+  'MON_GRASS_001': '/assets/monsters/stands/monster_stand_initial_01_v1.png',
+  'MON_FIRE_001':  '/assets/monsters/stands/monster_stand_initial_02_v1.png',
+  'MON_ICE_001':   '/assets/monsters/stands/monster_stand_initial_03_v1.png',
+};
+
 export function InitialSetupForm() {
   const router = useRouter();
   const { setHomeViewModel, setRouteState } = useAppUiStore();
@@ -82,7 +89,19 @@ export function InitialSetupForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-6 p-6">
       <div className="text-center">
-        <div className="text-4xl">🗺️</div>
+        {/* 選択中のモンスター立ち絵 or ロゴ */}
+        {starterMonsterId && MONSTER_STAND_IMG[starterMonsterId] ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={MONSTER_STAND_IMG[starterMonsterId]}
+            alt="選択中のモンスター"
+            width={120}
+            height={120}
+            className="mx-auto drop-shadow-md"
+          />
+        ) : (
+          <div className="text-4xl">🗺️</div>
+        )}
         <h1 className="mt-2 text-2xl font-bold text-stone-800">タビモンへようこそ</h1>
         <p className="mt-1 text-sm text-stone-500">最初に冒険者の情報を設定してください</p>
       </div>

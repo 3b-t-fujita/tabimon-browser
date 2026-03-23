@@ -18,11 +18,20 @@ export function HomeScreen({ vm, onContinue }: Props) {
   const router = useRouter();
   return (
     <div className="flex flex-1 flex-col gap-0">
-      {/* ヘッダー */}
-      <header className="bg-emerald-500 px-5 py-4">
-        <p className="text-sm text-emerald-100">冒険者</p>
-        <h1 className="text-xl font-bold text-white">{vm.playerName}</h1>
-      </header>
+      {/* ホーム背景バナー */}
+      <div className="relative w-full overflow-hidden" style={{ height: 160 }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/assets/backgrounds/bg_home_main_v1.png"
+          alt="タビモン ホーム"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        {/* ヘッダーオーバーレイ */}
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-emerald-600/90 to-transparent px-5 py-3">
+          <p className="text-xs text-emerald-100">冒険者</p>
+          <h1 className="text-lg font-bold text-white">{vm.playerName}</h1>
+        </div>
+      </div>
 
       <div className="flex flex-1 flex-col gap-4 p-5">
         {/* 主役カード */}

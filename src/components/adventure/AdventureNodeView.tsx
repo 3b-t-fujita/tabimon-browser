@@ -15,13 +15,13 @@ interface Props {
   nodeTotal:    number;
 }
 
-const NODE_ICON: Record<string, string> = {
-  [NodeType.Pass]:   '👣',
-  [NodeType.Branch]: '🔀',
-  [NodeType.Event]:  '✨',
-  [NodeType.Battle]: '⚔️',
-  [NodeType.Boss]:   '💀',
-  [NodeType.Goal]:   '🏁',
+const NODE_IMG: Record<string, string> = {
+  [NodeType.Pass]:   '/assets/ui/icons/ui_node_pass_v1.png',
+  [NodeType.Branch]: '/assets/ui/icons/ui_node_branch_v1.png',
+  [NodeType.Event]:  '/assets/ui/icons/ui_node_event_v1.png',
+  [NodeType.Battle]: '/assets/ui/icons/ui_node_battle_v1.png',
+  [NodeType.Boss]:   '/assets/ui/icons/ui_node_boss_v1.png',
+  [NodeType.Goal]:   '/assets/ui/icons/ui_node_goal_v1.png',
 };
 
 const NODE_LABEL: Record<string, string> = {
@@ -55,7 +55,7 @@ export function AdventureNodeView({ currentNode, explorePhase, stageId, nodeTota
 
   const nodeIndex  = currentNode.nodeIndex;
   const nodeType   = currentNode.nodeType;
-  const icon       = NODE_ICON[nodeType]  ?? '❓';
+  const imgSrc     = NODE_IMG[nodeType];
   const typeLabel  = NODE_LABEL[nodeType] ?? nodeType;
   const phaseLabel = PHASE_LABEL[explorePhase];
 
@@ -69,7 +69,12 @@ export function AdventureNodeView({ currentNode, explorePhase, stageId, nodeTota
 
       {/* ノードアイコン・種別 */}
       <div className="flex flex-col items-center gap-2 py-4">
-        <span className="text-5xl">{icon}</span>
+        {imgSrc ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={imgSrc} alt={typeLabel} width={96} height={96} className="drop-shadow-md" />
+        ) : (
+          <span className="text-5xl">❓</span>
+        )}
         <span className="text-lg font-bold text-stone-800">{typeLabel}</span>
         <span className="text-sm text-stone-500">{phaseLabel}</span>
       </div>
