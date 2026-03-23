@@ -19,10 +19,19 @@ export function OwnedMonsterList({ vm }: Props) {
     <div className="flex flex-1 flex-col">
       {/* ヘッダー */}
       <header className="bg-emerald-500 px-5 py-4">
-        <button type="button" onClick={() => router.back()} className="mb-1 text-sm text-emerald-100">
-          ← 戻る
-        </button>
-        <h1 className="text-xl font-bold text-white">仲間一覧</h1>
+        <div className="flex items-center justify-between">
+          <button type="button" onClick={() => router.back()} className="text-sm text-emerald-100">
+            ← 戻る
+          </button>
+          <button
+            type="button"
+            onClick={() => router.push('/monsters/gallery')}
+            className="rounded-lg bg-emerald-400 px-3 py-1 text-xs font-bold text-white hover:bg-emerald-300"
+          >
+            📖 図鑑
+          </button>
+        </div>
+        <h1 className="mt-1 text-xl font-bold text-white">仲間一覧</h1>
         <p className="text-sm text-emerald-100">
           {vm.count} / {vm.capacity} 体
         </p>
