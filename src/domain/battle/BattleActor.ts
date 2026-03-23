@@ -24,6 +24,8 @@ export interface BattleActor {
   /** 一意ID（パーティメンバー: uniqueId, 敵: "enemy-0", "enemy-1"...） */
   id:              string;
   displayName:     string;
+  /** モンスターマスタID。画像表示などUI用途に使用（省略可）。 */
+  monsterId?:      string;
   isMain:          boolean;
   isEnemy:         boolean;
   maxHp:           number;

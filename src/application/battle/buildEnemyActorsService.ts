@@ -33,6 +33,13 @@ function toSkillState(s: SkillSnapshot): BattleSkillState {
 }
 
 // ---------------------------------------------------------------------------
+// バランス定数
+// ---------------------------------------------------------------------------
+
+/** 敵ステータス全体の基準倍率（1.0 = 等倍）。バランス調整はここを変える */
+const ENEMY_STRENGTH_MULTIPLIER = 0.95;
+
+// ---------------------------------------------------------------------------
 // 公開 API
 // ---------------------------------------------------------------------------
 
@@ -51,6 +58,11 @@ export async function buildEnemyActors(poolId: string): Promise<BattleActor[]> {
     const master = await getMonsterMasterById(entry.monsterMasterId);
     const stats  = computeStats(master, entry.level);
 
+    // バランス調整: HP / ATK / DEF に倍率を適用（SPD は変えない）
+    const adjHp  = Math.max(1, Math.round(stats.maxHp * ENEMY_STRENGTH_MULTIPLIER));
+    const adjAtk = Math.max(1, Math.round(stats.atk   * ENEMY_STRENGTH_MULTIPLIER));
+    const adjDef = Math.max(1, Math.round(stats.def   * ENEMY_STRENGTH_MULTIPLIER));
+
     // スキル構築（マスタに initialSkillId がある場合のみ）
     const skills: BattleSkillState[] = [];
     if (master?.initialSkillId) {
@@ -61,15 +73,16 @@ export async function buildEnemyActors(poolId: string): Promise<BattleActor[]> {
     actors.push({
       id:                 `enemy-${i}`,
       displayName:        entry.displayName,
+      monsterId:          entry.monsterMasterId,
       isMain:             false,
       isEnemy:            true,
-      maxHp:              stats.maxHp,
-      baseAtk:            stats.atk,
-      baseDef:            stats.def,
+      maxHp:              adjHp,
+      baseAtk:            adjAtk,
+      baseDef:            adjDef,
       spd:                stats.spd,
       personality:        null,
       skills,
-      currentHp:          stats.maxHp,
+      currentHp:          adjHp,
       actionTimer:        0,
       atkMultiplier:      1.0,
       defMultiplier:      1.0,

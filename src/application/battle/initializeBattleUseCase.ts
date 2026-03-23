@@ -114,6 +114,7 @@ export class InitializeBattleUseCase {
       partyActors.push({
         id:                 member.uniqueId as string,
         displayName:        member.displayName,
+        monsterId:          member.monsterMasterId as string,
         isMain:             member.isMain,
         isEnemy:            false,
         maxHp:              member.stats.maxHp,

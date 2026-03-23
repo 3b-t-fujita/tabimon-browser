@@ -3,8 +3,30 @@
 /**
  * 戦闘ステータス表示コンポーネント。
  * パーティメンバー・敵の HP バーと名前を表示する。
+ * キャラ画像は HP バーの上に表示する（画像がない場合は絵文字フォールバック）。
  */
 import type { BattleActor } from '@/domain/battle/BattleActor';
+
+// ---------------------------------------------------------------------------
+// モンスター画像マッピング
+// ---------------------------------------------------------------------------
+
+/** monsterId → スタンド画像パス。
+ * 将来モンスター画像が増えたらここに追記するだけでよい。 */
+const STAND_IMAGE_MAP: Record<string, string> = {
+  MON_GRASS_001: '/assets/monsters/stands/monster_stand_initial_01_v1.png',
+  MON_FIRE_001:  '/assets/monsters/stands/monster_stand_initial_02_v1.png',
+  MON_ICE_001:   '/assets/monsters/stands/monster_stand_initial_03_v1.png',
+};
+
+function getStandImageUrl(monsterId?: string): string | null {
+  if (!monsterId) return null;
+  return STAND_IMAGE_MAP[monsterId] ?? null;
+}
+
+// ---------------------------------------------------------------------------
+// ActorStatus コンポーネント
+// ---------------------------------------------------------------------------
 
 interface ActorStatusProps {
   actor: BattleActor;
@@ -15,23 +37,44 @@ function ActorStatus({ actor }: ActorStatusProps) {
   const hpPercent  = Math.max(0, Math.round(hpRatio * 100));
   const barColor   = hpRatio > 0.5 ? 'bg-green-500' : hpRatio > 0.25 ? 'bg-yellow-500' : 'bg-red-500';
   const isDead     = actor.currentHp <= 0;
+  const imageUrl   = getStandImageUrl(actor.monsterId);
 
   return (
     <div className={`p-2 rounded border ${isDead ? 'opacity-40 border-gray-600' : 'border-gray-500'}`}>
+      {/* キャラクター画像 */}
+      <div className="flex justify-center mb-1 h-14">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={actor.displayName}
+            className="h-14 w-14 object-contain"
+          />
+        ) : (
+          <div className="h-14 w-14 flex items-center justify-center text-3xl select-none">
+            {actor.isEnemy ? '👾' : '❓'}
+          </div>
+        )}
+      </div>
+
+      {/* 名前 + HP数値 */}
       <div className="flex justify-between items-center mb-1 text-sm">
-        <span className="font-medium truncate max-w-[120px]">
+        <span className="font-medium truncate max-w-[80px]">
           {actor.isMain ? '★ ' : ''}{actor.displayName}
         </span>
         <span className="text-xs text-gray-400">
           {actor.currentHp}/{actor.maxHp}
         </span>
       </div>
+
+      {/* HP バー */}
       <div className="h-2 bg-gray-700 rounded overflow-hidden">
         <div
           className={`h-full ${barColor} transition-all duration-300`}
           style={{ width: `${hpPercent}%` }}
         />
       </div>
+
+      {/* バフ/デバフ表示 */}
       {actor.buffTurnsRemaining > 0 && (
         <div className="text-xs mt-1 text-yellow-400">
           {actor.atkMultiplier > 1 ? '↑ATK' : actor.defMultiplier > 1 ? '↑DEF' : actor.atkMultiplier < 1 ? '↓ATK' : '↓DEF'}
