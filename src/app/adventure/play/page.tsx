@@ -46,9 +46,9 @@ export default function AdventurePlayPage() {
   const router = useRouter();
   const {
     session, currentNode, explorePhase, branchOptions, eventMessage,
-    isSaving, saveErrorMessage, showRetireDialog,
+    isSaving, saveErrorMessage, showRetireDialog, pendingSession,
     setSession, setCurrentNode, setExplorePhase, setBranchOptions,
-    setEventMessage, setIsSaving, setSaveError,
+    setEventMessage, setIsSaving, setSaveError, setPendingSession,
     openRetireDialog, closeRetireDialog, reset,
   } = useAdventurePlayStore();
 
@@ -202,7 +202,7 @@ export default function AdventurePlayPage() {
   }
 
   // ----------------------------------------------------------------
-  // EVENT 確認
+  // EVENT 確認（1回目クリック: ランダム抽選 → 結果メッセージ表示）
   // ----------------------------------------------------------------
   async function handleEventConfirm() {
     if (!session || isSaving) return;
@@ -228,13 +228,30 @@ export default function AdventurePlayPage() {
         return;
       }
 
-      const nodeResult = await resolveNodeUC.execute(updatedSession);
+      // HEAL / NOTHING / BOOST: 結果メッセージを表示し、2回目クリック待ちへ
+      setEventMessage(result.value.eventMessage);
+      setPendingSession(updatedSession);
+      setExplorePhase('EVENT_RESULT');
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  // ----------------------------------------------------------------
+  // EVENT 結果確認（2回目クリック: 次ノードへ進む）
+  // ----------------------------------------------------------------
+  async function handleEventResultProceed() {
+    if (!pendingSession || isSaving) return;
+    setIsSaving(true);
+    try {
+      const nodeResult = await resolveNodeUC.execute(pendingSession);
       if (!nodeResult.ok) {
         setSaveError(`ノード解決失敗: ${nodeResult.message ?? nodeResult.errorCode}`);
         return;
       }
       setEventMessage(null);
-      applyNodePhase(updatedSession, nodeResult.value, 0);
+      setPendingSession(null);
+      applyNodePhase(pendingSession, nodeResult.value, 0);
     } finally {
       setIsSaving(false);
     }
@@ -353,11 +370,20 @@ export default function AdventurePlayPage() {
             />
           )}
 
-          {/* イベント表示 */}
+          {/* イベント表示（確認前） */}
           {explorePhase === 'EVENT_RESOLVING' && eventMessage && (
             <EventPanel
               message={eventMessage}
               onConfirm={handleEventConfirm}
+              isSaving={isSaving}
+            />
+          )}
+
+          {/* イベント結果表示（確認後・次ノードへ進む前） */}
+          {explorePhase === 'EVENT_RESULT' && eventMessage && (
+            <EventPanel
+              message={eventMessage}
+              onConfirm={handleEventResultProceed}
               isSaving={isSaving}
             />
           )}

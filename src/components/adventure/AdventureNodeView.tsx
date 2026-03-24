@@ -38,6 +38,7 @@ const PHASE_LABEL: Record<ExplorePhase, string> = {
   AUTO_MOVING:       '前進中',
   BRANCH_SELECTING:  '分岐を選択してください',
   EVENT_RESOLVING:   'イベント発生！',
+  EVENT_RESULT:      'イベント結果',
   BATTLE_PREPARING:  '戦闘準備中...',
   GOAL_REACHED:      'ゴール到達！',
   RETIRE_CONFIRMING: 'リタイア確認中',

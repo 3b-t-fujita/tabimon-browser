@@ -45,6 +45,10 @@ export interface BattleActor {
   defMultiplier:   number;
   /** バフ/デバフの残りtick数（0=効果なし） */
   buffTurnsRemaining: number;
+  /** シールド残り被弾回数（0=効果なし。DEF系スキルで設定） */
+  shieldHitsRemaining: number;
+  /** シールドによるダメージ軽減率（0.55=55%軽減。shieldHitsRemaining>0 の間有効） */
+  damageReductionRate: number;
 }
 
 /** 行動しきい値を計算する（SPD に基づく） */

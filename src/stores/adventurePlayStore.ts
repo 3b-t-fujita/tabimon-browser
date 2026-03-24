@@ -25,7 +25,8 @@ export type ExplorePhase =
   | 'LOADING'            // セッション読み込み中
   | 'AUTO_MOVING'        // 通常ノード（PASS）自動前進中
   | 'BRANCH_SELECTING'   // 分岐選択待ち
-  | 'EVENT_RESOLVING'    // イベント処理中
+  | 'EVENT_RESOLVING'    // イベント確認待ち（「何かが起きそうだ」段階）
+  | 'EVENT_RESULT'       // イベント結果表示中（HEAL/BOOST/NOTHING の内容表示）
   | 'BATTLE_PREPARING'   // 戦闘準備中（BATTLE / BOSS ノード到達）
   | 'GOAL_REACHED'       // ゴール到達（GOAL ノード）
   | 'RETIRE_CONFIRMING'  // リタイア確認ダイアログ表示中
@@ -40,7 +41,7 @@ interface AdventurePlayState {
   explorePhase:     ExplorePhase;
   /** 分岐選択肢（BRANCH_SELECTING 時に設定） */
   branchOptions:    readonly NodeBranchOption[];
-  /** イベントメッセージ（EVENT_RESOLVING 時に設定） */
+  /** イベントメッセージ（EVENT_RESOLVING / EVENT_RESULT 時に設定） */
   eventMessage:     string | null;
   /** 保存処理中フラグ */
   isSaving:         boolean;
@@ -48,6 +49,8 @@ interface AdventurePlayState {
   saveErrorMessage: string | null;
   /** リタイア確認ダイアログ表示中フラグ（RETIRE_CONFIRMING と連動） */
   showRetireDialog: boolean;
+  /** EVENT_RESULT フェーズで次ノードへ進むための保留セッション */
+  pendingSession:   AdventureSession | null;
 }
 
 interface AdventurePlayActions {
@@ -58,6 +61,7 @@ interface AdventurePlayActions {
   setEventMessage(msg: string | null): void;
   setIsSaving(v: boolean): void;
   setSaveError(msg: string | null): void;
+  setPendingSession(s: AdventureSession | null): void;
   openRetireDialog(): void;
   closeRetireDialog(): void;
   reset(): void;
@@ -72,18 +76,20 @@ const INITIAL_STATE: AdventurePlayState = {
   isSaving:         false,
   saveErrorMessage: null,
   showRetireDialog: false,
+  pendingSession:   null,
 };
 
 export const useAdventurePlayStore = create<AdventurePlayState & AdventurePlayActions>((set) => ({
   ...INITIAL_STATE,
 
-  setSession:      (s)     => set({ session: s }),
-  setCurrentNode:  (n)     => set({ currentNode: n }),
-  setExplorePhase: (phase) => set({ explorePhase: phase }),
-  setBranchOptions:(opts)  => set({ branchOptions: opts }),
-  setEventMessage: (msg)   => set({ eventMessage: msg }),
-  setIsSaving:     (v)     => set({ isSaving: v }),
-  setSaveError:    (msg)   => set({
+  setSession:        (s)     => set({ session: s }),
+  setCurrentNode:    (n)     => set({ currentNode: n }),
+  setExplorePhase:   (phase) => set({ explorePhase: phase }),
+  setBranchOptions:  (opts)  => set({ branchOptions: opts }),
+  setEventMessage:   (msg)   => set({ eventMessage: msg }),
+  setIsSaving:       (v)     => set({ isSaving: v }),
+  setPendingSession: (s)     => set({ pendingSession: s }),
+  setSaveError:      (msg)   => set({
     saveErrorMessage: msg,
     explorePhase: msg !== null ? 'SAVE_ERROR' : 'AUTO_MOVING',
   }),

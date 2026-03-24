@@ -22,6 +22,8 @@ export const BUFF_TURNS     = 3;
 export const BUFF_MULTIPLIER  = 1.2;
 export const DEBUFF_MULTIPLIER = 0.8;
 export const HEAL_THRESHOLD   = 0.5;  // HP が 50% 未満で回復優先
+export const SHIELD_HITS      = 2;    // DEF系スキルのシールド被弾回数
+export const SHIELD_REDUCTION = 0.55; // シールドのダメージ軽減率（55%減）
 
 // ---------------------------------------------------------------------------
 // 勝敗判定
@@ -87,8 +89,8 @@ function decideAiAction(actor: BattleActor, state: BattleState): ChosenAction {
     if (target) return { type: 'SKILL', skill: healSkill, target };
   }
 
-  // ---- 2. バフ: まだ未使用（buffTurns=0 の自分）----
-  if (buffSkill && actor.buffTurnsRemaining === 0) {
+  // ---- 2. バフ: まだ未使用（buffTurns=0 かつシールド未展開）----
+  if (buffSkill && actor.buffTurnsRemaining === 0 && actor.shieldHitsRemaining === 0) {
     return { type: 'SKILL', skill: buffSkill, target: actor };
   }
 
@@ -145,7 +147,8 @@ function applyAction(
 
   if (action.type === 'NORMAL_ATK' && action.target) {
     const effDef = action.target.baseDef * action.target.defMultiplier;
-    const dmg    = calcDamage(effAtk, NORMAL_ATK_PWR, effDef);
+    let dmg      = calcDamage(effAtk, NORMAL_ATK_PWR, effDef);
+    dmg          = applyShield(action.target, dmg);
     action.target.currentHp = clampHp(action.target.currentHp - dmg, action.target.maxHp);
     return {
       tick: state.tickCount, actorName: actor.displayName,
@@ -185,7 +188,8 @@ function applyAction(
 
     // Single-target attack
     const effDef = action.target.baseDef * action.target.defMultiplier;
-    const dmg    = calcDamage(effAtk, skill.power, effDef);
+    let dmg      = calcDamage(effAtk, skill.power, effDef);
+    dmg          = applyShield(action.target, dmg);
     action.target.currentHp = clampHp(action.target.currentHp - dmg, action.target.maxHp);
     return {
       tick: state.tickCount, actorName: actor.displayName,
@@ -203,7 +207,8 @@ function applyAction(
     let totalDmg = 0;
     for (const t of targets) {
       const effDef = t.baseDef * t.defMultiplier;
-      const dmg    = calcDamage(effAtk, skill.power, effDef);
+      let dmg      = calcDamage(effAtk, skill.power, effDef);
+      dmg          = applyShield(t, dmg);
       t.currentHp  = clampHp(t.currentHp - dmg, t.maxHp);
       totalDmg    += dmg;
     }
@@ -217,15 +222,46 @@ function applyAction(
   return { tick: state.tickCount, actorName: actor.displayName, action: '様子を見ている' };
 }
 
+/** ATK バフスキル（ちからだめ）のIDリスト */
+const ATK_BUFF_SKILL_IDS = ['skill_buff_002'];
+/** DEF シールドスキル（まもりのたて / いわのよろい / ブリザードアーマー / グレイシャーウォール 等）のIDリスト */
+const DEF_SHIELD_SKILL_IDS = [
+  'skill_buff_001', 'skill_def_001', 'skill_def_002', 'skill_def_003',
+];
+
 function applyBuff(actor: BattleActor, skill: BattleSkillState): void {
-  // スキルIDで判定（簡易版）
-  if (['skill_buff_002'].includes(skill.skillId)) {
-    actor.atkMultiplier     = BUFF_MULTIPLIER;
+  if (ATK_BUFF_SKILL_IDS.includes(skill.skillId)) {
+    // ATKバフ: 倍率アップ + tick ベースで継続
+    actor.atkMultiplier      = BUFF_MULTIPLIER;
+    actor.buffTurnsRemaining = BUFF_TURNS;
+  } else if (DEF_SHIELD_SKILL_IDS.includes(skill.skillId)) {
+    // DEFシールド: 55%ダメージ軽減 × 2被弾まで継続
+    actor.shieldHitsRemaining = SHIELD_HITS;
+    actor.damageReductionRate = SHIELD_REDUCTION;
+    // AI が再使用しないよう buffTurnsRemaining を大きく設定（シールド消滅時にリセット）
+    actor.buffTurnsRemaining = 999;
   } else {
-    // DEF buff (skill_buff_001, skill_def_001, etc.)
-    actor.defMultiplier     = BUFF_MULTIPLIER;
+    // その他 Buff: DEF 倍率アップ（後方互換）
+    actor.defMultiplier      = BUFF_MULTIPLIER;
+    actor.buffTurnsRemaining = BUFF_TURNS;
   }
-  actor.buffTurnsRemaining = BUFF_TURNS;
+}
+
+/**
+ * シールドによるダメージ軽減を適用し、被弾カウントを減らす。
+ * シールドが切れたらフィールドをリセットする。
+ * @returns 軽減後のダメージ値
+ */
+function applyShield(target: BattleActor, dmg: number): number {
+  if (target.shieldHitsRemaining <= 0) return dmg;
+  const reduced = Math.max(1, Math.floor(dmg * (1 - target.damageReductionRate)));
+  target.shieldHitsRemaining--;
+  if (target.shieldHitsRemaining <= 0) {
+    target.shieldHitsRemaining = 0;
+    target.damageReductionRate = 0;
+    target.buffTurnsRemaining  = 0; // AI が再使用できるようリセット
+  }
+  return reduced;
 }
 
 function applyDebuff(target: BattleActor, skill: BattleSkillState): void {
@@ -259,7 +295,8 @@ export function processTick(state: BattleState): BattleState {
     for (const skill of actor.skills) {
       skill.cooldownRemaining = Math.max(0, skill.cooldownRemaining - TICK_SEC);
     }
-    if (actor.buffTurnsRemaining > 0) {
+    if (actor.buffTurnsRemaining > 0 && actor.buffTurnsRemaining !== 999) {
+      // 999 はシールド中の sentinel 値 → tick では減らさない（被弾時に applyShield が管理）
       actor.buffTurnsRemaining--;
       if (actor.buffTurnsRemaining <= 0) {
         actor.atkMultiplier = 1.0;

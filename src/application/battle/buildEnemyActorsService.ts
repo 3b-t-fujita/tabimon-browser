@@ -85,10 +85,12 @@ export async function buildEnemyActors(poolId: string, strengthMultiplier = 1.0)
       personality:        null,
       skills,
       currentHp:          adjHp,
-      actionTimer:        0,
-      atkMultiplier:      1.0,
-      defMultiplier:      1.0,
-      buffTurnsRemaining: 0,
+      actionTimer:         0,
+      atkMultiplier:       1.0,
+      defMultiplier:       1.0,
+      buffTurnsRemaining:  0,
+      shieldHitsRemaining: 0,
+      damageReductionRate: 0,
     });
   }
 

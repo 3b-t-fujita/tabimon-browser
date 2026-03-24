@@ -165,11 +165,13 @@ export class InitializeBattleUseCase {
         spd:                boostedSpd,
         personality:        member.personality,
         skills,
-        currentHp:          boostedMaxHp,
-        actionTimer:        0,
-        atkMultiplier:      1.0,
-        defMultiplier:      1.0,
-        buffTurnsRemaining: 0,
+        currentHp:           boostedMaxHp,
+        actionTimer:         0,
+        atkMultiplier:       1.0,
+        defMultiplier:       1.0,
+        buffTurnsRemaining:  0,
+        shieldHitsRemaining: 0,
+        damageReductionRate: 0,
       });
     }
 
