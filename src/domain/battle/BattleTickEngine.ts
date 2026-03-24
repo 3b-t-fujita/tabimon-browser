@@ -23,7 +23,9 @@ export const BUFF_MULTIPLIER  = 1.2;
 export const DEBUFF_MULTIPLIER = 0.8;
 export const HEAL_THRESHOLD   = 0.5;  // HP が 50% 未満で回復優先
 export const SHIELD_HITS      = 2;    // DEF系スキルのシールド被弾回数
-export const SHIELD_REDUCTION = 0.55; // シールドのダメージ軽減率（55%減）
+export const SHIELD_REDUCTION = 0.55; // まもりのたて / いわのよろい のダメージ軽減率（55%減）
+export const SHIELD_REDUCTION_DEF_002 = 0.65; // ブリザードアーマー のダメージ軽減率（65%減）
+export const SHIELD_REDUCTION_DEF_003 = 0.75; // グレイシャーウォール のダメージ軽減率（75%減）
 
 // ---------------------------------------------------------------------------
 // 勝敗判定
@@ -224,22 +226,26 @@ function applyAction(
 
 /** ATK バフスキル（ちからだめ）のIDリスト */
 const ATK_BUFF_SKILL_IDS = ['skill_buff_002'];
-/** DEF シールドスキル（まもりのたて / いわのよろい / ブリザードアーマー / グレイシャーウォール 等）のIDリスト */
-const DEF_SHIELD_SKILL_IDS = [
-  'skill_buff_001', 'skill_def_001', 'skill_def_002', 'skill_def_003',
-];
+
+/** スキルIDごとのシールド軽減率テーブル */
+const SHIELD_REDUCTION_MAP: Record<string, number> = {
+  'skill_buff_001': SHIELD_REDUCTION,          // まもりのたて        55%
+  'skill_def_001':  SHIELD_REDUCTION,          // いわのよろい        55%
+  'skill_def_002':  SHIELD_REDUCTION_DEF_002,  // ブリザードアーマー  65%
+  'skill_def_003':  SHIELD_REDUCTION_DEF_003,  // グレイシャーウォール 75%
+};
 
 function applyBuff(actor: BattleActor, skill: BattleSkillState): void {
   if (ATK_BUFF_SKILL_IDS.includes(skill.skillId)) {
     // ATKバフ: 倍率アップ + tick ベースで継続
     actor.atkMultiplier      = BUFF_MULTIPLIER;
     actor.buffTurnsRemaining = BUFF_TURNS;
-  } else if (DEF_SHIELD_SKILL_IDS.includes(skill.skillId)) {
-    // DEFシールド: 55%ダメージ軽減 × 2被弾まで継続
+  } else if (skill.skillId in SHIELD_REDUCTION_MAP) {
+    // DEFシールド: スキルごとの軽減率 × 2被弾まで継続
     actor.shieldHitsRemaining = SHIELD_HITS;
-    actor.damageReductionRate = SHIELD_REDUCTION;
+    actor.damageReductionRate = SHIELD_REDUCTION_MAP[skill.skillId];
     // AI が再使用しないよう buffTurnsRemaining を大きく設定（シールド消滅時にリセット）
-    actor.buffTurnsRemaining = 999;
+    actor.buffTurnsRemaining  = 999;
   } else {
     // その他 Buff: DEF 倍率アップ（後方互換）
     actor.defMultiplier      = BUFF_MULTIPLIER;
