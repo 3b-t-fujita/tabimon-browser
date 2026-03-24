@@ -7,7 +7,8 @@
         { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
         { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
-        { "nodeIndex": 4, "nodeType": "NODE_GOAL" }
+        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_BOSS" }
       ]
     },
     {
@@ -17,8 +18,9 @@
         { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
         { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
-        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 5 },
-        { "nodeIndex": 5, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 4, "nodeType": "NODE_BATTLE", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 6 },
+        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
       ]
     },
     {
@@ -30,7 +32,9 @@
         { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
         { "nodeIndex": 4, "nodeType": "NODE_BATTLE", "nextNodeIndex": 5 },
         { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 6 },
-        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 6, "nodeType": "NODE_BATTLE", "nextNodeIndex": 7 },
+        { "nodeIndex": 7, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 8 },
+        { "nodeIndex": 8, "nodeType": "NODE_BOSS" }
       ]
     },
     {
@@ -40,7 +44,8 @@
         { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
         { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
-        { "nodeIndex": 4, "nodeType": "NODE_GOAL" }
+        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_BOSS" }
       ]
     },
     {
@@ -50,8 +55,9 @@
         { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
         { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
-        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 5 },
-        { "nodeIndex": 5, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 4, "nodeType": "NODE_BATTLE", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 6 },
+        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
       ]
     },
     {
@@ -63,7 +69,9 @@
         { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
         { "nodeIndex": 4, "nodeType": "NODE_BATTLE", "nextNodeIndex": 5 },
         { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 6 },
-        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 6, "nodeType": "NODE_BATTLE", "nextNodeIndex": 7 },
+        { "nodeIndex": 7, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 8 },
+        { "nodeIndex": 8, "nodeType": "NODE_BOSS" }
       ]
     },
     {
@@ -73,7 +81,8 @@
         { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
         { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
-        { "nodeIndex": 4, "nodeType": "NODE_GOAL" }
+        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_BOSS" }
       ]
     },
     {
@@ -83,8 +92,9 @@
         { "nodeIndex": 1, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 2 },
         { "nodeIndex": 2, "nodeType": "NODE_BATTLE", "nextNodeIndex": 3 },
         { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
-        { "nodeIndex": 4, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 5 },
-        { "nodeIndex": 5, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 4, "nodeType": "NODE_BATTLE", "nextNodeIndex": 5 },
+        { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 6 },
+        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
       ]
     },
     {
@@ -96,7 +106,9 @@
         { "nodeIndex": 3, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 4 },
         { "nodeIndex": 4, "nodeType": "NODE_BATTLE", "nextNodeIndex": 5 },
         { "nodeIndex": 5, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 6 },
-        { "nodeIndex": 6, "nodeType": "NODE_BOSS" }
+        { "nodeIndex": 6, "nodeType": "NODE_BATTLE", "nextNodeIndex": 7 },
+        { "nodeIndex": 7, "nodeType": "NODE_EVENT",  "eventId": "evt_random_001", "nextNodeIndex": 8 },
+        { "nodeIndex": 8, "nodeType": "NODE_BOSS" }
       ]
     }
   ]

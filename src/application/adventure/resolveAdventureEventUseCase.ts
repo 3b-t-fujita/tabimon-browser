@@ -87,8 +87,10 @@ export class ResolveAdventureEventUseCase {
 
     if (eventType === 'BATTLE') {
       // ランダム戦闘: ノードを進めず、status = SESSION_ACTIVE_BATTLE, randomEventBattle = true
+      // battleCheckpointNodeIndex を現在ノードに設定（SESSION_ACTIVE_BATTLE 時は必須）
       updatedSession = {
         ...session,
+        battleCheckpointNodeIndex: currentNode.nodeIndex,
         nextBattleBuffMultiplier: session.nextBattleBuffMultiplier ?? 1.0,
         randomEventBattle: true,
         status: AdventureSessionStatus.ActiveBattle,

@@ -114,8 +114,8 @@ export class InitializeBattleUseCase {
         poolId = stageMaster.enemyGroupPoolId;
 
         // レアエンカウント抽選（通常 BATTLE ノードのみ）
-        const rareAPoolId = (stageMaster as { rareAPoolId?: string }).rareAPoolId;
-        const rareBPoolId = (stageMaster as { rareBPoolId?: string }).rareBPoolId;
+        const rareAPoolId = stageMaster.rareAPoolId;
+        const rareBPoolId = stageMaster.rareBPoolId;
         if (rareAPoolId && rareBPoolId) {
           const stageNo = stageMaster.stageNo;
           const rateA = [0.05, 0.10, 0.15][stageNo - 1] ?? 0.05;

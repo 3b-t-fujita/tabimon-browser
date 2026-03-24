@@ -1,5 +1,14 @@
 {
   "items": [
+    { "monsterId": "MON_GRASS_001", "unlockLevel":  5, "skillId": "skill_atk_001"     },
+    { "monsterId": "MON_GRASS_001", "unlockLevel": 15, "skillId": "skill_buff_001"    },
+    { "monsterId": "MON_GRASS_001", "unlockLevel": 25, "skillId": "skill_atk_all_001" },
+    { "monsterId": "MON_FIRE_001",  "unlockLevel":  5, "skillId": "skill_atk_003"     },
+    { "monsterId": "MON_FIRE_001",  "unlockLevel": 15, "skillId": "skill_atk_all_001" },
+    { "monsterId": "MON_FIRE_001",  "unlockLevel": 25, "skillId": "skill_buff_002"    },
+    { "monsterId": "MON_ICE_001",   "unlockLevel":  5, "skillId": "skill_heal_001"    },
+    { "monsterId": "MON_ICE_001",   "unlockLevel": 15, "skillId": "skill_debuff_001"  },
+    { "monsterId": "MON_ICE_001",   "unlockLevel": 25, "skillId": "skill_heal_002"    },
     { "monsterId": "mon_001", "unlockLevel":  5, "skillId": "skill_buff_001"    },
     { "monsterId": "mon_001", "unlockLevel": 15, "skillId": "skill_atk_001"     },
     { "monsterId": "mon_001", "unlockLevel": 25, "skillId": "skill_atk_all_001" },
@@ -29,7 +38,7 @@
     { "monsterId": "mon_009", "unlockLevel": 25, "skillId": "skill_atk_001"     },
     { "monsterId": "mon_010", "unlockLevel":  5, "skillId": "skill_buff_001"    },
     { "monsterId": "mon_010", "unlockLevel": 15, "skillId": "skill_atk_all_001" },
-    { "monsterId": "mon_010", "unlockLevel": 25, "skillId": "skill_atk_008"     },
+    { "monsterId": "mon_010", "unlockLevel": 25, "skillId": "skill_atk_all_001" },
     { "monsterId": "mon_011", "unlockLevel":  5, "skillId": "skill_atk_002"     },
     { "monsterId": "mon_011", "unlockLevel": 15, "skillId": "skill_buff_002"    },
     { "monsterId": "mon_011", "unlockLevel": 25, "skillId": "skill_atk_009"     },
