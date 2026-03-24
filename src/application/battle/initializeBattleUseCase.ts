@@ -164,6 +164,7 @@ export class InitializeBattleUseCase {
         baseDef:            boostedDef,
         spd:                boostedSpd,
         personality:        member.personality,
+        worldId:            member.worldId,
         skills,
         currentHp:           boostedMaxHp,
         actionTimer:         0,

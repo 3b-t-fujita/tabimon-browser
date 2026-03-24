@@ -26,6 +26,8 @@ export const SHIELD_HITS      = 2;    // DEF系スキルのシールド被弾回
 export const SHIELD_REDUCTION = 0.55; // まもりのたて / いわのよろい のダメージ軽減率（55%減）
 export const SHIELD_REDUCTION_DEF_002 = 0.65; // ブリザードアーマー のダメージ軽減率（65%減）
 export const SHIELD_REDUCTION_DEF_003 = 0.75; // グレイシャーウォール のダメージ軽減率（75%減）
+export const TYPE_BONUS_MULT = 1.1;  // 属性有利時のダメージ倍率
+export const TYPE_WEAK_MULT  = 0.9;  // 属性不利時のダメージ倍率
 
 // ---------------------------------------------------------------------------
 // 勝敗判定
@@ -136,6 +138,26 @@ function decideMainAction(actor: BattleActor, state: BattleState): ChosenAction 
 }
 
 // ---------------------------------------------------------------------------
+// 属性相性
+// ---------------------------------------------------------------------------
+
+/**
+ * 属性3すくみ相性倍率を返す。
+ * 森(1) > 氷(3) > 火(2) > 森(1)
+ */
+function getTypeMultiplier(attackerWorld: number, defenderWorld: number): number {
+  if (attackerWorld === 0 || defenderWorld === 0) return 1.0;
+  if (attackerWorld === defenderWorld) return 1.0;
+  if (attackerWorld === 1 && defenderWorld === 3) return TYPE_BONUS_MULT;
+  if (attackerWorld === 3 && defenderWorld === 2) return TYPE_BONUS_MULT;
+  if (attackerWorld === 2 && defenderWorld === 1) return TYPE_BONUS_MULT;
+  if (attackerWorld === 3 && defenderWorld === 1) return TYPE_WEAK_MULT;
+  if (attackerWorld === 2 && defenderWorld === 3) return TYPE_WEAK_MULT;
+  if (attackerWorld === 1 && defenderWorld === 2) return TYPE_WEAK_MULT;
+  return 1.0;
+}
+
+// ---------------------------------------------------------------------------
 // アクション適用
 // ---------------------------------------------------------------------------
 
@@ -145,11 +167,13 @@ function applyAction(
   state:  BattleState,
 ): BattleLogEntry {
   const effAtk = actor.baseAtk * actor.atkMultiplier;
+  const typeMult = (action.target) ? getTypeMultiplier(actor.worldId, action.target.worldId) : 1.0;
   const atkName = action.skill?.displayName ?? '通常攻撃';
 
   if (action.type === 'NORMAL_ATK' && action.target) {
     const effDef = action.target.baseDef * action.target.defMultiplier;
     let dmg      = calcDamage(effAtk, NORMAL_ATK_PWR, effDef);
+    dmg          = Math.max(1, Math.round(dmg * typeMult));
     dmg          = applyShield(action.target, dmg);
     action.target.currentHp = clampHp(action.target.currentHp - dmg, action.target.maxHp);
     return {
@@ -191,6 +215,7 @@ function applyAction(
     // Single-target attack
     const effDef = action.target.baseDef * action.target.defMultiplier;
     let dmg      = calcDamage(effAtk, skill.power, effDef);
+    dmg          = Math.max(1, Math.round(dmg * typeMult));
     dmg          = applyShield(action.target, dmg);
     action.target.currentHp = clampHp(action.target.currentHp - dmg, action.target.maxHp);
     return {
@@ -208,8 +233,10 @@ function applyAction(
 
     let totalDmg = 0;
     for (const t of targets) {
+      const tTypeMult = getTypeMultiplier(actor.worldId, t.worldId);
       const effDef = t.baseDef * t.defMultiplier;
       let dmg      = calcDamage(effAtk, skill.power, effDef);
+      dmg          = Math.max(1, Math.round(dmg * tTypeMult));
       dmg          = applyShield(t, dmg);
       t.currentHp  = clampHp(t.currentHp - dmg, t.maxHp);
       totalDmg    += dmg;

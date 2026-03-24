@@ -18,6 +18,7 @@ export interface MonsterMasterData {
   readonly defGrowth:      number;
   readonly spdGrowth:      number;
   readonly initialSkillId: string;
+  readonly evolvesTo?:      string;   // 進化先のモンスターマスタID (Lv15進化)
 }
 
 // monsters.json の生データ（MonsterMasterData のスーパーセット）

@@ -15,6 +15,8 @@ interface ResultSummaryViewProps {
   leveledUp:     boolean;
   stageUnlocked: boolean;
   statGains:     StatGains | null;
+  evolved:       boolean;
+  evolvedName:   string | null;
 }
 
 const RESULT_CONFIG: Record<AdventureResultType, { label: string; color: string; banner: string }> = {
@@ -24,7 +26,7 @@ const RESULT_CONFIG: Record<AdventureResultType, { label: string; color: string;
 };
 
 export default function ResultSummaryView({
-  resultType, stageId, expGained, newLevel, leveledUp, stageUnlocked, statGains,
+  resultType, stageId, expGained, newLevel, leveledUp, stageUnlocked, statGains, evolved, evolvedName,
 }: ResultSummaryViewProps) {
   const cfg = RESULT_CONFIG[resultType];
 
@@ -70,6 +72,17 @@ export default function ResultSummaryView({
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* 進化 */}
+      {evolved && evolvedName && (
+        <div className="flex flex-col gap-1 bg-purple-50 rounded p-3 text-sm border border-purple-200">
+          <div className="flex items-center gap-2">
+            <span>✨</span>
+            <span className="font-bold text-purple-700">進化！</span>
+          </div>
+          <p className="text-purple-600 text-xs font-medium">→ {evolvedName} に進化しました！</p>
         </div>
       )}
 

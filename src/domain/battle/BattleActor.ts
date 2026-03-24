@@ -33,6 +33,8 @@ export interface BattleActor {
   baseDef:         number;
   spd:             number;
   personality:     PersonalityType | null;
+  /** 属性ワールドID（1=Forest, 2=Volcano, 3=Ice, 0=無属性） */
+  worldId:         number;
   skills:          BattleSkillState[];
 
   /** 変化するフィールド */

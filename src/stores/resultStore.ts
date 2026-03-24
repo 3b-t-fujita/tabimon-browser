@@ -24,6 +24,8 @@ interface ResultStoreState {
   leveledUp:      boolean;
   stageUnlocked:  boolean;
   statGains:      StatGains | null;
+  evolved:        boolean;
+  evolvedName:    string | null;
   candidate:      PendingCandidate | null;
   errorMessage:   string | null;
   isSaving:       boolean;
@@ -34,7 +36,7 @@ interface ResultStoreState {
 interface ResultStoreActions {
   setResultType(t: AdventureResultType | null): void;
   setResultPhase(p: ResultPhase): void;
-  setRewardInfo(info: { expGained: number; newLevel: number; leveledUp: boolean; stageUnlocked: boolean; statGains: StatGains | null }): void;
+  setRewardInfo(info: { expGained: number; newLevel: number; leveledUp: boolean; stageUnlocked: boolean; statGains: StatGains | null; evolved: boolean; evolvedName: string | null }): void;
   setCandidate(c: PendingCandidate | null): void;
   setError(msg: string | null): void;
   setIsSaving(v: boolean): void;
@@ -51,6 +53,8 @@ const INITIAL: ResultStoreState = {
   leveledUp:       false,
   stageUnlocked:   false,
   statGains:       null,
+  evolved:         false,
+  evolvedName:     null,
   candidate:       null,
   errorMessage:    null,
   isSaving:        false,

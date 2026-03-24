@@ -102,6 +102,7 @@ function makeSession(overrides: Partial<AdventureSession> = {}): AdventureSessio
         stats:           { maxHp: 100, atk: 15, def: 10, spd: 10 },
         skills:          [],
         isMain:          true,
+        worldId:         1,
       },
       supporters: [],
     },

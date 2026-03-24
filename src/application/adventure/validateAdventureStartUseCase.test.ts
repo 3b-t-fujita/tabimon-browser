@@ -182,7 +182,7 @@ describe('ValidateAdventureStartUseCase', () => {
           main: {
             uniqueId: toMonsterId('mon-1'), monsterMasterId: toMonsterMasterId('MON_GRASS_001'),
             displayName: 'Mon_mon-1', personality: PersonalityType.Brave,
-            stats: { maxHp: 100, atk: 15, def: 10, spd: 10 }, skills: [], isMain: true,
+            stats: { maxHp: 100, atk: 15, def: 10, spd: 10 }, skills: [], isMain: true, worldId: 0,
           },
           supporters: [],
         },

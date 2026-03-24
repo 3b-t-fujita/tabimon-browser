@@ -83,6 +83,7 @@ export async function buildEnemyActors(poolId: string, strengthMultiplier = 1.0)
       baseDef:            adjDef,
       spd:                stats.spd,
       personality:        null,
+      worldId:            master?.worldId ?? 0,
       skills,
       currentHp:          adjHp,
       actionTimer:         0,

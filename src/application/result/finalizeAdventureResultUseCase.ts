@@ -50,6 +50,8 @@ export interface FinalizeResultPayload {
   resultType:     AdventureResultType;
   /** レベルアップ時のステータス上昇量。レベルアップしなかった場合は null */
   statGains:      StatGains | null;
+  evolved:        boolean;
+  evolvedName:    string | null;
 }
 
 export class FinalizeAdventureResultUseCase {
@@ -106,10 +108,34 @@ export class FinalizeAdventureResultUseCase {
     }
 
     // ---- 主役モンスター更新 ----
-    const updatedOwned: OwnedMonster[] = save.ownedMonsters.map((m) => {
+    let updatedOwned: OwnedMonster[] = save.ownedMonsters.map((m) => {
       if (m.uniqueId !== mainId) return m;
       return { ...m, level: newLevel, exp: newExp };
     });
+
+    // ---- 進化チェック（Lv15 に到達 かつ evolvesTo がある場合）----
+    let evolved = false;
+    let evolvedName: string | null = null;
+
+    if (leveledUp && newLevel >= 15 && oldLevel < 15 && mainMon) {
+      const mainMaster = await getMonsterMasterById(mainMon.monsterMasterId as string);
+      if (mainMaster?.evolvesTo) {
+        const evoMaster = await getMonsterMasterById(mainMaster.evolvesTo);
+        if (evoMaster) {
+          evolved = true;
+          evolvedName = evoMaster.displayName;
+          updatedOwned = updatedOwned.map((m) => {
+            if (m.uniqueId !== mainId) return m;
+            return {
+              ...m,
+              monsterMasterId: mainMaster.evolvesTo as OwnedMonster['monsterMasterId'],
+              displayName:     evoMaster.displayName,
+              worldId:         evoMaster.worldId as unknown as OwnedMonster['worldId'],
+            };
+          });
+        }
+      }
+    }
 
     // ---- ステージ解放（SUCCESS のみ）----
     let stageUnlocked = false;
@@ -148,6 +174,6 @@ export class FinalizeAdventureResultUseCase {
       return fail(SaveErrorCode.SaveFailed, saveResult.message);
     }
 
-    return ok({ updatedSession, expGained, newLevel, leveledUp, stageUnlocked, resultType, statGains });
+    return ok({ updatedSession, expGained, newLevel, leveledUp, stageUnlocked, resultType, statGains, evolved, evolvedName });
   }
 }

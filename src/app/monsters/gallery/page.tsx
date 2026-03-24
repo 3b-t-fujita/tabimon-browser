@@ -22,6 +22,7 @@ interface MonsterEntry {
   role:         RoleLabel;
   isInitial:    boolean;
   isHidden?:    boolean;
+  isEvolved?:   boolean;
 }
 
 const MONSTERS: MonsterEntry[] = [
@@ -49,6 +50,29 @@ const MONSTERS: MonsterEntry[] = [
   { monsterId: 'mon_013',       displayName: 'エンシェントドラゴン',world: '森',   role: 'アタッカー',   isInitial: false, isHidden: true },
   { monsterId: 'mon_014',       displayName: 'マグナフェニックス',  world: '砂漠', role: 'アタッカー',   isInitial: false, isHidden: true },
   { monsterId: 'mon_015',       displayName: 'グレイシャーキング',  world: '雪原', role: 'タンク',       isInitial: false, isHidden: true },
+  // 進化形（森ワールド）
+  { monsterId: 'mon_001_e',       displayName: 'グランドラゴン',         world: '森',   role: 'サポーター', isInitial: false, isEvolved: true },
+  { monsterId: 'mon_002_e',       displayName: 'エメラルドウルフ',       world: '森',   role: 'アタッカー', isInitial: false, isEvolved: true },
+  { monsterId: 'mon_003_e',       displayName: 'ジャイアントゴーレム',   world: '森',   role: 'タンク',     isInitial: false, isEvolved: true },
+  { monsterId: 'MON_GRASS_001_e', displayName: 'グランドグリーニョ',     world: '森',   role: 'アタッカー', isInitial: false, isEvolved: true },
+  // 進化形（火山ワールド）
+  { monsterId: 'mon_004_e',       displayName: 'ブレイズサラマンダ',     world: '砂漠', role: 'アタッカー', isInitial: false, isEvolved: true },
+  { monsterId: 'mon_005_e',       displayName: 'インフェルノフェニックス',world: '砂漠', role: 'アタッカー', isInitial: false, isEvolved: true },
+  { monsterId: 'mon_006_e',       displayName: 'マグマタイタン',         world: '砂漠', role: 'タンク',     isInitial: false, isEvolved: true },
+  { monsterId: 'MON_FIRE_001_e',  displayName: 'フレイムアーム',         world: '砂漠', role: 'アタッカー', isInitial: false, isEvolved: true },
+  // 進化形（雪原ワールド）
+  { monsterId: 'mon_007_e',       displayName: 'フロストウィング',       world: '雪原', role: 'タンク',     isInitial: false, isEvolved: true },
+  { monsterId: 'mon_008_e',       displayName: 'グレイシャーベア',       world: '雪原', role: 'タンク',     isInitial: false, isEvolved: true },
+  { monsterId: 'mon_009_e',       displayName: 'ポーラーフォックス',     world: '雪原', role: 'サポーター', isInitial: false, isEvolved: true },
+  { monsterId: 'MON_ICE_001_e',   displayName: 'フロストアーマー',       world: '雪原', role: 'サポーター', isInitial: false, isEvolved: true },
+  // 進化形（レアA）
+  { monsterId: 'mon_010_e',       displayName: 'ヴァインオーバーロード',  world: '森',   role: 'アタッカー', isInitial: false, isEvolved: true, isHidden: true },
+  { monsterId: 'mon_011_e',       displayName: 'インフェルノタイラント',  world: '砂漠', role: 'アタッカー', isInitial: false, isEvolved: true, isHidden: true },
+  { monsterId: 'mon_012_e',       displayName: 'ブリザードコロッサス',   world: '雪原', role: 'タンク',     isInitial: false, isEvolved: true, isHidden: true },
+  // 進化形（レアB）
+  { monsterId: 'mon_013_e',       displayName: 'プライマルドラゴン',     world: '森',   role: 'アタッカー', isInitial: false, isEvolved: true, isHidden: true },
+  { monsterId: 'mon_014_e',       displayName: 'アポカリプスフェニックス',world: '砂漠', role: 'アタッカー', isInitial: false, isEvolved: true, isHidden: true },
+  { monsterId: 'mon_015_e',       displayName: 'グレイシャーエンペラー',  world: '雪原', role: 'タンク',     isInitial: false, isEvolved: true, isHidden: true },
 ];
 
 // ---------------------------------------------------------------------------
@@ -147,6 +171,9 @@ function MonsterCard({ m }: { m: MonsterEntry }) {
             {m.isInitial && (
               <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-xs font-bold text-amber-700">初期</span>
             )}
+            {m.isEvolved && (
+              <span className="rounded-full bg-purple-100 px-1.5 py-0.5 text-xs font-bold text-purple-700">進化</span>
+            )}
           </div>
           <div className="flex items-center gap-1 mt-0.5">
             <span className={`rounded-full border px-1.5 py-0.5 text-xs font-medium ${WORLD_COLOR[m.world]}`}>
@@ -166,12 +193,16 @@ function MonsterCard({ m }: { m: MonsterEntry }) {
 // ページ本体
 // ---------------------------------------------------------------------------
 
-const SECTIONS: { label: string; world?: WorldLabel; initial?: boolean; hidden?: boolean }[] = [
+const SECTIONS: { label: string; world?: WorldLabel; initial?: boolean; hidden?: boolean; filter?: (m: MonsterEntry) => boolean }[] = [
   { label: '初期主役',     initial: true  },
   { label: '森ワールド',   world:  '森'   },
   { label: '砂漠ワールド', world:  '砂漠' },
   { label: '雪原ワールド', world:  '雪原' },
   { label: '隠しキャラ',   hidden: true   },
+  { label: '進化形（森）',   filter: (m) => m.isEvolved === true && m.world === '森'   && !m.isHidden },
+  { label: '進化形（砂漠）', filter: (m) => m.isEvolved === true && m.world === '砂漠' && !m.isHidden },
+  { label: '進化形（雪原）', filter: (m) => m.isEvolved === true && m.world === '雪原' && !m.isHidden },
+  { label: '進化形（隠し）', filter: (m) => m.isEvolved === true && m.isHidden === true },
 ];
 
 export default function MonsterGalleryPage() {
@@ -191,12 +222,14 @@ export default function MonsterGalleryPage() {
       <div className="flex flex-col gap-8 p-5 pb-10">
         {SECTIONS.map((sec) => {
           let items: MonsterEntry[];
-          if (sec.initial) {
+          if (sec.filter) {
+            items = MONSTERS.filter(sec.filter);
+          } else if (sec.initial) {
             items = MONSTERS.filter((m) => m.isInitial);
           } else if (sec.hidden) {
-            items = MONSTERS.filter((m) => m.isHidden);
+            items = MONSTERS.filter((m) => m.isHidden && !m.isEvolved);
           } else {
-            items = MONSTERS.filter((m) => m.world === sec.world && !m.isInitial && !m.isHidden);
+            items = MONSTERS.filter((m) => m.world === sec.world && !m.isInitial && !m.isHidden && !m.isEvolved);
           }
           return (
             <section key={sec.label}>

@@ -35,6 +35,29 @@ const STAND_MAP: Record<string, string> = {
   mon_013: '/assets/monsters/stands/monster_stand_mon013_v1.png', // エンシェントドラゴン
   mon_014: '/assets/monsters/stands/monster_stand_mon014_v1.png', // マグナフェニックス
   mon_015: '/assets/monsters/stands/monster_stand_mon015_v1.png', // グレイシャーキング
+  // 進化形（森ワールド）
+  'mon_001_e':       '/assets/monsters/stands/monster_stand_mon001e_v1.png',
+  'mon_002_e':       '/assets/monsters/stands/monster_stand_mon002e_v1.png',
+  'mon_003_e':       '/assets/monsters/stands/monster_stand_mon003e_v1.png',
+  'MON_GRASS_001_e': '/assets/monsters/stands/monster_stand_initial_01e_v1.png',
+  // 進化形（火山ワールド）
+  'mon_004_e':       '/assets/monsters/stands/monster_stand_mon004e_v1.png',
+  'mon_005_e':       '/assets/monsters/stands/monster_stand_mon005e_v1.png',
+  'mon_006_e':       '/assets/monsters/stands/monster_stand_mon006e_v1.png',
+  'MON_FIRE_001_e':  '/assets/monsters/stands/monster_stand_initial_02e_v1.png',
+  // 進化形（雪原ワールド）
+  'mon_007_e':       '/assets/monsters/stands/monster_stand_mon007e_v1.png',
+  'mon_008_e':       '/assets/monsters/stands/monster_stand_mon008e_v1.png',
+  'mon_009_e':       '/assets/monsters/stands/monster_stand_mon009e_v1.png',
+  'MON_ICE_001_e':   '/assets/monsters/stands/monster_stand_initial_03e_v1.png',
+  // 進化形（レアA）
+  'mon_010_e':       '/assets/monsters/stands/monster_stand_mon010e_v1.png',
+  'mon_011_e':       '/assets/monsters/stands/monster_stand_mon011e_v1.png',
+  'mon_012_e':       '/assets/monsters/stands/monster_stand_mon012e_v1.png',
+  // 進化形（レアB）
+  'mon_013_e':       '/assets/monsters/stands/monster_stand_mon013e_v1.png',
+  'mon_014_e':       '/assets/monsters/stands/monster_stand_mon014e_v1.png',
+  'mon_015_e':       '/assets/monsters/stands/monster_stand_mon015e_v1.png',
 };
 
 /** アイコン（小サイズ正方形）マップ */
@@ -63,6 +86,29 @@ const ICON_MAP: Record<string, string> = {
   mon_013: '/assets/monsters/icons/monster_icon_mon013_v1.png', // エンシェントドラゴン
   mon_014: '/assets/monsters/icons/monster_icon_mon014_v1.png', // マグナフェニックス
   mon_015: '/assets/monsters/icons/monster_icon_mon015_v1.png', // グレイシャーキング
+  // 進化形（森ワールド）
+  'mon_001_e':       '/assets/monsters/icons/monster_icon_mon001e_v1.png',
+  'mon_002_e':       '/assets/monsters/icons/monster_icon_mon002e_v1.png',
+  'mon_003_e':       '/assets/monsters/icons/monster_icon_mon003e_v1.png',
+  'MON_GRASS_001_e': '/assets/monsters/icons/monster_icon_initial_01e_v1.png',
+  // 進化形（火山ワールド）
+  'mon_004_e':       '/assets/monsters/icons/monster_icon_mon004e_v1.png',
+  'mon_005_e':       '/assets/monsters/icons/monster_icon_mon005e_v1.png',
+  'mon_006_e':       '/assets/monsters/icons/monster_icon_mon006e_v1.png',
+  'MON_FIRE_001_e':  '/assets/monsters/icons/monster_icon_initial_02e_v1.png',
+  // 進化形（雪原ワールド）
+  'mon_007_e':       '/assets/monsters/icons/monster_icon_mon007e_v1.png',
+  'mon_008_e':       '/assets/monsters/icons/monster_icon_mon008e_v1.png',
+  'mon_009_e':       '/assets/monsters/icons/monster_icon_mon009e_v1.png',
+  'MON_ICE_001_e':   '/assets/monsters/icons/monster_icon_initial_03e_v1.png',
+  // 進化形（レアA）
+  'mon_010_e':       '/assets/monsters/icons/monster_icon_mon010e_v1.png',
+  'mon_011_e':       '/assets/monsters/icons/monster_icon_mon011e_v1.png',
+  'mon_012_e':       '/assets/monsters/icons/monster_icon_mon012e_v1.png',
+  // 進化形（レアB）
+  'mon_013_e':       '/assets/monsters/icons/monster_icon_mon013e_v1.png',
+  'mon_014_e':       '/assets/monsters/icons/monster_icon_mon014e_v1.png',
+  'mon_015_e':       '/assets/monsters/icons/monster_icon_mon015e_v1.png',
 };
 
 // ---------------------------------------------------------------------------

@@ -15,4 +15,5 @@ export interface PartyMemberSnapshot {
   readonly stats:           MonsterStats;
   readonly skills:          readonly SkillSnapshot[];
   readonly isMain:          boolean;
+  readonly worldId:         number;   // 1=Forest, 2=Volcano, 3=Ice
 }

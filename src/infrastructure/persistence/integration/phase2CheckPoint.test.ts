@@ -43,6 +43,7 @@ function makeParty(): PartySnapshot {
       stats:           { maxHp: 120, atk: 15, def: 8, spd: 10 },
       skills:          [],
       isMain:          true,
+      worldId:         1,
     },
     supporters: [],
   };

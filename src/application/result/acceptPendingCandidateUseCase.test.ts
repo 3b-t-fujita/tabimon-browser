@@ -102,7 +102,7 @@ async function seedSave(
       sessionId:                 toSessionId('sess-1'),
       stageId:                   toStageId('stage_w1_1'),
       currentNodeIndex:          4,
-      partySnapshot:             { main: { uniqueId: toMonsterId('mon-1'), monsterMasterId: toMonsterMasterId('MON_GRASS_001'), displayName: 'グリーニョ', personality: PersonalityType.Brave, stats: { maxHp: 100, atk: 15, def: 10, spd: 10 }, skills: [], isMain: true }, supporters: [] },
+      partySnapshot:             { main: { uniqueId: toMonsterId('mon-1'), monsterMasterId: toMonsterMasterId('MON_GRASS_001'), displayName: 'グリーニョ', personality: PersonalityType.Brave, stats: { maxHp: 100, atk: 15, def: 10, spd: 10 }, skills: [], isMain: true, worldId: 1 }, supporters: [] },
       battleCheckpointNodeIndex: -1,
       resultPendingFlag:         false,
       status:                    'SESSION_COMPLETED' as AdventureSession['status'],

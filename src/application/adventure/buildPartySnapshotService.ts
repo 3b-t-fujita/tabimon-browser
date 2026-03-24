@@ -50,6 +50,7 @@ async function buildMemberSnapshot(
     stats,
     skills,
     isMain,
+    worldId:         master?.worldId ?? 0,
   };
 }
 
