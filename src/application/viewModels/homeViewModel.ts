@@ -10,6 +10,8 @@ export interface HomeViewModel {
   readonly mainMonsterName:     string;
   /** 主役 monsterId（未設定時は null） */
   readonly mainMonsterId:       string | null;
+  /** 主役 monsterMasterId（画像取得用。未設定時は null） */
+  readonly mainMonsterMasterId: string | null;
   /** 仲間数 */
   readonly ownedCount:          number;
   /** 仲間上限 */

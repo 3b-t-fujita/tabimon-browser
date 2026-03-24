@@ -28,8 +28,9 @@ export class BuildHomeViewModelUseCase {
 
     return {
       playerName:       player?.playerName ?? '（未設定）',
-      mainMonsterName:  mainMonster?.displayName ?? '',
-      mainMonsterId:    player?.mainMonsterId ?? null,
+      mainMonsterName:      mainMonster?.displayName ?? '',
+      mainMonsterId:        player?.mainMonsterId ?? null,
+      mainMonsterMasterId:  mainMonster?.monsterMasterId ?? null,
       ownedCount:       ownedMonsters.length,
       ownedCapacity:    GameConstants.OWNED_MONSTER_CAPACITY,
       supportCount:     supportMonsters.length,

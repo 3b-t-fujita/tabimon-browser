@@ -18,7 +18,7 @@ interface Props {
 
 export function HomeScreen({ vm, onContinue }: Props) {
   const router = useRouter();
-  const mainStandUrl = getMonsterStandUrl(vm.mainMonsterId);
+  const mainStandUrl = getMonsterStandUrl(vm.mainMonsterMasterId);
 
   return (
     <div className="flex flex-1 flex-col gap-0">
