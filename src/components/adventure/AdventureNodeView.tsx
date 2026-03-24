@@ -4,6 +4,7 @@
  */
 'use client';
 
+import Image from 'next/image';
 import type { AdventureNode } from '@/domain/entities/NodePattern';
 import type { ExplorePhase } from '@/stores/adventurePlayStore';
 import { NodeType } from '@/common/constants/enums';
@@ -16,12 +17,12 @@ interface Props {
 }
 
 const NODE_IMG: Record<string, string> = {
-  [NodeType.Pass]:   '/assets/ui/icons/ui_node_pass_v1.png',
-  [NodeType.Branch]: '/assets/ui/icons/ui_node_branch_v1.png',
-  [NodeType.Event]:  '/assets/ui/icons/ui_node_event_v1.png',
-  [NodeType.Battle]: '/assets/ui/icons/ui_node_battle_v1.png',
-  [NodeType.Boss]:   '/assets/ui/icons/ui_node_boss_v1.png',
-  [NodeType.Goal]:   '/assets/ui/icons/ui_node_goal_v1.png',
+  [NodeType.Pass]:   '/assets/ui/icons/ui_node_pass_v1.webp',
+  [NodeType.Branch]: '/assets/ui/icons/ui_node_branch_v1.webp',
+  [NodeType.Event]:  '/assets/ui/icons/ui_node_event_v1.webp',
+  [NodeType.Battle]: '/assets/ui/icons/ui_node_battle_v1.webp',
+  [NodeType.Boss]:   '/assets/ui/icons/ui_node_boss_v1.webp',
+  [NodeType.Goal]:   '/assets/ui/icons/ui_node_goal_v1.webp',
 };
 
 const NODE_LABEL: Record<string, string> = {
@@ -71,8 +72,7 @@ export function AdventureNodeView({ currentNode, explorePhase, stageId, nodeTota
       {/* ノードアイコン・種別 */}
       <div className="flex flex-col items-center gap-2 py-4">
         {imgSrc ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={imgSrc} alt={typeLabel} width={96} height={96} className="drop-shadow-md" />
+          <Image src={imgSrc} alt={typeLabel} width={96} height={96} className="drop-shadow-md" />
         ) : (
           <span className="text-5xl">❓</span>
         )}

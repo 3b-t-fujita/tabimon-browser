@@ -4,6 +4,7 @@
  */
 'use client';
 
+import Image from 'next/image';
 import type { OwnedMonsterDetailViewModel } from '@/application/viewModels/ownedMonsterDetailViewModel';
 import { getMonsterStandUrl } from '@/infrastructure/assets/monsterImageService';
 
@@ -39,8 +40,7 @@ export function OwnedMonsterDetail({ vm, onSetMain, onRelease, onBack, onQrGener
         {/* 立ち絵 */}
         <div className="flex justify-center">
           {standUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={standUrl} alt={vm.displayName} className="h-40 w-40 object-contain" />
+            <Image src={standUrl} alt={vm.displayName} width={160} height={160} className="object-contain" />
           ) : (
             <div className="flex h-40 w-40 items-center justify-center text-6xl">🐾</div>
           )}

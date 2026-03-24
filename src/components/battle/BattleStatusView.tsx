@@ -5,6 +5,7 @@
  * パーティメンバー・敵の HP バーと名前を表示する。
  * キャラ画像は HP バーの上に表示する（画像がない場合は絵文字フォールバック）。
  */
+import Image from 'next/image';
 import type { BattleActor } from '@/domain/battle/BattleActor';
 import { getMonsterStandUrl } from '@/infrastructure/assets/monsterImageService';
 
@@ -28,10 +29,12 @@ function ActorStatus({ actor }: ActorStatusProps) {
       {/* キャラクター画像 */}
       <div className="flex justify-center mb-1 h-14">
         {imageUrl ? (
-          <img
+          <Image
             src={imageUrl}
             alt={actor.displayName}
-            className="h-14 w-14 object-contain"
+            width={56}
+            height={56}
+            className="object-contain"
           />
         ) : (
           <div className="h-14 w-14 flex items-center justify-center text-3xl select-none">

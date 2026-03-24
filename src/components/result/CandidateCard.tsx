@@ -4,6 +4,7 @@
  * 候補モンスターカードコンポーネント。
  * PendingCandidate の情報（モンスター名・性格）を表示する。
  */
+import Image from 'next/image';
 import type { PendingCandidate } from '@/domain/entities/PendingCandidate';
 import { getMonsterStandUrl } from '@/infrastructure/assets/monsterImageService';
 
@@ -18,8 +19,7 @@ export default function CandidateCard({ candidate, displayName }: CandidateCardP
     <div className="p-4 rounded-xl border-2 border-emerald-400 bg-emerald-50 text-center">
       <div className="mb-2 flex justify-center">
         {standUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={standUrl} alt={displayName} className="h-24 w-24 object-contain" />
+          <Image src={standUrl} alt={displayName} width={96} height={96} className="object-contain" />
         ) : (
           <span className="text-4xl">🐾</span>
         )}

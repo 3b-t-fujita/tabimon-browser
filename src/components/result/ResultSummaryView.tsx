@@ -4,6 +4,7 @@
  * リザルト概要表示コンポーネント。
  * 結果種別・獲得経験値・レベルアップ・ステータス上昇・ステージ解放を表示する。
  */
+import Image from 'next/image';
 import { AdventureResultType } from '@/common/constants/enums';
 import type { StatGains } from '@/application/result/finalizeAdventureResultUseCase';
 
@@ -20,9 +21,9 @@ interface ResultSummaryViewProps {
 }
 
 const RESULT_CONFIG: Record<AdventureResultType, { label: string; color: string; banner: string }> = {
-  [AdventureResultType.Success]: { label: '冒険成功！', color: 'text-emerald-600', banner: '/assets/result/ui_result_banner_success_v1.png' },
-  [AdventureResultType.Failure]: { label: '冒険失敗...', color: 'text-red-500',     banner: '/assets/result/ui_result_banner_fail_v1.png'    },
-  [AdventureResultType.Retire]:  { label: 'リタイア',   color: 'text-gray-500',    banner: '/assets/result/ui_result_banner_retire_v1.png'  },
+  [AdventureResultType.Success]: { label: '冒険成功！', color: 'text-emerald-600', banner: '/assets/result/ui_result_banner_success_v1.webp' },
+  [AdventureResultType.Failure]: { label: '冒険失敗...', color: 'text-red-500',     banner: '/assets/result/ui_result_banner_fail_v1.webp'    },
+  [AdventureResultType.Retire]:  { label: 'リタイア',   color: 'text-gray-500',    banner: '/assets/result/ui_result_banner_retire_v1.webp'  },
 };
 
 export default function ResultSummaryView({
@@ -33,8 +34,9 @@ export default function ResultSummaryView({
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white overflow-hidden">
       {/* リザルトバナー画像 */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={cfg.banner} alt={cfg.label} className="w-full object-contain" style={{ maxHeight: 120 }} />
+      <div className="relative w-full" style={{ height: 120 }}>
+        <Image src={cfg.banner} alt={cfg.label} fill className="object-contain" sizes="100vw" />
+      </div>
 
       <div className="flex flex-col gap-3 p-4">
       {/* 結果見出し */}

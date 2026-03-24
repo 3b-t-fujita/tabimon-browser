@@ -5,6 +5,7 @@
  * 全モンスターの立ち絵・アイコン・名前・属性を一覧表示する。
  * レアキャラ（mon_010〜015）はシルエット表示で隠しキャラとして扱う。
  */
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { getMonsterStandUrl, getMonsterIconUrl } from '@/infrastructure/assets/monsterImageService';
 
@@ -105,11 +106,12 @@ function MonsterCard({ m }: { m: MonsterEntry }) {
         {/* シルエットエリア */}
         <div className="flex items-center justify-center bg-stone-200 py-4" style={{ minHeight: 140 }}>
           {standUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={standUrl}
               alt="???"
-              className="h-32 w-32 object-contain"
+              width={128}
+              height={128}
+              className="object-contain"
               style={{ filter: 'brightness(0)' }}
             />
           ) : (
@@ -122,11 +124,12 @@ function MonsterCard({ m }: { m: MonsterEntry }) {
           {/* シルエットアイコン */}
           <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-stone-300">
             {iconUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+              <Image
                 src={iconUrl}
                 alt="???"
-                className="h-10 w-10 rounded-full object-cover"
+                width={40}
+                height={40}
+                className="rounded-full object-cover"
                 style={{ filter: 'brightness(0)' }}
               />
             ) : (
@@ -148,8 +151,7 @@ function MonsterCard({ m }: { m: MonsterEntry }) {
       {/* 立ち絵エリア */}
       <div className="flex items-center justify-center bg-stone-50 py-4" style={{ minHeight: 140 }}>
         {standUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={standUrl} alt={m.displayName} className="h-32 w-32 object-contain" />
+          <Image src={standUrl} alt={m.displayName} width={128} height={128} className="object-contain" />
         ) : (
           <span className="text-5xl">🐾</span>
         )}
@@ -159,8 +161,7 @@ function MonsterCard({ m }: { m: MonsterEntry }) {
       <div className="flex items-center gap-2 px-3 py-3">
         {/* アイコン */}
         {iconUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={iconUrl} alt={m.displayName} className="h-10 w-10 rounded-full border border-stone-200 object-cover flex-shrink-0" />
+          <Image src={iconUrl} alt={m.displayName} width={40} height={40} className="rounded-full border border-stone-200 object-cover flex-shrink-0" />
         ) : (
           <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-stone-200 text-xl">🐾</div>
         )}

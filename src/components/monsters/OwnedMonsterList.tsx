@@ -4,6 +4,7 @@
  */
 'use client';
 
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import type { OwnedMonsterListViewModel } from '@/application/viewModels/ownedMonsterListViewModel';
 import { getMonsterIconUrl } from '@/infrastructure/assets/monsterImageService';
@@ -54,8 +55,7 @@ export function OwnedMonsterList({ vm }: Props) {
                 {(() => {
                   const iconUrl = getMonsterIconUrl(m.monsterMasterId);
                   return iconUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={iconUrl} alt={m.displayName} className="h-12 w-12 rounded-full object-cover" />
+                    <Image src={iconUrl} alt={m.displayName} width={48} height={48} className="rounded-full object-cover" />
                   ) : (
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-200 text-xl">🐾</div>
                   );

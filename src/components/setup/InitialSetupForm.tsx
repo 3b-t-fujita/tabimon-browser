@@ -6,6 +6,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { CompleteInitialSetupUseCase } from '@/application/boot/completeInitialSetupUseCase';
 import { LoadHomeDataUseCase } from '@/application/home/loadHomeDataUseCase';
@@ -29,9 +30,9 @@ const STARTER_BY_WORLD: Record<string, { id: string; label: string }[]> = {
 
 // モンスターID → 立ち絵画像パス
 const MONSTER_STAND_IMG: Record<string, string> = {
-  'MON_GRASS_001': '/assets/monsters/stands/monster_stand_initial_01_v1.png',
-  'MON_FIRE_001':  '/assets/monsters/stands/monster_stand_initial_02_v1.png',
-  'MON_ICE_001':   '/assets/monsters/stands/monster_stand_initial_03_v1.png',
+  'MON_GRASS_001': '/assets/monsters/stands/monster_stand_initial_01_v1.webp',
+  'MON_FIRE_001':  '/assets/monsters/stands/monster_stand_initial_02_v1.webp',
+  'MON_ICE_001':   '/assets/monsters/stands/monster_stand_initial_03_v1.webp',
 };
 
 export function InitialSetupForm() {
@@ -91,13 +92,13 @@ export function InitialSetupForm() {
       <div className="text-center">
         {/* 選択中のモンスター立ち絵 or ロゴ */}
         {starterMonsterId && MONSTER_STAND_IMG[starterMonsterId] ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Image
             src={MONSTER_STAND_IMG[starterMonsterId]}
             alt="選択中のモンスター"
             width={120}
             height={120}
             className="mx-auto drop-shadow-md"
+            priority
           />
         ) : (
           <div className="text-4xl">🗺️</div>

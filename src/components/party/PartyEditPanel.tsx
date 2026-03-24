@@ -6,6 +6,7 @@
  */
 'use client';
 
+import Image from 'next/image';
 import type { PartyEditViewModel, PartySupportCandidateViewModel } from '@/application/viewModels/partyEditViewModel';
 import { getMonsterIconUrl } from '@/infrastructure/assets/monsterImageService';
 
@@ -36,8 +37,7 @@ export function PartyEditPanel({ vm, onAddSupport, onRemoveSupport, onBack }: Pr
               {(() => {
                 const url = getMonsterIconUrl(vm.main.monsterMasterId);
                 return url
-                  // eslint-disable-next-line @next/next/no-img-element
-                  ? <img src={url} alt={vm.main.displayName} className="h-10 w-10 object-contain" />
+                  ? <Image src={url} alt={vm.main.displayName} width={40} height={40} className="object-contain" />
                   : <span className="text-2xl">⭐</span>;
               })()}
               <div>
@@ -63,8 +63,7 @@ export function PartyEditPanel({ vm, onAddSupport, onRemoveSupport, onBack }: Pr
                 {(() => {
                   const url = getMonsterIconUrl(s.monsterMasterId);
                   return url
-                    // eslint-disable-next-line @next/next/no-img-element
-                    ? <img src={url} alt={s.displayName} className="h-10 w-10 object-contain" />
+                    ? <Image src={url} alt={s.displayName} width={40} height={40} className="object-contain" />
                     : <span className="text-xl">🤝</span>;
                 })()}
                 <div className="flex-1">
@@ -131,8 +130,7 @@ function SupportCandidateRow({
       {selected ? (
         <span className="text-xl">✅</span>
       ) : iconUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={iconUrl} alt={support.displayName} className="h-10 w-10 object-contain" />
+        <Image src={iconUrl} alt={support.displayName} width={40} height={40} className="object-contain" />
       ) : (
         <span className="text-xl">🐾</span>
       )}
