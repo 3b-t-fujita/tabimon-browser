@@ -7,6 +7,20 @@
 
 import Image from 'next/image';
 import type { AdventureConfirmViewModel } from '@/application/viewModels/adventureConfirmViewModel';
+import { getMonsterIconUrl } from '@/infrastructure/assets/monsterImageService';
+
+function MonsterIcon({ masterId, fallback, size = 40 }: { masterId: string; fallback: string; size?: number }) {
+  const url = getMonsterIconUrl(masterId);
+  return url ? (
+    <div className="relative shrink-0 overflow-hidden rounded-xl" style={{ width: size, height: size }}>
+      <Image src={url} alt="" fill className="object-contain" sizes={`${size}px`} />
+    </div>
+  ) : (
+    <div className="flex shrink-0 items-center justify-center rounded-xl text-xl" style={{ width: size, height: size }}>
+      {fallback}
+    </div>
+  );
+}
 
 interface Props {
   vm:         AdventureConfirmViewModel;
@@ -169,10 +183,10 @@ export function AdventureConfirmPanelA({ vm, onStart, onBack, onEditParty, isSta
               style={{ background: wConf.memberCard, borderColor: wConf.memberBorder }}
             >
               <div
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl shadow-sm"
+                className="shrink-0 overflow-hidden rounded-xl shadow-sm"
                 style={{ background: wConf.accent + '20', border: `2px solid ${wConf.accent}` }}
               >
-                ⭐
+                <MonsterIcon masterId={vm.main.monsterMasterId} fallback="⭐" size={48} />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-1.5">
@@ -203,7 +217,9 @@ export function AdventureConfirmPanelA({ vm, onStart, onBack, onEditParty, isSta
                   className="flex items-center gap-2 rounded-xl border p-3 shadow-sm"
                   style={{ background: '#fafafa', borderColor: '#e5e7eb' }}
                 >
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-stone-100 text-lg">🤝</div>
+                  <div className="shrink-0 overflow-hidden rounded-lg bg-stone-100">
+                    <MonsterIcon masterId={sup.monsterMasterId} fallback="🤝" size={36} />
+                  </div>
                   <div>
                     <p className="text-xs font-bold text-stone-700 leading-tight">{sup.displayName}</p>
                     <p className="text-[10px] text-stone-400">Lv.{sup.level}</p>
