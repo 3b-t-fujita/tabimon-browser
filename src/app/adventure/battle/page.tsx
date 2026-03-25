@@ -18,9 +18,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { GameLayout } from '@/components/common/GameLayout';
 import BattlePreparingView from '@/components/battle/BattlePreparingView';
-import BattleStatusView from '@/components/battle/BattleStatusView';
-import BattleLogPanel from '@/components/battle/BattleLogPanel';
-import MainSkillButton from '@/components/battle/MainSkillButton';
+import { BattleScreenWrapper } from '@/components/battle/BattleScreenWrapper';
 import { useBattleStore } from '@/stores/battleStore';
 import { useBGM } from '@/hooks/useBGM';
 import { useBattleSE } from '@/hooks/useBattleSE';
@@ -147,10 +145,6 @@ export default function AdventureBattlePage() {
     store.setBattleState(updated);
   }, []);
 
-  // ---- 相棒スキル一覧 ----
-  const mainActor = battleState?.actors.find((a) => a.isMain && !a.isEnemy);
-  const mainSkills = mainActor?.skills ?? [];
-
   // ---- レンダリング ----
   if (battlePhase === 'BATTLE_PREPARING' || battlePhase === 'FAILED') {
     return (
@@ -198,43 +192,11 @@ export default function AdventureBattlePage() {
 
   return (
     <GameLayout>
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        {/* ヘッダー */}
-        <div className="flex justify-between items-center">
-          <span className="text-xs text-gray-400">
-            {battleState.isBoss ? '🔥 BOSS戦' : '⚔️ 戦闘中'}
-          </span>
-          <span className="text-xs text-gray-500">
-            tick: {battleState.tickCount}
-          </span>
-        </div>
-
-        {/* ステータス表示 */}
-        <BattleStatusView actors={battleState.actors} />
-
-        {/* 戦闘ログ */}
-        <BattleLogPanel log={battleState.log} />
-
-        {/* 相棒スキルボタン */}
-        <div>
-          <div className="text-xs text-gray-400 mb-2">★ 相棒スキル（あなたが操作できます）</div>
-          <MainSkillButton
-            skills={mainSkills}
-            disabled={!isRunning || (battleState.pendingMainSkillId !== null)}
-            onSelect={handleSkillSelect}
-          />
-          {battleState.pendingMainSkillId && (
-            <p className="text-xs text-yellow-400 mt-1">
-              スキル発動待機中: {battleState.pendingMainSkillId}
-            </p>
-          )}
-        </div>
-
-        {/* 味方・敵の自動行動インジケータ */}
-        <p className="text-xs text-gray-500 text-center">
-          味方・敵は自動行動します（0.5秒ごとに更新）
-        </p>
-      </div>
+      <BattleScreenWrapper
+        battleState={battleState}
+        isRunning={isRunning}
+        onSkillSelect={handleSkillSelect}
+      />
     </GameLayout>
   );
 }
