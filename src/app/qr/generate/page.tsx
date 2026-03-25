@@ -86,8 +86,9 @@ export default function QrGeneratePage() {
   if (isLoading) {
     return (
       <GameLayout>
-        <div className="flex flex-1 items-center justify-center">
-          <p className="animate-pulse font-bold">読み込み中...</p>
+        <div className="flex flex-1 items-center justify-center gap-3 flex-col">
+          <span className="text-4xl animate-pulse">📤</span>
+          <p className="text-sm text-stone-400 animate-pulse">読み込み中...</p>
         </div>
       </GameLayout>
     );
@@ -95,59 +96,89 @@ export default function QrGeneratePage() {
 
   return (
     <GameLayout>
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => router.back()} className="text-stone-500 text-sm">← 戻る</button>
-          <h1 className="text-lg font-bold">QR生成</h1>
+      <div className="flex flex-1 flex-col" style={{ background: '#f8fafc' }}>
+
+        {/* ヘッダー */}
+        <header className="shrink-0 border-b border-stone-200 bg-white px-4 py-3.5">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1.5 text-sm font-semibold text-stone-600"
+          >
+            ← 戻る
+          </button>
+          <h1 className="mt-2 text-xl font-black text-stone-900">QR生成</h1>
+          <p className="text-xs text-stone-400 mt-0.5">QRを生成する仲間を選んでください</p>
+        </header>
+
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-6">
+
+          {/* 仲間一覧 */}
+          {!dataUrl && (
+            <>
+              {monsters.length === 0 && (
+                <div className="flex flex-1 flex-col items-center justify-center gap-3 py-12">
+                  <span className="text-4xl">🐾</span>
+                  <p className="text-sm text-stone-400">仲間がいません</p>
+                </div>
+              )}
+              <div className="flex flex-col gap-2">
+                {monsters.map((m) => (
+                  <button
+                    key={m.uniqueId as string}
+                    type="button"
+                    onClick={() => handleSelect(m)}
+                    disabled={isGenerating}
+                    className="flex items-center justify-between rounded-2xl border-2 border-stone-200 bg-white px-4 py-3.5 text-sm shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 active:scale-95 disabled:opacity-50"
+                  >
+                    <span className="font-black text-stone-900">{m.displayName as string}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-stone-400">Lv.{m.level as number}</span>
+                      <span className="text-stone-300">›</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+              {isGenerating && (
+                <div className="flex items-center justify-center gap-2 py-4">
+                  <span className="text-xl animate-pulse">📤</span>
+                  <p className="text-sm text-stone-500 animate-pulse">QR生成中...</p>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* QR表示 */}
+          {dataUrl && payload && selected && (
+            <>
+              <div
+                className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"
+              >
+                <span className="text-lg">✅</span>
+                <p className="text-sm font-black text-emerald-700">
+                  {selected.displayName as string} のQRコード
+                </p>
+              </div>
+              <QrImageView dataUrl={dataUrl} altText={`${selected.displayName as string} QR`} />
+              <QrPayloadPreview payload={payload} />
+              <button
+                type="button"
+                onClick={() => { setDataUrl(null); setPayload(null); setSelected(null); }}
+                className="w-full rounded-2xl border-2 border-stone-200 bg-white py-3.5 text-sm font-bold text-stone-600 transition hover:bg-stone-50 active:scale-95"
+              >
+                別のモンスターを選ぶ
+              </button>
+            </>
+          )}
+
+          {/* エラー */}
+          {errorMsg && (
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-center">
+              <p className="text-sm font-bold text-red-600">{errorMsg}</p>
+            </div>
+          )}
+
         </div>
-
-        {/* 仲間一覧 */}
-        {!dataUrl && (
-          <>
-            <p className="text-sm text-stone-500">QRを生成する仲間を選んでください</p>
-            {monsters.length === 0 && (
-              <p className="text-sm text-stone-400 text-center py-8">仲間がいません</p>
-            )}
-            <div className="flex flex-col gap-2">
-              {monsters.map((m) => (
-                <button
-                  key={m.uniqueId as string}
-                  type="button"
-                  onClick={() => handleSelect(m)}
-                  disabled={isGenerating}
-                  className="flex justify-between items-center rounded-xl border border-stone-200 bg-white p-3 text-sm hover:bg-emerald-50 hover:border-emerald-300 disabled:opacity-50 transition"
-                >
-                  <span className="font-medium">{m.displayName}</span>
-                  <span className="text-stone-400">Lv.{m.level}</span>
-                </button>
-              ))}
-            </div>
-            {isGenerating && <p className="text-center text-sm text-stone-500 animate-pulse">QR生成中...</p>}
-          </>
-        )}
-
-        {/* QR表示 */}
-        {dataUrl && payload && selected && (
-          <>
-            <div className="text-center">
-              <p className="font-bold text-emerald-700">{selected.displayName} の QRコード</p>
-            </div>
-            <QrImageView dataUrl={dataUrl} altText={`${selected.displayName} QR`} />
-            <QrPayloadPreview payload={payload} />
-            <button
-              type="button"
-              onClick={() => { setDataUrl(null); setPayload(null); setSelected(null); }}
-              className="w-full rounded-xl border border-stone-300 py-2 text-sm text-stone-600 hover:bg-stone-50"
-            >
-              別のモンスターを選ぶ
-            </button>
-          </>
-        )}
-
-        {/* エラー */}
-        {errorMsg && (
-          <p className="text-sm text-red-500 text-center">{errorMsg}</p>
-        )}
       </div>
     </GameLayout>
   );

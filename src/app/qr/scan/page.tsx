@@ -79,37 +79,56 @@ export default function QrScanPage() {
 
   return (
     <GameLayout>
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => router.back()} className="text-stone-500 text-sm">← 戻る</button>
-          <h1 className="text-lg font-bold">QR読取</h1>
-        </div>
+      <div className="flex flex-1 flex-col" style={{ background: '#f8fafc' }}>
 
-        <p className="text-sm text-stone-500">相手のQRコード画像を選択してください</p>
+        {/* ヘッダー */}
+        <header className="shrink-0 border-b border-stone-200 bg-white px-4 py-3.5">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1.5 text-sm font-semibold text-stone-600"
+          >
+            ← 戻る
+          </button>
+          <h1 className="mt-2 text-xl font-black text-stone-900">QR読取</h1>
+          <p className="text-xs text-stone-400 mt-0.5">相手のQRコード画像を選択してください</p>
+        </header>
 
-        <QrScanInputPanel onFilePicked={handleFilePicked} disabled={isProcessing} />
+        <div className="flex flex-1 flex-col gap-4 p-4 pb-6">
 
-        {/* 処理中ラベル */}
-        {isProcessing && (
-          <p className="text-center text-sm text-stone-500 animate-pulse">
-            {phaseLabel[phase] ?? '処理中...'}
-          </p>
-        )}
+          <QrScanInputPanel onFilePicked={handleFilePicked} disabled={isProcessing} />
 
-        {/* エラー表示 */}
-        {phase === 'QR_ERROR' && errorMessage && (
-          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-center">
-            <p className="font-bold text-red-600 text-sm">読み取りに失敗しました</p>
-            <p className="text-xs text-red-500 mt-1">{errorMessage}</p>
-            <button
-              type="button"
-              onClick={reset}
-              className="mt-3 px-4 py-1 rounded bg-red-500 text-white text-sm"
+          {/* 処理中 */}
+          {isProcessing && (
+            <div
+              className="flex items-center justify-center gap-2 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3"
             >
-              もう一度試す
-            </button>
-          </div>
-        )}
+              <span className="text-base animate-pulse">📡</span>
+              <p className="text-sm font-bold text-sky-700 animate-pulse">
+                {phaseLabel[phase] ?? '処理中...'}
+              </p>
+            </div>
+          )}
+
+          {/* エラー */}
+          {phase === 'QR_ERROR' && errorMessage && (
+            <div className="flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 p-4">
+              <div>
+                <p className="font-black text-red-600 text-sm">読み取りに失敗しました</p>
+                <p className="text-xs text-red-400 mt-1">{errorMessage}</p>
+              </div>
+              <button
+                type="button"
+                onClick={reset}
+                className="w-full rounded-2xl py-3 text-sm font-black text-white shadow transition active:scale-95"
+                style={{ background: 'linear-gradient(135deg, #b91c1c, #ef4444)' }}
+              >
+                もう一度試す
+              </button>
+            </div>
+          )}
+
+        </div>
       </div>
     </GameLayout>
   );

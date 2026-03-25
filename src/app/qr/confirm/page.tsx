@@ -112,8 +112,9 @@ export default function QrConfirmPage() {
     return (
       <GameLayout>
         <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-          <p className="text-2xl">✅</p>
-          <p className="font-bold text-emerald-700">{completedMsg}</p>
+          <span className="text-5xl">✅</span>
+          <p className="text-base font-black text-emerald-700 text-center">{completedMsg}</p>
+          <p className="text-sm text-stone-400 animate-pulse">ホームへ戻ります...</p>
         </div>
       </GameLayout>
     );
@@ -124,20 +125,22 @@ export default function QrConfirmPage() {
     return (
       <GameLayout>
         <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-          <p className="font-bold text-red-500">受取できませんでした</p>
-          <p className="text-sm text-gray-500">{errorMessage}</p>
-          <div className="flex gap-3 w-full max-w-xs">
+          <span className="text-4xl">⚠️</span>
+          <p className="font-black text-red-500">受取できませんでした</p>
+          <p className="text-sm text-stone-400 text-center">{errorMessage}</p>
+          <div className="flex gap-2.5 w-full max-w-xs mt-2">
             <button
               type="button"
               onClick={() => router.push('/qr/scan')}
-              className="flex-1 rounded-xl border border-stone-300 py-2 text-sm text-stone-600"
+              className="flex-1 rounded-2xl border-2 border-stone-200 py-3 text-sm font-bold text-stone-600 hover:bg-stone-50"
             >
               再スキャン
             </button>
             <button
               type="button"
               onClick={() => router.push('/home')}
-              className="flex-1 rounded-xl bg-gray-700 py-2 text-sm text-white"
+              className="flex-1 rounded-2xl py-3 text-sm font-black text-white shadow"
+              style={{ background: 'linear-gradient(135deg, #1f2937, #374151)' }}
             >
               ホームへ
             </button>
@@ -149,55 +152,75 @@ export default function QrConfirmPage() {
 
   return (
     <GameLayout>
-      <div className="flex flex-1 flex-col gap-4 p-4">
-        <div className="flex items-center gap-2">
-          <button type="button" onClick={() => router.back()} className="text-stone-500 text-sm">← 戻る</button>
-          <h1 className="text-lg font-bold">QR受取確認</h1>
+      <div className="flex flex-1 flex-col" style={{ background: '#f8fafc' }}>
+
+        {/* ヘッダー */}
+        <header className="shrink-0 border-b border-stone-200 bg-white px-4 py-3.5">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1.5 text-sm font-semibold text-stone-600"
+          >
+            ← 戻る
+          </button>
+          <h1 className="mt-2 text-xl font-black text-stone-900">QR受取確認</h1>
+          <p className="text-xs text-stone-400 mt-0.5">受取先を選んでください</p>
+        </header>
+
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-6">
+
+          {/* payload プレビュー */}
+          <QrPayloadPreview payload={parsedPayload} />
+
+          {/* アクション */}
+          <QrReceiveActionPanel
+            onAcceptOwned={()   => handleReceive('owned')}
+            onAcceptSupport={() => handleReceive('support')}
+            onSkip={openSkipConfirm}
+            disabled={isSaving}
+          />
+
+          {isSaving && (
+            <p className="text-center text-sm text-stone-400 animate-pulse">保存中...</p>
+          )}
+
         </div>
-
-        <p className="text-sm text-stone-500">受取先を選んでください</p>
-
-        {/* payload プレビュー */}
-        <QrPayloadPreview payload={parsedPayload} />
-
-        {/* アクション */}
-        <QrReceiveActionPanel
-          onAcceptOwned={()   => handleReceive('owned')}
-          onAcceptSupport={() => handleReceive('support')}
-          onSkip={openSkipConfirm}
-          disabled={isSaving}
-        />
-
-        {isSaving && (
-          <p className="text-center text-sm text-stone-500 animate-pulse">保存中...</p>
-        )}
       </div>
 
       {/* 見送り確認ダイアログ */}
       {showSkipConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 flex flex-col gap-4">
-            <p className="font-bold text-stone-800">本当に見送りますか？</p>
-            <p className="text-sm text-stone-500">
-              見送ると履歴に残りません。同じQRを後で読み取ることもできます。
-            </p>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={closeSkipConfirm}
-                disabled={isSaving}
-                className="flex-1 rounded-xl border border-stone-300 py-2 text-sm text-stone-600"
-              >
-                キャンセル
-              </button>
-              <button
-                type="button"
-                onClick={handleSkipConfirmed}
-                disabled={isSaving}
-                className="flex-1 rounded-xl bg-stone-600 py-2 text-sm font-bold text-white"
-              >
-                見送る
-              </button>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-5"
+          style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}
+        >
+          <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl">
+            <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #6b7280, #9ca3af)' }} />
+            <div className="flex flex-col gap-4 px-6 pt-5 pb-6">
+              <div>
+                <p className="font-black text-stone-800">本当に見送りますか？</p>
+                <p className="mt-1.5 text-sm text-stone-500 leading-relaxed">
+                  見送ると履歴に残りません。<br />同じQRを後で読み取ることもできます。
+                </p>
+              </div>
+              <div className="flex gap-2.5">
+                <button
+                  type="button"
+                  onClick={closeSkipConfirm}
+                  disabled={isSaving}
+                  className="flex-1 rounded-2xl border-2 border-stone-200 py-3 text-sm font-bold text-stone-600 hover:bg-stone-50 disabled:opacity-50"
+                >
+                  キャンセル
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSkipConfirmed}
+                  disabled={isSaving}
+                  className="flex-1 rounded-2xl py-3 text-sm font-black text-white shadow disabled:opacity-50"
+                  style={{ background: 'linear-gradient(135deg, #374151, #6b7280)' }}
+                >
+                  見送る
+                </button>
+              </div>
             </div>
           </div>
         </div>
