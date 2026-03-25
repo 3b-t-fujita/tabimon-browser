@@ -14,7 +14,7 @@ import { ChangeMainMonsterUseCase } from '@/application/monsters/changeMainMonst
 import { ReleaseOwnedMonsterUseCase } from '@/application/monsters/releaseOwnedMonsterUseCase';
 import { LoadHomeDataUseCase } from '@/application/home/loadHomeDataUseCase';
 import { MonsterErrorCode } from '@/common/errors/AppErrorCode';
-import { OwnedMonsterDetail } from '@/components/monsters/OwnedMonsterDetail';
+import { OwnedMonsterDetailWrapper } from '@/components/monsters/OwnedMonsterDetailWrapper';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { ErrorDialog } from '@/components/common/ErrorDialog';
 import { GameLayout } from '@/components/common/GameLayout';
@@ -140,7 +140,7 @@ export default function MonsterDetailPage() {
         </div>
       )}
       {monsterDetail && (
-        <OwnedMonsterDetail
+        <OwnedMonsterDetailWrapper
           vm={monsterDetail}
           onSetMain={handleSetMain}
           onRelease={handleRelease}
