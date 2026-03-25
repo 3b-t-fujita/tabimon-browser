@@ -119,12 +119,13 @@ function AdventureResultContent() {
     return (
       <GameLayout>
         <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-          <p className="text-red-500 font-bold">エラーが発生しました</p>
-          <p className="text-sm text-gray-400">{errorMessage}</p>
+          <span className="text-4xl">⚠️</span>
+          <p className="font-black text-red-500">エラーが発生しました</p>
+          <p className="text-sm text-stone-400 text-center">{errorMessage}</p>
           <button
             type="button"
             onClick={() => router.push('/home')}
-            className="mt-2 px-6 py-2 rounded bg-gray-700 text-white text-sm"
+            className="mt-2 rounded-2xl bg-stone-800 px-6 py-3 text-sm font-bold text-white shadow"
           >
             ホームへ戻る
           </button>
@@ -137,9 +138,10 @@ function AdventureResultContent() {
   if (resultPhase === 'RESULT_PENDING' || !resultType) {
     return (
       <GameLayout>
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-          <p className="text-lg animate-pulse font-bold">リザルト確定中...</p>
-          <p className="text-gray-400 text-sm">しばらくお待ちください</p>
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6">
+          <span className="text-4xl animate-pulse">🏆</span>
+          <p className="text-base font-black text-stone-700 animate-pulse">リザルト確定中...</p>
+          <p className="text-sm text-stone-400">しばらくお待ちください</p>
         </div>
       </GameLayout>
     );
@@ -148,7 +150,7 @@ function AdventureResultContent() {
   // ---- 結果表示 ----
   return (
     <GameLayout>
-      <div className="flex flex-1 flex-col gap-4 p-4">
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-6" style={{ background: '#f8fafc' }}>
         <ResultSummaryView
           resultType={resultType}
           stageId={''}
@@ -162,19 +164,19 @@ function AdventureResultContent() {
         />
 
         {resultPhase === 'RESULT_FINALIZED' && (
-          <p className="text-center text-sm text-stone-500 animate-pulse">
-            {isSaving ? '処理中...' : '候補を確認中...'}
+          <p className="text-center text-sm text-stone-400 animate-pulse">
+            {isSaving ? '処理中...' : '次の展開を確認中...'}
           </p>
         )}
 
         {resultPhase === 'CANDIDATE_PENDING' && (
-          <p className="text-center text-sm text-emerald-600 font-medium">
-            新しい仲間候補がいます！ →
-          </p>
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center">
+            <p className="text-sm font-black text-emerald-700">✨ 新しい仲間候補がいます！</p>
+          </div>
         )}
 
         {resultPhase === 'COMPLETED' && (
-          <p className="text-center text-sm text-stone-500">
+          <p className="text-center text-sm text-stone-400 animate-pulse">
             ホームへ戻ります...
           </p>
         )}

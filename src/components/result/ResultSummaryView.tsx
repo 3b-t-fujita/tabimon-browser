@@ -20,81 +20,144 @@ interface ResultSummaryViewProps {
   evolvedName:   string | null;
 }
 
-const RESULT_CONFIG: Record<AdventureResultType, { label: string; color: string; banner: string }> = {
-  [AdventureResultType.Success]: { label: '冒険成功！', color: 'text-emerald-600', banner: '/assets/result/ui_result_banner_success_v1.webp' },
-  [AdventureResultType.Failure]: { label: '冒険失敗...', color: 'text-red-500',     banner: '/assets/result/ui_result_banner_fail_v1.webp'    },
-  [AdventureResultType.Retire]:  { label: 'リタイア',   color: 'text-gray-500',    banner: '/assets/result/ui_result_banner_retire_v1.webp'  },
+const RESULT_CONFIG: Record<AdventureResultType, {
+  label:     string;
+  sublabel:  string;
+  banner:    string;
+  accent:    string;
+  accentDk:  string;
+  bg:        string;
+  overlay:   string;
+}> = {
+  [AdventureResultType.Success]: {
+    label:    '冒険成功！',
+    sublabel: 'お疲れさまでした！',
+    banner:   '/assets/result/ui_result_banner_success_v1.webp',
+    accent:   '#10b981',
+    accentDk: '#064e3b',
+    bg:       '#f0fdf4',
+    overlay:  'linear-gradient(to bottom, rgba(4,47,30,0.10) 0%, rgba(4,47,30,0.55) 60%, rgba(4,47,30,0.92) 100%)',
+  },
+  [AdventureResultType.Failure]: {
+    label:    '冒険失敗…',
+    sublabel: 'また挑戦しよう！',
+    banner:   '/assets/result/ui_result_banner_fail_v1.webp',
+    accent:   '#ef4444',
+    accentDk: '#7f1d1d',
+    bg:       '#fef2f2',
+    overlay:  'linear-gradient(to bottom, rgba(127,29,29,0.10) 0%, rgba(127,29,29,0.55) 60%, rgba(127,29,29,0.92) 100%)',
+  },
+  [AdventureResultType.Retire]: {
+    label:    'リタイア',
+    sublabel: '次はがんばろう',
+    banner:   '/assets/result/ui_result_banner_retire_v1.webp',
+    accent:   '#6b7280',
+    accentDk: '#1f2937',
+    bg:       '#f9fafb',
+    overlay:  'linear-gradient(to bottom, rgba(31,41,55,0.10) 0%, rgba(31,41,55,0.55) 60%, rgba(31,41,55,0.92) 100%)',
+  },
 };
 
+// ── StatChip ──────────────────────────────────────────────────
+function StatChip({ label, value, color }: { label: string; value: number; color: string }) {
+  return (
+    <div className="flex flex-col items-center rounded-2xl bg-white px-2 py-2 border border-amber-100 shadow-sm">
+      <span className="text-[9px] font-black text-stone-400">{label}</span>
+      <span className="text-sm font-black mt-0.5" style={{ color }}>+{value}</span>
+    </div>
+  );
+}
+
+// ── メイン ────────────────────────────────────────────────────
 export default function ResultSummaryView({
   resultType, stageId, expGained, newLevel, leveledUp, stageUnlocked, statGains, evolved, evolvedName,
 }: ResultSummaryViewProps) {
   const cfg = RESULT_CONFIG[resultType];
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white overflow-hidden">
-      {/* リザルトバナー画像 */}
-      <div className="relative w-full" style={{ height: 120 }}>
-        <Image src={cfg.banner} alt={cfg.label} fill className="object-contain" sizes="100vw" />
+    <div className="flex flex-col overflow-hidden rounded-2xl shadow-sm" style={{ background: cfg.bg }}>
+
+      {/* ── ① バナー ── */}
+      <div className="relative shrink-0 overflow-hidden" style={{ height: 160 }}>
+        <Image src={cfg.banner} alt={cfg.label} fill className="object-cover" sizes="100vw" priority />
+        <div className="absolute inset-0" style={{ background: cfg.overlay }} />
+
+        {/* 結果テキスト */}
+        <div className="absolute bottom-0 left-0 right-0 px-5 pb-4">
+          <p
+            className="text-2xl font-black text-white leading-tight"
+            style={{ textShadow: '0 2px 8px rgba(0,0,0,0.7)' }}
+          >
+            {cfg.label}
+          </p>
+          <p className="text-xs text-white/70 mt-0.5">{cfg.sublabel}</p>
+        </div>
       </div>
 
+      {/* ── ② 報酬エリア ── */}
       <div className="flex flex-col gap-3 p-4">
-      {/* 結果見出し */}
-      <div className="flex items-center justify-center">
-        <span className={`text-xl font-bold ${cfg.color}`}>{cfg.label}</span>
-      </div>
 
-      <div className="text-xs text-stone-400">ステージ: {stageId}</div>
+        {/* EXP */}
+        <div
+          className="flex items-center justify-between rounded-2xl px-4 py-3 border"
+          style={{ borderColor: `${cfg.accent}30`, background: `${cfg.accent}10` }}
+        >
+          <span className="text-sm font-bold text-stone-600">獲得経験値</span>
+          <span className="text-base font-black" style={{ color: cfg.accent }}>
+            +{expGained} EXP
+          </span>
+        </div>
 
-      {/* 経験値 */}
-      <div className="flex justify-between items-center text-sm border-t border-stone-100 pt-2">
-        <span className="text-stone-600">獲得経験値</span>
-        <span className="font-bold text-yellow-600">+{expGained} EXP</span>
-      </div>
-
-      {/* レベルアップ */}
-      {leveledUp && (
-        <div className="flex flex-col gap-2 bg-yellow-50 rounded p-3 text-sm">
-          <div className="flex items-center gap-2">
-            <span>⬆️</span>
-            <span className="font-bold text-yellow-700">Lv. {newLevel} にレベルアップ！</span>
-          </div>
-          {statGains && (
-            <div className="grid grid-cols-4 gap-1 mt-1">
-              {([
-                { key: 'HP',  val: statGains.hp,  color: 'text-emerald-600' },
-                { key: 'ATK', val: statGains.atk, color: 'text-red-600'     },
-                { key: 'DEF', val: statGains.def, color: 'text-blue-600'    },
-                { key: 'SPD', val: statGains.spd, color: 'text-yellow-600'  },
-              ] as const).map(({ key, val, color }) => (
-                <div key={key} className="flex flex-col items-center rounded bg-white py-1 px-0.5 border border-yellow-200">
-                  <span className="text-xs text-stone-400">{key}</span>
-                  <span className={`text-xs font-bold ${color}`}>+{val}</span>
-                </div>
-              ))}
+        {/* レベルアップ */}
+        {leveledUp && (
+          <div
+            className="flex flex-col gap-3 overflow-hidden rounded-2xl border border-amber-200"
+            style={{ background: 'linear-gradient(135deg, #fffbeb, #fef3c7)' }}
+          >
+            <div className="flex items-center gap-2 px-4 pt-4">
+              <span className="text-lg">⬆️</span>
+              <div>
+                <p className="text-sm font-black text-amber-800">レベルアップ！</p>
+                <p className="text-xs text-amber-600 font-bold">Lv. {newLevel} になった！</p>
+              </div>
             </div>
-          )}
-        </div>
-      )}
 
-      {/* 進化 */}
-      {evolved && evolvedName && (
-        <div className="flex flex-col gap-1 bg-purple-50 rounded p-3 text-sm border border-purple-200">
-          <div className="flex items-center gap-2">
-            <span>✨</span>
-            <span className="font-bold text-purple-700">進化！</span>
+            {statGains && (
+              <div className="grid grid-cols-4 gap-2 px-4 pb-4">
+                <StatChip label="HP"  value={statGains.hp}  color="#10b981" />
+                <StatChip label="ATK" value={statGains.atk} color="#ef4444" />
+                <StatChip label="DEF" value={statGains.def} color="#3b82f6" />
+                <StatChip label="SPD" value={statGains.spd} color="#f59e0b" />
+              </div>
+            )}
           </div>
-          <p className="text-purple-600 text-xs font-medium">→ {evolvedName} に進化しました！</p>
-        </div>
-      )}
+        )}
 
-      {/* ステージ解放 */}
-      {stageUnlocked && (
-        <div className="flex items-center gap-2 bg-blue-50 rounded p-2 text-sm">
-          <span>🔓</span>
-          <span className="font-bold text-blue-700">新ステージが解放されました！</span>
-        </div>
-      )}
+        {/* 進化 */}
+        {evolved && evolvedName && (
+          <div
+            className="flex items-center gap-3 rounded-2xl border border-purple-200 px-4 py-3"
+            style={{ background: 'linear-gradient(135deg, #faf5ff, #f3e8ff)' }}
+          >
+            <span className="text-2xl">✨</span>
+            <div>
+              <p className="text-sm font-black text-purple-700">進化！</p>
+              <p className="text-xs text-purple-600">→ {evolvedName} になった！</p>
+            </div>
+          </div>
+        )}
+
+        {/* ステージ解放 */}
+        {stageUnlocked && (
+          <div
+            className="flex items-center gap-3 rounded-2xl border border-sky-200 px-4 py-3"
+            style={{ background: 'linear-gradient(135deg, #f0f9ff, #e0f2fe)' }}
+          >
+            <span className="text-2xl">🔓</span>
+            <p className="text-sm font-black text-sky-700">新ステージが解放されました！</p>
+          </div>
+        )}
+
       </div>
     </div>
   );

@@ -315,7 +315,13 @@ export default function AdventurePlayPage() {
   // ----------------------------------------------------------------
   // レンダリング
   // ----------------------------------------------------------------
-  const nodeTotal = 0; // フェーズ6 簡易版: ストアへの保持は後続フェーズで改善
+  const nodeTotal  = 0; // フェーズ6 簡易版: ストアへの保持は後続フェーズで改善
+  const stageId    = session?.stageId ?? '';
+
+  // ワールドテーマ（stageId から導出）
+  const worldAccent   = stageId.includes('_w1') ? '#10b981' : stageId.includes('_w2') ? '#f97316' : '#38bdf8';
+  const worldAccentDk = stageId.includes('_w1') ? '#064e3b' : stageId.includes('_w2') ? '#7c2d12' : '#0c4a6e';
+  const worldLabel    = stageId.includes('_w1') ? 'ミドリの森' : stageId.includes('_w2') ? 'ホノオ火山' : 'コオリ氷原';
 
   return (
     <GameLayout>
@@ -328,28 +334,34 @@ export default function AdventurePlayPage() {
         />
       )}
 
-      <div className="flex flex-1 flex-col gap-0">
-        {/* ヘッダー */}
-        <header className="flex items-center justify-between bg-stone-800 px-5 py-3">
+      <div className="flex flex-1 flex-col" style={{ background: '#f8fafc' }}>
+
+        {/* ── ヘッダー ── */}
+        <header
+          className="shrink-0 flex items-center justify-between px-4 py-3 border-b"
+          style={{ background: worldAccentDk, borderColor: `${worldAccent}40` }}
+        >
           <button
             type="button"
             onClick={openRetireDialog}
-            className="text-sm text-stone-400 transition hover:text-white"
+            className="rounded-full px-3 py-1.5 text-xs font-bold transition"
+            style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)' }}
           >
             ✕ やめる
           </button>
-          <h1 className="text-sm font-bold text-white">
-            {session?.stageId ?? '冒険中'}
-          </h1>
-          <div className="w-16" /> {/* スペーサー */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-black text-white opacity-80">{worldLabel}</span>
+          </div>
+          <div className="w-16" />
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 p-5">
-          {/* 保存エラー表示 */}
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-5">
+
+          {/* 保存エラー */}
           {explorePhase === 'SAVE_ERROR' && (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-              <p className="font-semibold">保存エラー</p>
-              <p>{saveErrorMessage}</p>
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+              <p className="font-black">保存エラー</p>
+              <p className="mt-1">{saveErrorMessage}</p>
             </div>
           )}
 
@@ -357,7 +369,7 @@ export default function AdventurePlayPage() {
           <AdventureNodeView
             currentNode={currentNode}
             explorePhase={explorePhase}
-            stageId={session?.stageId ?? ''}
+            stageId={stageId}
             nodeTotal={nodeTotal}
           />
 
@@ -370,7 +382,7 @@ export default function AdventurePlayPage() {
             />
           )}
 
-          {/* イベント表示（確認前） */}
+          {/* イベント（確認前） */}
           {explorePhase === 'EVENT_RESOLVING' && eventMessage && (
             <EventPanel
               message={eventMessage}
@@ -379,7 +391,7 @@ export default function AdventurePlayPage() {
             />
           )}
 
-          {/* イベント結果表示（確認後・次ノードへ進む前） */}
+          {/* イベント結果（次ノードへ進む前） */}
           {explorePhase === 'EVENT_RESULT' && eventMessage && (
             <EventPanel
               message={eventMessage}
@@ -390,17 +402,25 @@ export default function AdventurePlayPage() {
 
           {/* 戦闘準備中 */}
           {explorePhase === 'BATTLE_PREPARING' && (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-center">
-              <p className="text-sm font-semibold text-red-700">⚔️ 戦闘が始まります...</p>
-              {isSaving && <p className="mt-1 text-xs text-red-400">準備中</p>}
+            <div
+              className="flex flex-col items-center gap-2 rounded-2xl border p-6 text-center"
+              style={{ borderColor: '#fca5a5', background: 'linear-gradient(135deg, #fef2f2, #fee2e2)' }}
+            >
+              <span className="text-3xl">⚔️</span>
+              <p className="text-base font-black text-red-700">戦闘が始まります！</p>
+              {isSaving && <p className="text-xs text-red-400 animate-pulse">準備中...</p>}
             </div>
           )}
 
           {/* ゴール到達 */}
           {explorePhase === 'GOAL_REACHED' && (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-center">
-              <p className="text-sm font-semibold text-emerald-700">🏁 ゴール到達！</p>
-              {isSaving && <p className="mt-1 text-xs text-emerald-400">結果を保存中...</p>}
+            <div
+              className="flex flex-col items-center gap-2 rounded-2xl border p-6 text-center"
+              style={{ borderColor: '#fde68a', background: 'linear-gradient(135deg, #fefce8, #fef9c3)' }}
+            >
+              <span className="text-3xl">🏁</span>
+              <p className="text-base font-black text-amber-700">ゴール到達！</p>
+              {isSaving && <p className="text-xs text-amber-500 animate-pulse">結果を保存中...</p>}
             </div>
           )}
 
@@ -410,18 +430,29 @@ export default function AdventurePlayPage() {
               type="button"
               onClick={handleProceedNode}
               disabled={isSaving}
-              className="w-full rounded-xl bg-emerald-500 py-4 text-base font-bold text-white shadow transition hover:bg-emerald-600 active:scale-95 disabled:opacity-50"
+              className="relative w-full overflow-hidden rounded-2xl py-5 text-base font-black text-white shadow-lg transition active:scale-95 disabled:opacity-50"
+              style={{
+                background: `linear-gradient(135deg, ${worldAccentDk}, ${worldAccent})`,
+                boxShadow:  `0 4px 16px ${worldAccent}50`,
+              }}
             >
-              {isSaving ? '保存中...' : '前へ進む →'}
+              <span
+                className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-2xl"
+                style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.15), transparent)' }}
+              />
+              <span className="relative z-10">
+                {isSaving ? '保存中...' : '前へ進む →'}
+              </span>
             </button>
           )}
 
-          {/* ローディング表示 */}
+          {/* ローディング */}
           {explorePhase === 'LOADING' && (
-            <div className="flex flex-1 items-center justify-center">
-              <p className="text-stone-400">読み込み中...</p>
+            <div className="flex flex-1 items-center justify-center py-12">
+              <p className="text-sm text-stone-400 animate-pulse">読み込み中...</p>
             </div>
           )}
+
         </div>
       </div>
     </GameLayout>

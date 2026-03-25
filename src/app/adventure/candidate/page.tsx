@@ -109,8 +109,9 @@ export default function AdventureCandidatePage() {
   if (isLoading) {
     return (
       <GameLayout>
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-          <p className="text-lg animate-pulse font-bold">候補を確認中...</p>
+        <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6">
+          <span className="text-4xl animate-pulse">🐾</span>
+          <p className="text-base font-black text-stone-700 animate-pulse">候補を確認中...</p>
         </div>
       </GameLayout>
     );
@@ -121,12 +122,13 @@ export default function AdventureCandidatePage() {
     return (
       <GameLayout>
         <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-          <p className="text-red-500 font-bold">エラーが発生しました</p>
-          <p className="text-sm text-gray-400">{errorMessage}</p>
+          <span className="text-4xl">⚠️</span>
+          <p className="font-black text-red-500">エラーが発生しました</p>
+          <p className="text-sm text-stone-400 text-center">{errorMessage}</p>
           <button
             type="button"
             onClick={() => router.push('/home')}
-            className="mt-2 px-6 py-2 rounded bg-gray-700 text-white text-sm"
+            className="mt-2 rounded-2xl bg-stone-800 px-6 py-3 text-sm font-bold text-white shadow"
           >
             ホームへ戻る
           </button>
@@ -139,12 +141,7 @@ export default function AdventureCandidatePage() {
 
   return (
     <GameLayout>
-      <div className="flex flex-1 flex-col gap-6 p-4">
-        {/* ヘッダー */}
-        <div className="text-center">
-          <p className="text-lg font-bold text-emerald-700">新しい仲間候補！</p>
-          <p className="text-sm text-stone-500 mt-1">仲間にしますか？</p>
-        </div>
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-6" style={{ background: '#f8fafc' }}>
 
         {/* 候補カード */}
         <CandidateCard candidate={candidate} displayName={displayName} />
@@ -155,33 +152,43 @@ export default function AdventureCandidatePage() {
           onSkip={() => setShowSkipConfirm(true)}
           disabled={isSaving}
         />
+
       </div>
 
       {/* 見送り確認ダイアログ */}
       {showSkipConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 flex flex-col gap-4">
-            <p className="font-bold text-stone-800">本当に見送りますか？</p>
-            <p className="text-sm text-stone-500">
-              見送ると、この候補は二度と現れません。
-            </p>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setShowSkipConfirm(false)}
-                disabled={isSaving}
-                className="flex-1 rounded-xl border border-stone-300 py-2 text-sm text-stone-600 hover:bg-stone-50 disabled:opacity-50"
-              >
-                キャンセル
-              </button>
-              <button
-                type="button"
-                onClick={handleSkipConfirmed}
-                disabled={isSaving}
-                className="flex-1 rounded-xl bg-red-500 py-2 text-sm font-bold text-white hover:bg-red-600 disabled:opacity-50"
-              >
-                見送る
-              </button>
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-5"
+          style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}
+        >
+          <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl">
+            <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #f97316, #ef4444)' }} />
+            <div className="flex flex-col gap-4 px-6 pt-5 pb-6">
+              <div>
+                <p className="font-black text-stone-800">本当に見送りますか？</p>
+                <p className="mt-1.5 text-sm text-stone-500 leading-relaxed">
+                  見送ると、この候補は二度と現れません。
+                </p>
+              </div>
+              <div className="flex gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowSkipConfirm(false)}
+                  disabled={isSaving}
+                  className="flex-1 rounded-2xl border-2 border-stone-200 py-3 text-sm font-bold text-stone-600 hover:bg-stone-50 disabled:opacity-50"
+                >
+                  キャンセル
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSkipConfirmed}
+                  disabled={isSaving}
+                  className="flex-1 rounded-2xl py-3 text-sm font-black text-white shadow disabled:opacity-50"
+                  style={{ background: 'linear-gradient(135deg, #b91c1c, #ef4444)' }}
+                >
+                  見送る
+                </button>
+              </div>
             </div>
           </div>
         </div>
