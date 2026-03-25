@@ -61,7 +61,7 @@ export class GetAdventureConfirmViewStateUseCase {
     const wLabel = worldLabel(stageMaster.worldId);
     const stageName = `${wLabel} Stage ${stageMaster.stageNo}`;
 
-    // --- 主役情報 ---
+    // --- 相棒情報 ---
     const mainId  = save?.player?.mainMonsterId;
     const mainMon = save?.ownedMonsters.find((m) => m.uniqueId === mainId) ?? null;
 
@@ -69,7 +69,7 @@ export class GetAdventureConfirmViewStateUseCase {
     const supports = selectedSupportIds
       .map((sid) => save?.supportMonsters.find((s) => s.supportId === sid))
       .filter((s): s is NonNullable<typeof s> => s !== null)
-      .map((s) => ({ supportId: s.supportId, displayName: s.displayName, level: s.level }));
+      .map((s) => ({ supportId: s.supportId, displayName: s.displayName, level: s.level, monsterMasterId: s.monsterMasterId }));
 
     // --- バリデーション結果 ---
     const validateResult = await this.validateUC.execute({ stageId, selectedSupportIds });
@@ -83,7 +83,7 @@ export class GetAdventureConfirmViewStateUseCase {
       stageName,
       difficulty:       difficultyLabel(stageMaster.difficulty),
       recommendedLevel: stageMaster.recommendedLevel,
-      main:             mainMon ? { displayName: mainMon.displayName, level: mainMon.level } : null,
+      main:             mainMon ? { displayName: mainMon.displayName, level: mainMon.level, monsterMasterId: mainMon.monsterMasterId } : null,
       supports,
       canStart,
       cannotStartReason,

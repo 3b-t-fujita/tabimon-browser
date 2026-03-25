@@ -4,7 +4,7 @@
  *
  * チェック項目（順序固定）:
  *   1. セーブデータ / プレイヤー存在確認
- *   2. 主役設定済み
+ *   2. 相棒設定済み
  *   3. ステージ選択済み
  *   4. ステージがマスタに存在する
  *   5. ステージが解放済み（stageNo===1 は常に解放）
@@ -48,12 +48,12 @@ export class ValidateAdventureStartUseCase {
     if (!loadResult.ok) return fail(SaveErrorCode.LoadFailed, loadResult.message);
     const save = loadResult.value;
 
-    // --- 2. プレイヤー / 主役 ---
+    // --- 2. プレイヤー / 相棒 ---
     if (!save?.player) {
       return fail(AdventureErrorCode.NoMainMonster, 'セーブデータが存在しません');
     }
     if (!save.player.mainMonsterId) {
-      return fail(AdventureErrorCode.NoMainMonster, '主役が設定されていません');
+      return fail(AdventureErrorCode.NoMainMonster, '相棒が設定されていません');
     }
 
     // --- 3. ステージ選択 ---

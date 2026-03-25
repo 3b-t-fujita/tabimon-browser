@@ -2,7 +2,7 @@
  * 仲間モンスターエンティティ。詳細設計 v4 §5.1 所持区分に準拠。
  *
  * - 育成対象（経験値/レベルアップあり）
- * - 主役設定可
+ * - 相棒設定可
  * - QR生成可（仲間のみ生成可、助っ人は生成不可）
  * - 上限5体（OwnedCapacityPolicy 参照）
  *
@@ -43,8 +43,8 @@ export interface OwnedMonster {
   readonly skillIds: readonly SkillId[];
 
   /**
-   * 主役設定中フラグ。
-   * 主役は手放し不可（MainMonsterPolicy.canRelease 参照）。
+   * 相棒設定中フラグ。
+   * 相棒は手放し不可（MainMonsterPolicy.canRelease 参照）。
    */
   readonly isMain: boolean;
 }

@@ -1,7 +1,7 @@
 /**
  * 冒険リザルト。詳細設計 v4 §8 に準拠。
  *
- * - 経験値は主役のみ加算
+ * - 経験値は相棒のみ加算
  * - 成功時のみステージ解放更新
  * - 1冒険につき最大1候補、抽選は SUCCESS 時のみ
  * - sessionId による二重反映防止（resultPendingFlag と組み合わせて使用）
@@ -16,7 +16,7 @@ export interface AdventureResult {
   /** リザルト種別: SUCCESS / FAILURE / RETIRE */
   readonly resultType: AdventureResultType;
 
-  /** 主役に付与する経験値（補正済み） */
+  /** 相棒に付与する経験値（補正済み） */
   readonly expGained: number;
 
   /** 取得素材・報酬（アイテムID → 個数） */

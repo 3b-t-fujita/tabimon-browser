@@ -2,7 +2,7 @@
  * 保存データ業務整合性検証。詳細設計 v4 §10.5, §11 に準拠。
  *
  * Zodスキーマが型整合を担い、このモジュールは業務ルール整合性を担う:
- * - 主役が ownedMonsters 内に存在すること
+ * - 相棒が ownedMonsters 内に存在すること
  * - 仲間上限 <= 5 / 助っ人上限 <= 10
  * - AdventureSession の status と必須フィールドの整合
  *   - SESSION_ACTIVE_BATTLE のとき battleCheckpointNodeIndex >= 0
@@ -44,7 +44,7 @@ export function validateSaveConsistency(save: MainSaveSnapshot): ConsistencyResu
     });
   }
 
-  // --- 主役の存在確認 ---
+  // --- 相棒の存在確認 ---
   if (save.player?.mainMonsterId) {
     const mainExists = save.ownedMonsters.some(
       (m) => m.uniqueId === save.player!.mainMonsterId
@@ -52,12 +52,12 @@ export function validateSaveConsistency(save: MainSaveSnapshot): ConsistencyResu
     if (!mainExists) {
       errors.push({
         field: 'player.mainMonsterId',
-        message: `主役(${save.player.mainMonsterId})が ownedMonsters に存在しません`,
+        message: `相棒(${save.player.mainMonsterId})が ownedMonsters に存在しません`,
       });
     }
   }
 
-  // --- 主役フラグの整合 ---
+  // --- 相棒フラグの整合 ---
   const mainFlaggedMonsters = save.ownedMonsters.filter((m) => m.isMain);
   if (mainFlaggedMonsters.length > 1) {
     errors.push({
@@ -109,7 +109,7 @@ function validateSessionConsistency(
     }
   }
 
-  // partySnapshot の主役整合
+  // partySnapshot の相棒整合
   if (!session.partySnapshot?.main) {
     errors.push({
       field: 'adventureSession.partySnapshot.main',

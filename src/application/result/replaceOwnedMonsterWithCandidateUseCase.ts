@@ -4,7 +4,7 @@
  * 詳細設計 v4 §8.8 候補受取（上限時）に準拠。
  *
  * 重要:
- * - 主役は手放し不可（MainMonsterPolicy.canRelease）
+ * - 相棒は手放し不可（MainMonsterPolicy.canRelease）
  * - 受取後: 指定モンスター削除 + 候補追加 + pendingCandidate=null + adventureSession=null
  */
 import type { Result } from '@/common/results/Result';
@@ -74,7 +74,7 @@ export class ReplaceOwnedMonsterWithCandidateUseCase {
     }
 
     if (!canRelease(releaseTarget)) {
-      return fail(MonsterErrorCode.CannotReleaseMain, '主役は手放せません');
+      return fail(MonsterErrorCode.CannotReleaseMain, '相棒は手放せません');
     }
 
     // ---- モンスターマスタ取得 ----

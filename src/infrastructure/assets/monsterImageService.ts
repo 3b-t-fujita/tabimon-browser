@@ -11,7 +11,7 @@
 
 /** 立ち絵（フルボディ）マップ */
 const STAND_MAP: Record<string, string> = {
-  // 初期主役候補
+  // 初期相棒候補
   MON_GRASS_001: '/assets/monsters/stands/monster_stand_initial_01_v1.webp',
   MON_FIRE_001:  '/assets/monsters/stands/monster_stand_initial_02_v1.webp',
   MON_ICE_001:   '/assets/monsters/stands/monster_stand_initial_03_v1.webp',
@@ -62,7 +62,7 @@ const STAND_MAP: Record<string, string> = {
 
 /** アイコン（小サイズ正方形）マップ */
 const ICON_MAP: Record<string, string> = {
-  // 初期主役候補
+  // 初期相棒候補
   MON_GRASS_001: '/assets/monsters/icons/monster_icon_initial_01_v1.webp',
   MON_FIRE_001:  '/assets/monsters/icons/monster_icon_initial_02_v1.webp',
   MON_ICE_001:   '/assets/monsters/icons/monster_icon_initial_03_v1.webp',

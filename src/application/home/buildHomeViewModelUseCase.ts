@@ -15,7 +15,7 @@ export class BuildHomeViewModelUseCase {
     const ownedMonsters = save.ownedMonsters;
     const supportMonsters = save.supportMonsters;
 
-    // 主役情報
+    // 相棒情報
     const mainMonster = player?.mainMonsterId
       ? ownedMonsters.find((m) => m.uniqueId === player.mainMonsterId) ?? null
       : null;

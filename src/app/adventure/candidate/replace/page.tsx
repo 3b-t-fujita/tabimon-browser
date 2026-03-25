@@ -6,12 +6,12 @@
  * フロー:
  *   1. IndexedDB から ownedMonsters + pendingCandidate を読み込む
  *   2. 候補なし → /home へリダイレクト
- *   3. CapacityReplacePanel で手放すモンスターを選択（主役は選択不可）
+ *   3. CapacityReplacePanel で手放すモンスターを選択（相棒は選択不可）
  *   4. 確認 → ReplaceOwnedMonsterWithCandidateUseCase(releaseUniqueId) → /home
  *
  * 注意:
  *   - このページは「冒険候補のみ」の導線（QR上限時は単純拒否で来ない）
- *   - 主役の手放しは MainMonsterPolicy で防止済み（UseCase 側でも弾く）
+ *   - 相棒の手放しは MainMonsterPolicy で防止済み（UseCase 側でも弾く）
  */
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';

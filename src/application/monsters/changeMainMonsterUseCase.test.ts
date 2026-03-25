@@ -62,7 +62,7 @@ describe('ChangeMainMonsterUseCase', () => {
     _resetDatabaseForTest(db);
   });
 
-  it('非主役モンスターを主役に設定できる', async () => {
+  it('非相棒モンスターを相棒に設定できる', async () => {
     await seedSave([
       makeMonster('mon-1', true),
       makeMonster('mon-2', false),
@@ -98,7 +98,7 @@ describe('ChangeMainMonsterUseCase', () => {
     if (!result.ok) expect(result.errorCode).toBe(MonsterErrorCode.NotFound);
   });
 
-  it('すでに主役のモンスターを再度設定してもエラーにならない', async () => {
+  it('すでに相棒のモンスターを再度設定してもエラーにならない', async () => {
     await seedSave([makeMonster('mon-1', true)]);
 
     const result = await new ChangeMainMonsterUseCase().execute('mon-1');

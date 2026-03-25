@@ -1,6 +1,6 @@
 /**
  * 編成画面初期状態取得 UseCase。
- * DB から主役 + 助っ人一覧を読み込み PartyEditViewModel を返す。
+ * DB から相棒 + 助っ人一覧を読み込み PartyEditViewModel を返す。
  * 選択中助っ人は Zustand 側で管理するため、初期値は空配列。
  */
 import type { Result } from '@/common/results/Result';
@@ -24,7 +24,7 @@ export class GetPartyEditStateUseCase {
     const supports   = save?.supportMonsters ?? [];
     const player     = save?.player          ?? null;
 
-    // 主役情報
+    // 相棒情報
     const mainMonster = player?.mainMonsterId
       ? owned.find((m) => m.uniqueId === player.mainMonsterId) ?? null
       : null;

@@ -3,7 +3,7 @@
  *
  * 確認観点:
  *   - プレイヤー名が ViewModel に反映される
- *   - 主役名 / 仲間数 / 助っ人数が正しい
+ *   - 相棒名 / 仲間数 / 助っ人数が正しい
  *   - AdventureSession なし → canContinue=false
  *   - AdventureSession あり (SESSION_ACTIVE) → canContinue=true, reason='ACTIVE'
  *   - AdventureSession あり (SESSION_PENDING_RESULT) → canContinue=true, reason='PENDING_RESULT'
@@ -89,7 +89,7 @@ describe('BuildHomeViewModelUseCase', () => {
     expect(vm.supportCapacity).toBe(10);
   });
 
-  it('主役名が反映される', () => {
+  it('相棒名が反映される', () => {
     const uniqueId = toMonsterId('main-mon');
     const save: MainSaveSnapshot = {
       ...createEmptyMainSave(),

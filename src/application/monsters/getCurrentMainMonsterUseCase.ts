@@ -1,5 +1,5 @@
 /**
- * 現在の主役取得 UseCase。
+ * 現在の相棒取得 UseCase。
  * player.mainMonsterId から該当の OwnedMonster を取得する。
  */
 import type { Result } from '@/common/results/Result';

@@ -27,7 +27,7 @@ interface MonsterEntry {
 }
 
 const MONSTERS: MonsterEntry[] = [
-  // 初期主役
+  // 初期相棒
   { monsterId: 'MON_GRASS_001', displayName: 'グリーニョ',        world: '森',   role: 'アタッカー',   isInitial: true  },
   { monsterId: 'MON_FIRE_001',  displayName: 'フレイム',          world: '砂漠', role: 'アタッカー',   isInitial: true  },
   { monsterId: 'MON_ICE_001',   displayName: 'フロスト',          world: '雪原', role: 'サポーター',   isInitial: true  },
@@ -195,7 +195,7 @@ function MonsterCard({ m }: { m: MonsterEntry }) {
 // ---------------------------------------------------------------------------
 
 const SECTIONS: { label: string; world?: WorldLabel; initial?: boolean; hidden?: boolean; filter?: (m: MonsterEntry) => boolean }[] = [
-  { label: '初期主役',     initial: true  },
+  { label: '初期相棒',     initial: true  },
   { label: '森ワールド',   world:  '森'   },
   { label: '砂漠ワールド', world:  '砂漠' },
   { label: '雪原ワールド', world:  '雪原' },

@@ -93,14 +93,14 @@ describe('ValidateAdventureStartUseCase', () => {
     _resetDatabaseForTest(db);
   });
 
-  it('主役設定済み・解放ステージ → ok', async () => {
+  it('相棒設定済み・解放ステージ → ok', async () => {
     await seedWithMonsters('mon-1', [makeMonster('mon-1', true)]);
     const uc = new ValidateAdventureStartUseCase();
     const result = await uc.execute({ stageId: 'stage_w1_1', selectedSupportIds: [] });
     expect(result.ok).toBe(true);
   });
 
-  it('主役未設定 → NoMainMonster エラー', async () => {
+  it('相棒未設定 → NoMainMonster エラー', async () => {
     await seedWithMonsters(null, [makeMonster('mon-1', false)]);
     const uc = new ValidateAdventureStartUseCase();
     const result = await uc.execute({ stageId: 'stage_w1_1', selectedSupportIds: [] });

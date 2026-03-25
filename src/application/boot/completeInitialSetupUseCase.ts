@@ -1,6 +1,6 @@
 /**
  * 初期設定完了 UseCase。
- * プレイヤー名 / ワールド / 初期主役を受け取り保存する。
+ * プレイヤー名 / ワールド / 初期相棒を受け取り保存する。
  *
  * 保存は必ず SaveTransactionService 経由（temp → validate → main）。
  * component 内で IndexedDB を直接触らない。
@@ -15,7 +15,7 @@ import { toPlayerId, toWorldId, toMonsterId, toMonsterMasterId } from '@/types/i
 import type { InitialSetupInput } from '@/application/viewModels/initialSetupViewModel';
 import type { WorldId as WorldIdEnum } from '@/common/constants/enums';
 
-// ワールドごとの初期主役マスタ（フェーズ3 仮定義）
+// ワールドごとの初期相棒マスタ（フェーズ3 仮定義）
 const STARTER_MONSTERS: Record<string, { monsterMasterId: string; displayName: string; worldId: WorldIdEnum }> = {
   MON_GRASS_001: { monsterMasterId: 'MON_GRASS_001', displayName: 'グリーニョ', worldId: WorldId.Forest   },
   MON_FIRE_001:  { monsterMasterId: 'MON_FIRE_001',  displayName: 'フレイム',   worldId: WorldId.Volcano  },
@@ -40,11 +40,11 @@ function validate(input: InitialSetupInput): string | null {
   if (!input.worldId)
     return 'ワールドを選択してください';
   if (!input.starterMonsterId)
-    return '初期主役を選択してください';
+    return '初期相棒を選択してください';
   if (!STARTER_MONSTERS[input.starterMonsterId])
-    return '無効な初期主役です';
+    return '無効な初期相棒です';
   if (STARTER_MONSTERS[input.starterMonsterId].worldId !== input.worldId)
-    return '選択したワールドと主役が一致しません';
+    return '選択したワールドと相棒が一致しません';
   return null;
 }
 

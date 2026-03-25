@@ -147,7 +147,7 @@ export default function AdventureBattlePage() {
     store.setBattleState(updated);
   }, []);
 
-  // ---- 主役スキル一覧 ----
+  // ---- 相棒スキル一覧 ----
   const mainActor = battleState?.actors.find((a) => a.isMain && !a.isEnemy);
   const mainSkills = mainActor?.skills ?? [];
 
@@ -215,9 +215,9 @@ export default function AdventureBattlePage() {
         {/* 戦闘ログ */}
         <BattleLogPanel log={battleState.log} />
 
-        {/* 主役スキルボタン */}
+        {/* 相棒スキルボタン */}
         <div>
-          <div className="text-xs text-gray-400 mb-2">★ 主役スキル（あなたが操作できます）</div>
+          <div className="text-xs text-gray-400 mb-2">★ 相棒スキル（あなたが操作できます）</div>
           <MainSkillButton
             skills={mainSkills}
             disabled={!isRunning || (battleState.pendingMainSkillId !== null)}

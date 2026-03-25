@@ -3,14 +3,16 @@
  */
 
 export interface AdventureConfirmMainViewModel {
-  readonly displayName: string;
-  readonly level:       number;
+  readonly displayName:     string;
+  readonly level:           number;
+  readonly monsterMasterId: string;
 }
 
 export interface AdventureConfirmSupportViewModel {
-  readonly supportId:   string;
-  readonly displayName: string;
-  readonly level:       number;
+  readonly supportId:       string;
+  readonly displayName:     string;
+  readonly level:           number;
+  readonly monsterMasterId: string;
 }
 
 export interface AdventureConfirmViewModel {

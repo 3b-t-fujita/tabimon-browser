@@ -180,7 +180,7 @@ describe('StartAdventureUseCase', () => {
     expect(loaded.value?.adventureSession?.status).toBe(AdventureSessionStatus.Active);
   });
 
-  it('partySnapshot に主役が含まれる', async () => {
+  it('partySnapshot に相棒が含まれる', async () => {
     await seedSave('mon-1', [makeMonster('mon-1', true)]);
     const result = await new StartAdventureUseCase().execute({
       stageId: 'stage_w1_1', selectedSupportIds: [],
@@ -208,7 +208,7 @@ describe('StartAdventureUseCase', () => {
 
   // --- バリデーション失敗 ---
 
-  it('主役未設定は失敗し DB が汚れない', async () => {
+  it('相棒未設定は失敗し DB が汚れない', async () => {
     const tx = resetAll();
     await tx.saveMultiple({
       ...createEmptyMainSave(),

@@ -56,7 +56,7 @@ export class StartAdventureUseCase {
 
     // -------- 2. バリデーション --------
     if (!save?.player?.mainMonsterId) {
-      return fail(AdventureErrorCode.NoMainMonster, '主役が設定されていません');
+      return fail(AdventureErrorCode.NoMainMonster, '相棒が設定されていません');
     }
 
     if (!input.stageId) {

@@ -8,7 +8,7 @@ export interface WorldOption {
   readonly label: string;
 }
 
-/** 仮の初期主役候補（ワールド別固定） */
+/** 仮の初期相棒候補（ワールド別固定） */
 export interface StarterMonsterOption {
   readonly monsterMasterId: string;
   readonly displayName:     string;

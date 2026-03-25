@@ -1,5 +1,5 @@
 /**
- * 主役スキル発動 UseCase。
+ * 相棒スキル発動 UseCase。
  * プレイヤーが選択したスキルIDを BattleState の pendingMainSkillId にセットする。
  *
  * 重要:
@@ -10,7 +10,7 @@
 import type { BattleState } from '@/domain/battle/BattleState';
 
 /**
- * 主役スキルをキューに積む。
+ * 相棒スキルをキューに積む。
  * 純粋関数。副作用なし。
  *
  * @param state    現在の BattleState

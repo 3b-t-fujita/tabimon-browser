@@ -18,9 +18,9 @@ export interface Player {
   readonly worldId: WorldId;
 
   /**
-   * 現在の主役モンスターの個体固有ID。
+   * 現在の相棒モンスターの個体固有ID。
    * 未設定時は null。
-   * 主役は手放し不可（MainMonsterPolicy.canRelease 参照）。
+   * 相棒は手放し不可（MainMonsterPolicy.canRelease 参照）。
    */
   readonly mainMonsterId: MonsterId | null;
 }

@@ -5,7 +5,7 @@
  *
  * 処理内容:
  *   1. resultPendingFlag=true を確認（false なら ResultAlreadyFinal で即リターン）
- *   2. 主役モンスターに経験値を付与（レベルアップ処理込み）
+ *   2. 相棒モンスターに経験値を付与（レベルアップ処理込み）
  *   3. SUCCESS の場合: 次ステージ解放（unlockStageId があれば）+ clearedStageIds 追加
  *   4. resultPendingFlag=false, status=SESSION_COMPLETED に更新して保存
  *
@@ -80,7 +80,7 @@ export class FinalizeAdventureResultUseCase {
       return fail(AdventureErrorCode.StageNotFound, `ステージが見つかりません: ${session.stageId}`);
     }
 
-    // ---- 主役モンスターを取得 ----
+    // ---- 相棒モンスターを取得 ----
     const mainId   = save.player?.mainMonsterId;
     const mainMon  = save.ownedMonsters.find((m) => m.uniqueId === mainId);
 
@@ -107,7 +107,7 @@ export class FinalizeAdventureResultUseCase {
       };
     }
 
-    // ---- 主役モンスター更新 ----
+    // ---- 相棒モンスター更新 ----
     let updatedOwned: OwnedMonster[] = save.ownedMonsters.map((m) => {
       if (m.uniqueId !== mainId) return m;
       return { ...m, level: newLevel, exp: newExp };

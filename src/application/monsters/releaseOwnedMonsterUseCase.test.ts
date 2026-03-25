@@ -60,7 +60,7 @@ describe('ReleaseOwnedMonsterUseCase', () => {
     _resetDatabaseForTest(db);
   });
 
-  it('非主役モンスターを手放せる', async () => {
+  it('非相棒モンスターを手放せる', async () => {
     await seedSave([
       makeMonster('mon-1', true),
       makeMonster('mon-2', false),
@@ -79,7 +79,7 @@ describe('ReleaseOwnedMonsterUseCase', () => {
     expect(ids).toContain('mon-1');
   });
 
-  it('主役モンスターは手放せない（IsMain エラー）', async () => {
+  it('相棒モンスターは手放せない（IsMain エラー）', async () => {
     await seedSave([makeMonster('mon-1', true)]);
 
     const result = await new ReleaseOwnedMonsterUseCase().execute('mon-1');

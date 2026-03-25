@@ -20,7 +20,7 @@ export interface OwnedMonsterDetailViewModel {
   readonly personalityLabel: string;
   readonly skillIds:         readonly string[];
   readonly isMain:           boolean;
-  /** 手放し可否（主役は false） */
+  /** 手放し可否（相棒は false） */
   readonly canRelease:       boolean;
   /** 現在レベルのステータス */
   readonly stats:            MonsterStatsViewModel;

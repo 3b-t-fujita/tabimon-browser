@@ -21,7 +21,7 @@ const WORLD_OPTIONS = [
   { id: WorldId.Ice,     label: '❄️ コオリ氷原' },
 ] as const;
 
-// ワールドごとの初期主役
+// ワールドごとの初期相棒
 const STARTER_BY_WORLD: Record<string, { id: string; label: string }[]> = {
   [WorldId.Forest]:  [{ id: 'MON_GRASS_001', label: 'グリーニョ (草)' }],
   [WorldId.Volcano]: [{ id: 'MON_FIRE_001',  label: 'フレイム (炎)' }],
@@ -45,7 +45,7 @@ export function InitialSetupForm() {
   const [isSubmitting,     setIsSubmitting]     = useState(false);
   const [errorMessage,     setErrorMessage]     = useState<string | null>(null);
 
-  // ワールドが変わったら主役をリセット
+  // ワールドが変わったら相棒をリセット
   function handleWorldChange(worldId: string) {
     setSelectedWorldId(worldId);
     setStarterMonsterId('');
@@ -146,7 +146,7 @@ export function InitialSetupForm() {
         </div>
       </div>
 
-      {/* 初期主役選択 */}
+      {/* 初期相棒選択 */}
       {starterOptions.length > 0 && (
         <div className="flex flex-col gap-2">
           <p className="text-sm font-semibold text-stone-700">最初の仲間</p>

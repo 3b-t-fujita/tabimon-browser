@@ -1,6 +1,6 @@
 /**
  * 仲間手放し UseCase。
- * 詳細設計 v4 §4.5「主役設定中モンスターは手放し不可」に準拠。
+ * 詳細設計 v4 §4.5「相棒設定中モンスターは手放し不可」に準拠。
  *
  * - canRelease が false の場合はエラーを返す（保存しない）
  * - 手放し成功時は ownedMonsters から除外して保存する
@@ -34,9 +34,9 @@ export class ReleaseOwnedMonsterUseCase {
     const monster = (save?.ownedMonsters ?? []).find((m) => m.uniqueId === uniqueId);
     if (!monster) return fail(ReleaseErrorCode.NotFound, `仲間が見つかりません: ${uniqueId}`);
 
-    // 主役手放し不可チェック
+    // 相棒手放し不可チェック
     if (!canRelease(monster)) {
-      return fail(ReleaseErrorCode.IsMain, '主役に設定されている仲間は手放せません');
+      return fail(ReleaseErrorCode.IsMain, '相棒に設定されている仲間は手放せません');
     }
 
     const updatedOwned = (save?.ownedMonsters ?? []).filter((m) => m.uniqueId !== uniqueId);

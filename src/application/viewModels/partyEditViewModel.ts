@@ -28,7 +28,7 @@ export interface SelectedSupportViewModel {
 }
 
 export interface PartyEditViewModel {
-  /** 現在の主役（null = 未設定） */
+  /** 現在の相棒（null = 未設定） */
   readonly main:               PartyMainViewModel | null;
   /** 助っ人候補一覧（全助っ人） */
   readonly supportCandidates:  PartySupportCandidateViewModel[];

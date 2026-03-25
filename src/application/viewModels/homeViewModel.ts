@@ -6,11 +6,11 @@
 export interface HomeViewModel {
   /** プレイヤー名 */
   readonly playerName:          string;
-  /** 主役表示名（未設定時は空文字） */
+  /** 相棒表示名（未設定時は空文字） */
   readonly mainMonsterName:     string;
-  /** 主役 monsterId（未設定時は null） */
+  /** 相棒 monsterId（未設定時は null） */
   readonly mainMonsterId:       string | null;
-  /** 主役 monsterMasterId（画像取得用。未設定時は null） */
+  /** 相棒 monsterMasterId（画像取得用。未設定時は null） */
   readonly mainMonsterMasterId: string | null;
   /** 仲間数 */
   readonly ownedCount:          number;

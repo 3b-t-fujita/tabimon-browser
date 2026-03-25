@@ -5,15 +5,17 @@
  */
 'use client';
 
+import Image from 'next/image';
 import type { AdventureConfirmViewModel } from '@/application/viewModels/adventureConfirmViewModel';
+import { getMonsterIconUrl } from '@/infrastructure/assets/monsterImageService';
 
 interface Props {
-  vm:          AdventureConfirmViewModel;
-  onStart:     () => void;
-  onBack:      () => void;
+  vm:           AdventureConfirmViewModel;
+  onStart:      () => void;
+  onBack:       () => void;
   onEditParty?: () => void;
-  isStarting:  boolean;
-  startError:  string | null;
+  isStarting:   boolean;
+  startError:   string | null;
 }
 
 function getWorldKey(stageId: string): 'forest' | 'fire' | 'ice' {
@@ -67,16 +69,33 @@ const WORLD_CONFIG = {
   },
 } as const;
 
-const DIFFICULTY_CONFIG: Record<string, { stars: number; badge: string; badgeText: string; exp: number; nodes: number }> = {
-  'やさしい':   { stars: 1, badge: '#dcfce7', badgeText: '#166534', exp: 30,  nodes: 6 },
-  'ふつう':     { stars: 2, badge: '#fef9c3', badgeText: '#854d0e', exp: 70,  nodes: 7 },
-  'むずかしい': { stars: 3, badge: '#fee2e2', badgeText: '#991b1b', exp: 120, nodes: 9 },
+const DIFFICULTY_CONFIG: Record<string, { stars: number; badge: string; badgeText: string; exp: number; nodes: number; rareChance: string }> = {
+  'やさしい':   { stars: 1, badge: '#dcfce7', badgeText: '#166534', exp: 30,  nodes: 6, rareChance: '5%' },
+  'ふつう':     { stars: 2, badge: '#fef9c3', badgeText: '#854d0e', exp: 70,  nodes: 7, rareChance: '10%' },
+  'むずかしい': { stars: 3, badge: '#fee2e2', badgeText: '#991b1b', exp: 120, nodes: 9, rareChance: '15%' },
 };
+
+/** モンスターアイコン表示（URL なければ絵文字フォールバック） */
+function MonsterIcon({ masterId, fallback, size = 40 }: { masterId: string; fallback: string; size?: number }) {
+  const url = getMonsterIconUrl(masterId);
+  return url ? (
+    <div className="relative shrink-0 overflow-hidden rounded-xl" style={{ width: size, height: size }}>
+      <Image src={url} alt="" fill className="object-contain" sizes={`${size}px`} />
+    </div>
+  ) : (
+    <div
+      className="flex shrink-0 items-center justify-center rounded-xl text-xl"
+      style={{ width: size, height: size }}
+    >
+      {fallback}
+    </div>
+  );
+}
 
 export function AdventureConfirmPanelB({ vm, onStart, onBack, onEditParty, isStarting, startError }: Props) {
   const world = getWorldKey(vm.stageId);
   const wConf = WORLD_CONFIG[world];
-  const dConf = DIFFICULTY_CONFIG[vm.difficulty] ?? { stars: 1, badge: '#f3f4f6', badgeText: '#374151', exp: 30, nodes: 6 };
+  const dConf = DIFFICULTY_CONFIG[vm.difficulty] ?? { stars: 1, badge: '#f3f4f6', badgeText: '#374151', exp: 30, nodes: 6, rareChance: '5%' };
 
   return (
     <div className="flex flex-1 flex-col" style={{ background: '#f8fafc' }}>
@@ -114,7 +133,7 @@ export function AdventureConfirmPanelB({ vm, onStart, onBack, onEditParty, isSta
             <h1 className="text-xl font-black text-white leading-tight">{vm.stageName}</h1>
           </div>
 
-          {/* ステージ概要ピル（右上） */}
+          {/* 難易度・推奨Lv（右上） */}
           <div className="flex flex-col items-end gap-1.5 pt-0.5">
             <span
               className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold"
@@ -128,18 +147,21 @@ export function AdventureConfirmPanelB({ vm, onStart, onBack, onEditParty, isSta
           </div>
         </div>
 
-        {/* EXP / ノード インラインサマリー */}
-        <div className="mt-3 flex gap-3 border-t border-white/10 pt-3">
+        {/* ステージ概要インラインサマリー */}
+        <div className="mt-3 flex gap-4 border-t border-white/10 pt-3">
           <span className="flex items-center gap-1 text-[11px] font-semibold text-white/70">
             <span>📍</span>{dConf.nodes}ノード
           </span>
           <span className="flex items-center gap-1 text-[11px] font-semibold text-white/70">
             <span>✨</span>EXP +{dConf.exp}
           </span>
+          <span className="flex items-center gap-1 text-[11px] font-semibold text-white/70">
+            <span>🌟</span>レア {dConf.rareChance}
+          </span>
         </div>
       </header>
 
-      {/* ══ ② 編成セクション（メイン） ══ */}
+      {/* ══ ② 編成セクション ══ */}
       <div className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 pt-4 pb-2">
 
         {/* 編成ラベル + 編成変更ボタン */}
@@ -160,7 +182,7 @@ export function AdventureConfirmPanelB({ vm, onStart, onBack, onEditParty, isSta
           )}
         </div>
 
-        {/* 主役カード（大） */}
+        {/* 相棒カード（大） */}
         {vm.main ? (
           <div
             className="relative overflow-hidden rounded-2xl border-2 p-4 shadow-sm"
@@ -172,44 +194,42 @@ export function AdventureConfirmPanelB({ vm, onStart, onBack, onEditParty, isSta
               style={{ background: `linear-gradient(to left, ${wConf.accent}, transparent)` }}
             />
             <div className="relative flex items-center gap-4">
-              {/* アバター */}
+              {/* アイコン */}
               <div
-                className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-3xl shadow-md"
+                className="shrink-0 overflow-hidden rounded-2xl shadow-md"
                 style={{
+                  width: 64,
+                  height: 64,
                   background: `linear-gradient(135deg, ${wConf.accent}30, ${wConf.accent}10)`,
                   border: `2.5px solid ${wConf.accent}`,
                 }}
               >
-                ⭐
+                <MonsterIcon masterId={vm.main.monsterMasterId} fallback="⭐" size={64} />
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-1.5">
-                  <span
-                    className="rounded-full px-2 py-0.5 text-[10px] font-black text-white"
-                    style={{ background: wConf.accent }}
-                  >
-                    主役
-                  </span>
-                </div>
+                <span
+                  className="rounded-full px-2 py-0.5 text-[10px] font-black text-white"
+                  style={{ background: wConf.accent }}
+                >
+                  相棒
+                </span>
                 <p className="mt-1 text-lg font-black text-stone-800 leading-tight">
                   {vm.main.displayName}
                 </p>
-                <div className="mt-1.5 flex items-center gap-2">
-                  <span
-                    className="rounded-lg px-2 py-0.5 text-xs font-bold"
-                    style={{ background: wConf.accentLight, color: wConf.accent }}
-                  >
-                    Lv.{vm.main.level}
-                  </span>
-                </div>
+                <span
+                  className="mt-1.5 inline-block rounded-lg px-2 py-0.5 text-xs font-bold"
+                  style={{ background: wConf.accentLight, color: wConf.accent }}
+                >
+                  Lv.{vm.main.level}
+                </span>
               </div>
             </div>
           </div>
         ) : (
           <div className="rounded-2xl border-2 border-dashed border-red-300 bg-red-50 p-4 text-center">
             <p className="text-base">⚠️</p>
-            <p className="mt-1 text-sm font-bold text-red-600">主役が設定されていません</p>
-            <p className="mt-0.5 text-xs text-red-400">編成変更から主役を設定してください</p>
+            <p className="mt-1 text-sm font-bold text-red-600">相棒が設定されていません</p>
+            <p className="mt-0.5 text-xs text-red-400">編成変更から相棒を設定してください</p>
           </div>
         )}
 
@@ -227,11 +247,17 @@ export function AdventureConfirmPanelB({ vm, onStart, onBack, onEditParty, isSta
                   className="flex items-center gap-3 rounded-xl border p-3.5 shadow-sm"
                   style={{ background: wConf.supCard, borderColor: wConf.supBorder }}
                 >
+                  {/* アイコン */}
                   <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-xl shadow-sm"
-                    style={{ background: `${wConf.accent}15`, border: `1.5px solid ${wConf.accent}30` }}
+                    className="shrink-0 overflow-hidden rounded-xl shadow-sm"
+                    style={{
+                      width: 40,
+                      height: 40,
+                      background: `${wConf.accent}15`,
+                      border: `1.5px solid ${wConf.accent}30`,
+                    }}
                   >
-                    🤝
+                    <MonsterIcon masterId={sup.monsterMasterId} fallback="🤝" size={40} />
                   </div>
                   <div className="flex-1">
                     <p className="font-bold text-stone-700 leading-tight">{sup.displayName}</p>
@@ -274,7 +300,6 @@ export function AdventureConfirmPanelB({ vm, onStart, onBack, onEditParty, isSta
 
       {/* ══ ③ 大型出発CTA（固定フッター） ══ */}
       <div className="shrink-0 px-4 pb-6 pt-3">
-        {/* サブテキスト */}
         {vm.canStart && !isStarting && (
           <p className="mb-2 text-center text-xs text-stone-400">
             {vm.supports.length === 0
@@ -293,7 +318,6 @@ export function AdventureConfirmPanelB({ vm, onStart, onBack, onEditParty, isSta
               : { background: '#d1d5db' }
           }
         >
-          {/* 光沢レイヤー */}
           {vm.canStart && !isStarting && (
             <span
               className="absolute inset-x-0 top-0 h-1/2 rounded-t-2xl"

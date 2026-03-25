@@ -162,7 +162,7 @@ export function AdventureConfirmPanelA({ vm, onStart, onBack, onEditParty, isSta
             )}
           </div>
 
-          {/* 主役 */}
+          {/* 相棒 */}
           {vm.main ? (
             <div
               className="mb-2 flex items-center gap-3 rounded-2xl border p-3.5 shadow-sm"
@@ -180,7 +180,7 @@ export function AdventureConfirmPanelA({ vm, onStart, onBack, onEditParty, isSta
                     className="rounded-full px-1.5 py-0.5 text-[10px] font-black text-white"
                     style={{ background: wConf.accent }}
                   >
-                    主役
+                    相棒
                   </span>
                   <span className="font-bold text-stone-800">{vm.main.displayName}</span>
                 </div>
@@ -189,7 +189,7 @@ export function AdventureConfirmPanelA({ vm, onStart, onBack, onEditParty, isSta
             </div>
           ) : (
             <div className="mb-2 rounded-2xl border-2 border-dashed border-red-200 bg-red-50 p-3.5 text-center">
-              <p className="text-sm font-bold text-red-500">⚠️ 主役が設定されていません</p>
+              <p className="text-sm font-bold text-red-500">⚠️ 相棒が設定されていません</p>
             </div>
           )}
 

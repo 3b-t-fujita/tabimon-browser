@@ -1,6 +1,6 @@
 /**
  * 仲間詳細 component。
- * 基本情報表示 + 主役設定ボタン + 手放しボタン。
+ * 基本情報表示 + 相棒設定ボタン + 手放しボタン。
  */
 'use client';
 
@@ -30,7 +30,7 @@ export function OwnedMonsterDetail({ vm, onSetMain, onRelease, onBack, onQrGener
           <h1 className="text-xl font-bold text-white">{vm.displayName}</h1>
           {vm.isMain && (
             <span className="rounded-full bg-amber-300 px-2 py-0.5 text-xs font-bold text-amber-900">
-              主役
+              相棒
             </span>
           )}
         </div>
@@ -112,7 +112,7 @@ export function OwnedMonsterDetail({ vm, onSetMain, onRelease, onBack, onQrGener
             disabled={isSaving}
             className="w-full rounded-xl bg-emerald-500 py-4 text-base font-bold text-white shadow transition hover:bg-emerald-600 disabled:bg-stone-200 disabled:text-stone-400 active:scale-95"
           >
-            {isSaving ? '設定中...' : '主役に設定する'}
+            {isSaving ? '設定中...' : '相棒に設定する'}
           </button>
         )}
         <button
@@ -133,7 +133,7 @@ export function OwnedMonsterDetail({ vm, onSetMain, onRelease, onBack, onQrGener
               : 'border-stone-200 text-stone-300'
           }`}
         >
-          {vm.canRelease ? '手放す' : '手放し不可（主役）'}
+          {vm.canRelease ? '手放す' : '手放し不可（相棒）'}
         </button>
       </div>
     </div>

@@ -1,8 +1,8 @@
 /**
- * 主役変更 UseCase。
+ * 相棒変更 UseCase。
  * 詳細設計 v4 §4.5 / §5.2 に準拠。
  *
- * - 主役は仲間からのみ設定可能（OwnedMonster であれば常に true）
+ * - 相棒は仲間からのみ設定可能（OwnedMonster であれば常に true）
  * - 変更後は player.mainMonsterId と ownedMonsters.isMain を更新して保存する
  * - 保存は SaveTransactionService 経由（temp → validate → main）
  */
@@ -20,7 +20,7 @@ export class ChangeMainMonsterUseCase {
   constructor() { this.tx = new SaveTransactionService(); }
 
   async execute(newMainUniqueId: string): Promise<Result<void, ChangeMainErrorCode>> {
-    if (!newMainUniqueId) return fail(GeneralErrorCode.InvalidInput, '主役IDが指定されていません');
+    if (!newMainUniqueId) return fail(GeneralErrorCode.InvalidInput, '相棒IDが指定されていません');
 
     const loadResult = await this.tx.load();
     if (!loadResult.ok) return fail(loadResult.errorCode as ChangeMainErrorCode, loadResult.message);

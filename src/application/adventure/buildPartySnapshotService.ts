@@ -2,7 +2,7 @@
  * 冒険開始時の PartySnapshot 構築サービス。
  * 詳細設計 v4 §5.4 に準拠。
  *
- * - 主役・助っ人のスナップショットを開始時点で固定する
+ * - 相棒・助っ人のスナップショットを開始時点で固定する
  * - 冒険中に所持データが変わっても本スナップショットは変更しない
  * - MonsterStats / SkillSnapshot はマスタから構築する
  */
@@ -65,11 +65,11 @@ export async function buildPartySnapshot(
   selectedSupportIds: readonly string[],
 ): Promise<Result<PartySnapshot, BuildPartySnapshotErrorCode>> {
   try {
-    // 主役を取得
+    // 相棒を取得
     const mainId  = save.player?.mainMonsterId;
     const mainMon = save.ownedMonsters.find((m) => m.uniqueId === mainId);
     if (!mainMon) {
-      return fail(AdventureErrorCode.PartyBuildFailed, '主役モンスターが見つかりません');
+      return fail(AdventureErrorCode.PartyBuildFailed, '相棒モンスターが見つかりません');
     }
 
     const mainSnapshot = await buildMemberSnapshot(

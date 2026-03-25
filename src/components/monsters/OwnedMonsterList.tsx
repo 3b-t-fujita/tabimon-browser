@@ -65,7 +65,7 @@ export function OwnedMonsterList({ vm }: Props) {
                     <span className="font-semibold text-stone-800">{m.displayName}</span>
                     {m.isMain && (
                       <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-bold text-amber-700">
-                        主役
+                        相棒
                       </span>
                     )}
                   </div>

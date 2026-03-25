@@ -1,8 +1,8 @@
 'use client';
 
 /**
- * 主役スキルボタンコンポーネント。
- * プレイヤーが操作できる主役のスキル一覧を表示する。
+ * 相棒スキルボタンコンポーネント。
+ * プレイヤーが操作できる相棒のスキル一覧を表示する。
  * クールダウン中は無効化する。
  */
 import type { BattleSkillState } from '@/domain/battle/BattleActor';

@@ -1,6 +1,6 @@
 /**
  * 編成パネル component。
- * 主役表示 + 助っ人候補一覧 + 選択中助っ人表示。
+ * 相棒表示 + 助っ人候補一覧 + 選択中助っ人表示。
  * 最大2体・重複不可の制御ロジックは UseCase に閉じており、
  * このコンポーネントは表示とイベント発火のみ担当する。
  */
@@ -29,9 +29,9 @@ export function PartyEditPanel({ vm, onAddSupport, onRemoveSupport, onBack }: Pr
       </header>
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-5">
-        {/* 主役 */}
+        {/* 相棒 */}
         <section>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-400">主役</p>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-stone-400">相棒</p>
           {vm.main ? (
             <div className="flex items-center gap-3 rounded-xl border-2 border-emerald-200 bg-emerald-50 px-4 py-3">
               {(() => {
@@ -47,7 +47,7 @@ export function PartyEditPanel({ vm, onAddSupport, onRemoveSupport, onBack }: Pr
             </div>
           ) : (
             <div className="rounded-xl border border-dashed border-stone-300 px-4 py-3 text-center text-sm text-stone-400">
-              主役未設定（仲間一覧から設定してください）
+              相棒未設定（仲間一覧から設定してください）
             </div>
           )}
         </section>

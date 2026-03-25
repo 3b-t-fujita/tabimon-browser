@@ -30,7 +30,7 @@ export interface BattleState {
   log:                BattleLogEntry[];
   outcome:            BattleOutcome;
   tickCount:          number;
-  /** プレイヤーがキューした主役スキルID（null = キューなし） */
+  /** プレイヤーがキューした相棒スキルID（null = キューなし） */
   pendingMainSkillId: string | null;
 }
 

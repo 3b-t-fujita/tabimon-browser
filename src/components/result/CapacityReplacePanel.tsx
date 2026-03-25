@@ -3,7 +3,7 @@
 /**
  * 仲間入替パネル。
  * 上限時に仲間一覧を表示し、手放す対象を選ばせる。
- * 主役は選択不可。
+ * 相棒は選択不可。
  */
 import type { OwnedMonster } from '@/domain/entities/OwnedMonster';
 
@@ -22,10 +22,10 @@ export default function CapacityReplacePanel({
     <div className="flex flex-col gap-2">
       <p className="text-sm text-stone-600">
         仲間が上限（{owned.length}/{owned.length}）です。
-        手放す仲間を選んでください（主役は選択できません）。
+        手放す仲間を選んでください（相棒は選択できません）。
       </p>
       {releasable.length === 0 && (
-        <p className="text-sm text-red-500">手放せる仲間がいません（全員主役に設定されています）。</p>
+        <p className="text-sm text-red-500">手放せる仲間がいません（全員相棒に設定されています）。</p>
       )}
       {releasable.map((m) => (
         <button

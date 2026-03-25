@@ -64,7 +64,7 @@ export function HomeScreenPatternB({ vm, onContinue }: Props) {
               {mainStandUrl ? (
                 <Image
                   src={mainStandUrl}
-                  alt={vm.mainMonsterName ?? '主役'}
+                  alt={vm.mainMonsterName ?? '相棒'}
                   fill
                   className="object-contain object-bottom"
                   style={{ filter: 'drop-shadow(0 2px 12px rgba(0,0,0,0.4))' }}
@@ -80,7 +80,7 @@ export function HomeScreenPatternB({ vm, onContinue }: Props) {
             <div className="flex-1 py-4 pr-4">
               {vm.mainMonsterName ? (
                 <>
-                  <p className="text-[10px] font-semibold text-emerald-300/70 uppercase tracking-wide">主役モンスター</p>
+                  <p className="text-[10px] font-semibold text-emerald-300/70 uppercase tracking-wide">相棒モンスター</p>
                   <p className="mt-0.5 text-lg font-black text-white leading-tight">{vm.mainMonsterName}</p>
                   <div className="mt-2 flex items-center gap-1.5">
                     <span className="rounded-md bg-emerald-500/40 px-2 py-0.5 text-[10px] font-bold text-emerald-200">🌿 森</span>
@@ -89,7 +89,7 @@ export function HomeScreenPatternB({ vm, onContinue }: Props) {
                 </>
               ) : (
                 <div>
-                  <p className="text-sm text-emerald-300/70">主役未設定</p>
+                  <p className="text-sm text-emerald-300/70">相棒未設定</p>
                   <p className="mt-1 text-xs text-emerald-400/50">仲間一覧から設定しましょう</p>
                 </div>
               )}

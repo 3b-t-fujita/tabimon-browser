@@ -2,7 +2,7 @@
 
 /**
  * 仲間詳細ページ。
- * 主役設定・手放しを UseCase 経由で実行する。
+ * 相棒設定・手放しを UseCase 経由で実行する。
  * IndexedDB を page 内で直接触らない。
  */
 import { useEffect } from 'react';
@@ -57,7 +57,7 @@ export default function MonsterDetailPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // 主役設定
+  // 相棒設定
   async function handleSetMain() {
     if (!id || isSaving) return;
     setIsSaving(true);
@@ -65,7 +65,7 @@ export default function MonsterDetailPage() {
     const result = await new ChangeMainMonsterUseCase().execute(id);
     setIsSaving(false);
     if (!result.ok) {
-      openErrorDialog('主役設定に失敗しました', result.message ?? '保存に失敗しました');
+      openErrorDialog('相棒設定に失敗しました', result.message ?? '保存に失敗しました');
       return;
     }
     // キャッシュクリア → 再読込
@@ -79,7 +79,7 @@ export default function MonsterDetailPage() {
   // 手放し確認
   function handleRelease() {
     if (!monsterDetail || !monsterDetail.canRelease) {
-      openErrorDialog('手放せません', '主役に設定されている仲間は手放せません');
+      openErrorDialog('手放せません', '相棒に設定されている仲間は手放せません');
       return;
     }
     openConfirmDialog({
@@ -98,7 +98,7 @@ export default function MonsterDetailPage() {
     setIsSaving(false);
     if (!result.ok) {
       if (result.errorCode === MonsterErrorCode.CannotReleaseMain) {
-        openErrorDialog('手放せません', '主役に設定されている仲間は手放せません');
+        openErrorDialog('手放せません', '相棒に設定されている仲間は手放せません');
       } else {
         openErrorDialog('手放しに失敗しました', result.message ?? '保存に失敗しました');
       }

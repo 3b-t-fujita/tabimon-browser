@@ -345,7 +345,7 @@ export function processTick(state: BattleState): BattleState {
     return a.actionTimer >= calcActionThreshold(a.spd);
   });
 
-  // ---- 3. 行動順ソート（SPD 降順、主役優先、パーティ→敵） ----
+  // ---- 3. 行動順ソート（SPD 降順、相棒優先、パーティ→敵） ----
   readyActors.sort((a, b) => {
     if (a.spd !== b.spd) return b.spd - a.spd;
     if (a.isMain && !b.isMain) return -1;

@@ -1,6 +1,6 @@
 /**
  * ホーム画面 パターンA — ヒーロービジュアル重視
- * モンスターを画面の主役に置き、冒険への高揚感を前面に出したデザイン。
+ * モンスターを画面の相棒に置き、冒険への高揚感を前面に出したデザイン。
  */
 'use client';
 
@@ -61,7 +61,7 @@ export function HomeScreenPatternA({ vm, onContinue }: Props) {
           <div className="absolute bottom-0 right-0 w-52 h-72 pointer-events-none z-10">
             <Image
               src={mainStandUrl}
-              alt={vm.mainMonsterName ?? '主役'}
+              alt={vm.mainMonsterName ?? '相棒'}
               fill
               className="object-contain object-bottom"
               style={{ filter: 'drop-shadow(0 4px 24px rgba(0,0,0,0.5))' }}
@@ -94,7 +94,7 @@ export function HomeScreenPatternA({ vm, onContinue }: Props) {
               <span className="text-xs font-semibold text-emerald-100">{vm.mainMonsterName}</span>
             </div>
           ) : (
-            <p className="mt-1 text-xs text-stone-400">主役未設定</p>
+            <p className="mt-1 text-xs text-stone-400">相棒未設定</p>
           )}
         </div>
       </div>
