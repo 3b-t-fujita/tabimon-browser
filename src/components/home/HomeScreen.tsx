@@ -16,7 +16,7 @@ import { HomeScreenPatternB } from './HomeScreenPatternB';
 //   'B' = 情報整理重視
 //   'COMPARE' = プレビュー用トグル表示（選定前の比較用）
 // ────────────────────────────────────────────────────────────
-const DESIGN_PATTERN: 'A' | 'B' | 'COMPARE' = 'COMPARE';
+const DESIGN_PATTERN: 'A' | 'B' | 'COMPARE' = 'A';
 
 interface Props {
   vm: HomeViewModel;
