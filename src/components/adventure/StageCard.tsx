@@ -53,6 +53,11 @@ export function StageCard({ stage, onSelect }: Props) {
   const wStyle  = WORLD_STYLE[world];
   const dStyle  = DIFFICULTY_STYLE[stage.difficulty] ?? { stars: 1, bg: '#f3f4f6', text: '#374151', label: stage.difficulty };
 
+  // "ほのおの山 Stage 1" → "Stage 1"（ワールド名を除去）
+  const displayName = stage.stageName.startsWith(stage.worldLabel + ' ')
+    ? stage.stageName.slice(stage.worldLabel.length + 1)
+    : stage.stageName;
+
   return (
     <li
       className={`overflow-hidden rounded-2xl shadow-sm transition ${
@@ -67,7 +72,7 @@ export function StageCard({ stage, onSelect }: Props) {
       >
         <div className="flex items-center gap-2">
           <span className="text-base">{wStyle.icon}</span>
-          <span className="text-sm font-bold text-white">{stage.stageName}</span>
+          <span className="text-sm font-bold text-white">{displayName}</span>
         </div>
         {locked && (
           <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold text-white/80">
