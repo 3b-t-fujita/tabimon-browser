@@ -15,7 +15,7 @@ import { BattleScreenPatternB } from './BattleScreenPatternB';
 
 // ────────────────────────────────────────────────────────────
 // ▼ 確定デザインを選ぶときはここを変更する
-const DESIGN_PATTERN: 'A' | 'B' | 'COMPARE' = 'COMPARE';
+const DESIGN_PATTERN: 'A' | 'B' | 'COMPARE' = 'B';
 // ────────────────────────────────────────────────────────────
 
 export function BattleScreenWrapper(props: BattleScreenProps) {
