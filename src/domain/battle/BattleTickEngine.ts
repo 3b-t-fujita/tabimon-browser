@@ -28,6 +28,7 @@ export const SHIELD_REDUCTION_DEF_002 = 0.65; // ブリザードアーマー の
 export const SHIELD_REDUCTION_DEF_003 = 0.75; // グレイシャーウォール のダメージ軽減率（75%減）
 export const TYPE_BONUS_MULT = 1.1;  // 属性有利時のダメージ倍率
 export const TYPE_WEAK_MULT  = 0.9;  // 属性不利時のダメージ倍率
+export const BATTLE_TIMEOUT_TICKS = 200; // 100秒で強制終了（タイムアウト）
 
 // ---------------------------------------------------------------------------
 // 勝敗判定
@@ -379,5 +380,20 @@ export function processTick(state: BattleState): BattleState {
 
   s.tickCount++;
   if (clearPendingSkill) s.pendingMainSkillId = null;
+
+  // ---- タイムアウト判定 ----
+  if (s.tickCount >= BATTLE_TIMEOUT_TICKS && s.outcome === 'NONE') {
+    const partyHpPct  = s.actors.filter((a) => !a.isEnemy)
+      .reduce((sum, a) => sum + (a.currentHp / a.maxHp), 0);
+    const enemyHpPct  = s.actors.filter((a) =>  a.isEnemy)
+      .reduce((sum, a) => sum + (a.currentHp / a.maxHp), 0);
+    s.outcome = partyHpPct >= enemyHpPct ? 'WIN' : 'LOSE';
+    s.log.push({
+      tick: s.tickCount,
+      actorName: 'システム',
+      action: `⏰ 時間切れ！（残りHP比率: 味方 ${Math.round(partyHpPct * 100)}% vs 敵 ${Math.round(enemyHpPct * 100)}%）`,
+    });
+  }
+
   return s;
 }
