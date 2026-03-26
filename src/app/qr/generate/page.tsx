@@ -96,22 +96,22 @@ export default function QrGeneratePage() {
 
   return (
     <GameLayout>
-      <div className="flex flex-1 flex-col" style={{ background: '#f8fafc' }}>
+      <div className="flex flex-1 flex-col bg-[#f5f7f0] text-[#2c302b]">
 
-        {/* ヘッダー */}
-        <header className="shrink-0 border-b border-stone-200 bg-white px-4 py-3.5">
+        <header className="shrink-0 border-b border-emerald-950/5 bg-white/70 px-5 py-4 backdrop-blur-xl">
           <button
             type="button"
             onClick={() => router.back()}
-            className="flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1.5 text-sm font-semibold text-stone-600"
+            className="rounded-full bg-[#e6e9e1] px-4 py-2 text-sm font-semibold text-[#29664c]"
           >
             ← 戻る
           </button>
-          <h1 className="mt-2 text-xl font-black text-stone-900">QR生成</h1>
-          <p className="text-xs text-stone-400 mt-0.5">QRを生成する仲間を選んでください</p>
+          <p className="mt-4 text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">コードを作る</p>
+          <h1 className="mt-1 text-[clamp(26px,7vw,30px)] font-black leading-tight tracking-tight text-[#1f3528]">コードを作る</h1>
+          <p className="mt-2 text-sm text-[#595c57]">コードを作る仲間を選んでください。</p>
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-6">
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-5">
 
           {/* 仲間一覧 */}
           {!dataUrl && (
@@ -129,12 +129,12 @@ export default function QrGeneratePage() {
                     type="button"
                     onClick={() => handleSelect(m)}
                     disabled={isGenerating}
-                    className="flex items-center justify-between rounded-2xl border-2 border-stone-200 bg-white px-4 py-3.5 text-sm shadow-sm transition hover:border-emerald-300 hover:bg-emerald-50 active:scale-95 disabled:opacity-50"
+                    className="flex items-center justify-between rounded-[24px] bg-white px-4 py-4 text-sm shadow-sm transition active:scale-95 disabled:opacity-50"
                   >
-                    <span className="font-black text-stone-900">{m.displayName as string}</span>
+                    <span className="font-black text-[#2c302b]">{m.displayName as string}</span>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-stone-400">Lv.{m.level as number}</span>
-                      <span className="text-stone-300">›</span>
+                      <span className="rounded-full bg-[#eff2ea] px-3 py-1 text-[11px] font-black text-[#29664c]">Lv.{m.level as number}</span>
+                      <span className="text-[#757872]">›</span>
                     </div>
                   </button>
                 ))}
@@ -142,7 +142,7 @@ export default function QrGeneratePage() {
               {isGenerating && (
                 <div className="flex items-center justify-center gap-2 py-4">
                   <span className="text-xl animate-pulse">📤</span>
-                  <p className="text-sm text-stone-500 animate-pulse">QR生成中...</p>
+                  <p className="text-sm text-stone-500 animate-pulse">コードを作成中...</p>
                 </div>
               )}
             </>
@@ -152,11 +152,11 @@ export default function QrGeneratePage() {
           {dataUrl && payload && selected && (
             <>
               <div
-                className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3"
+                className="flex items-center gap-2 rounded-[24px] bg-[#eff2ea] px-4 py-4"
               >
                 <span className="text-lg">✅</span>
-                <p className="text-sm font-black text-emerald-700">
-                  {selected.displayName as string} のQRコード
+                <p className="text-sm font-black text-[#29664c]">
+                  {selected.displayName as string} のコード
                 </p>
               </div>
               <QrImageView dataUrl={dataUrl} altText={`${selected.displayName as string} QR`} />
@@ -164,7 +164,7 @@ export default function QrGeneratePage() {
               <button
                 type="button"
                 onClick={() => { setDataUrl(null); setPayload(null); setSelected(null); }}
-                className="w-full rounded-2xl border-2 border-stone-200 bg-white py-3.5 text-sm font-bold text-stone-600 transition hover:bg-stone-50 active:scale-95"
+                className="w-full rounded-full bg-white py-4 text-sm font-black text-[#2c302b] shadow-sm transition active:scale-95"
               >
                 別のモンスターを選ぶ
               </button>
@@ -173,8 +173,8 @@ export default function QrGeneratePage() {
 
           {/* エラー */}
           {errorMsg && (
-            <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-center">
-              <p className="text-sm font-bold text-red-600">{errorMsg}</p>
+            <div className="rounded-[24px] bg-[#fff1ec] px-4 py-4 text-center">
+              <p className="text-sm font-bold text-[#b02500]">{errorMsg}</p>
             </div>
           )}
 

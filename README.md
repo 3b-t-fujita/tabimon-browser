@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tabimon Browser
 
-## Getting Started
+ブラウザで遊ぶスマホ向け育成 RPG「Tabimon」のフロントエンド実装です。  
+Next.js App Router をベースに、`Domain / Application / Infrastructure / UI` の分離を保ちながら、スマホ 1 画面前提の UI で冒険からバトル、QR 交換まで遊べます。
 
-First, run the development server:
+## 現在の状態
+
+- 正式 UI は新デザインへ統一済みです
+- `home -> adventure/stages -> adventure/confirm -> adventure/play -> adventure/battle -> adventure/result` の主要導線は新デザイン基準です
+- 静的確認用に `/preview/ui` も用意しています
+
+## セットアップ
+
+```bash
+npm install
+```
+
+## 開発サーバー
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+既定では `http://localhost:3000` で起動します。  
+別ポートで起動したい場合は次のように `next` を直接実行します。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npx next dev -H 0.0.0.0 -p 4100
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 主要 URL
 
-## Learn More
+- `/home`: ホーム
+- `/adventure/stages`: ステージ選択
+- `/adventure/confirm?stageId=...`: 冒険確認
+- `/adventure/play`: 探索
+- `/adventure/battle`: バトル
+- `/adventure/result?type=SUCCESS`: リザルト確認
+- `/qr`: QR メニュー
+- `/monsters`
+- `/monsters/[id]`
+- `/party`
+- `/setup`
+- `/preview/ui`: セーブ不要の静的 UI プレビュー
 
-To learn more about Next.js, take a look at the following resources:
+## テスト
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm test
+npm run build
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+現状、Vitest は通過しています。ビルドも通過しています。
 
-## Deploy on Vercel
+## デザイン運用
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+共通 UI と運用ルールは以下を参照してください。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [UI デザインシステム](docs/ui_design_system.md)
+- [プレイテストチェックリスト](docs/playtest_checklist.md)
+- [企画仕様](docs/spec_concept.md)
+- [技術仕様](docs/spec_technical.md)
+
+## 補足
+
+- 旧比較 UI 用の `PatternA / PatternB` ファイルは一部残しています。主要導線では使用していませんが、復帰用バックアップとして保持しています
+- Stitch 比較の役割はほぼ終了しており、現在は本実装 UI が正式版です
+- 旧 UI の退避方針は [legacy_ui_archive.md](docs/legacy_ui_archive.md) を参照してください

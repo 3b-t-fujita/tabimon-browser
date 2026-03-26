@@ -79,32 +79,32 @@ export default function QrScanPage() {
 
   return (
     <GameLayout>
-      <div className="flex flex-1 flex-col" style={{ background: '#f8fafc' }}>
+      <div className="flex flex-1 flex-col bg-[#f5f7f0] text-[#2c302b]">
 
-        {/* ヘッダー */}
-        <header className="shrink-0 border-b border-stone-200 bg-white px-4 py-3.5">
+        <header className="shrink-0 border-b border-emerald-950/5 bg-white/70 px-5 py-4 backdrop-blur-xl">
           <button
             type="button"
             onClick={() => router.back()}
-            className="flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1.5 text-sm font-semibold text-stone-600"
+            className="rounded-full bg-[#e6e9e1] px-4 py-2 text-sm font-semibold text-[#29664c]"
           >
             ← 戻る
           </button>
-          <h1 className="mt-2 text-xl font-black text-stone-900">QR読取</h1>
-          <p className="text-xs text-stone-400 mt-0.5">相手のQRコード画像を選択してください</p>
+          <p className="mt-4 text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">コードを読む</p>
+          <h1 className="mt-1 text-[clamp(26px,7vw,30px)] font-black leading-tight tracking-tight text-[#1f3528]">コードを読む</h1>
+          <p className="mt-2 text-sm text-[#595c57]">相手のコード画像を選択してください。</p>
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 p-4 pb-6">
+        <div className="flex flex-1 flex-col gap-4 px-5 py-5">
 
           <QrScanInputPanel onFilePicked={handleFilePicked} disabled={isProcessing} />
 
           {/* 処理中 */}
           {isProcessing && (
             <div
-              className="flex items-center justify-center gap-2 rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3"
+              className="flex items-center justify-center gap-2 rounded-[24px] bg-[#eef7f8] px-4 py-4"
             >
               <span className="text-base animate-pulse">📡</span>
-              <p className="text-sm font-bold text-sky-700 animate-pulse">
+              <p className="text-sm font-bold text-[#1e4f57] animate-pulse">
                 {phaseLabel[phase] ?? '処理中...'}
               </p>
             </div>
@@ -112,16 +112,15 @@ export default function QrScanPage() {
 
           {/* エラー */}
           {phase === 'QR_ERROR' && errorMessage && (
-            <div className="flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 p-4">
+            <div className="flex flex-col gap-3 rounded-[24px] bg-[#fff1ec] p-4">
               <div>
-                <p className="font-black text-red-600 text-sm">読み取りに失敗しました</p>
-                <p className="text-xs text-red-400 mt-1">{errorMessage}</p>
+                <p className="font-black text-[#b02500] text-sm">読み取りに失敗しました</p>
+                <p className="mt-1 text-xs text-[#d06345]">{errorMessage}</p>
               </div>
               <button
                 type="button"
                 onClick={reset}
-                className="w-full rounded-2xl py-3 text-sm font-black text-white shadow transition active:scale-95"
-                style={{ background: 'linear-gradient(135deg, #b91c1c, #ef4444)' }}
+                className="w-full rounded-full bg-[#b02500] py-3 text-sm font-black text-white shadow-sm transition active:scale-95"
               >
                 もう一度試す
               </button>

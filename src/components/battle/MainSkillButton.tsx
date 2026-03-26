@@ -34,10 +34,10 @@ export default function MainSkillButton({ skills, disabled, onSelect }: MainSkil
             onClick={() => !isDisabled && onSelect(skill.skillId)}
             disabled={isDisabled}
             className={[
-              'px-3 py-2 rounded text-sm font-medium border transition-colors',
+              'rounded-full border px-4 py-3 text-sm font-medium transition-colors',
               isDisabled
-                ? 'border-gray-700 bg-gray-800 text-gray-500 cursor-not-allowed'
-                : 'border-blue-500 bg-blue-800 text-white hover:bg-blue-700 active:bg-blue-900',
+                ? 'cursor-not-allowed border-stone-200 bg-white text-[#757872]'
+                : 'border-[#4c7b83] bg-[#4c7b83] text-white hover:bg-[#2f6c77] active:bg-[#1e4f57]',
             ].join(' ')}
           >
             <div>{skill.displayName}</div>

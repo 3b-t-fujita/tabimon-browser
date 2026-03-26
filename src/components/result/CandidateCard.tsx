@@ -8,13 +8,16 @@
 import Image from 'next/image';
 import type { PendingCandidate } from '@/domain/entities/PendingCandidate';
 import { getMonsterStandUrl } from '@/infrastructure/assets/monsterImageService';
+import { personalityLabel } from '@/application/shared/labelHelpers';
+import { SoftCard } from '@/components/common/SoftCard';
+import { UiChip } from '@/components/common/UiChip';
 
 interface CandidateCardProps {
   candidate:    PendingCandidate;
   displayName:  string;
 }
 
-// 性格 → 絵文字
+// 性格ラベル（日本語）→ 絵文字
 const PERSONALITY_EMOJI: Record<string, string> = {
   'ゆうかん':   '🔥',
   'しんちょう': '🧐',
@@ -26,14 +29,11 @@ const PERSONALITY_EMOJI: Record<string, string> = {
 
 export default function CandidateCard({ candidate, displayName }: CandidateCardProps) {
   const standUrl  = getMonsterStandUrl(candidate.monsterMasterId as string);
-  const persId    = candidate.personalityId as string;
-  const persEmoji = PERSONALITY_EMOJI[persId] ?? '😐';
+  const persLabel = personalityLabel(candidate.personalityId as string);
+  const persEmoji = PERSONALITY_EMOJI[persLabel] ?? '😐';
 
   return (
-    <div
-      className="flex flex-col items-center overflow-hidden rounded-2xl border shadow-sm"
-      style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 50%, #f0fdf4 100%)', borderColor: '#86efac' }}
-    >
+    <SoftCard className="overflow-hidden border border-[#d3ead9] bg-[linear-gradient(135deg,#f0fdf4_0%,#dcfce7_50%,#f0fdf4_100%)]">
       {/* キラキラ帯 */}
       <div
         className="w-full py-2 text-center text-[11px] font-black uppercase tracking-widest text-emerald-700"
@@ -62,14 +62,14 @@ export default function CandidateCard({ candidate, displayName }: CandidateCardP
       <div className="flex w-full flex-col items-center gap-2 px-5 pb-5">
         <h2 className="text-xl font-black text-stone-900">{displayName}</h2>
         <div className="flex gap-2">
-          <span className="rounded-full bg-emerald-100 px-3 py-0.5 text-xs font-bold text-emerald-700">
-            {persEmoji} {persId}
-          </span>
-          <span className="rounded-full bg-stone-100 px-3 py-0.5 text-xs font-bold text-stone-500">
+          <UiChip background="#dcfce7" color="#047857" className="text-xs font-bold">
+            {persEmoji} {persLabel}
+          </UiChip>
+          <UiChip background="#f5f5f4" color="#57534e" className="text-xs font-bold">
             Lv.1 スタート
-          </span>
+          </UiChip>
         </div>
       </div>
-    </div>
+    </SoftCard>
   );
 }

@@ -42,9 +42,9 @@ const WORLD_STYLE = {
 } as const;
 
 const DIFFICULTY_STYLE: Record<string, { stars: number; bg: string; text: string; label: string }> = {
-  'やさしい':   { stars: 1, bg: '#dcfce7', text: '#166534', label: 'Easy' },
-  'ふつう':     { stars: 2, bg: '#fef9c3', text: '#854d0e', label: 'Normal' },
-  'むずかしい': { stars: 3, bg: '#fee2e2', text: '#991b1b', label: 'Hard' },
+  'Easy':   { stars: 1, bg: '#dcfce7', text: '#166534', label: 'かんたん' },
+  'Normal': { stars: 2, bg: '#fef9c3', text: '#854d0e', label: 'ふつう' },
+  'Hard':   { stars: 3, bg: '#fee2e2', text: '#991b1b', label: 'むずかしい' },
 };
 
 export function StageCard({ stage, onSelect }: Props) {
@@ -89,7 +89,7 @@ export function StageCard({ stage, onSelect }: Props) {
             className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-bold"
             style={{ background: dStyle.bg, color: dStyle.text }}
           >
-            {'⭐'.repeat(dStyle.stars)} {stage.difficulty}
+            {'⭐'.repeat(dStyle.stars)} {dStyle.label}
           </span>
           <span className="inline-flex items-center rounded-full bg-stone-100 px-2.5 py-1 text-xs font-semibold text-stone-600">
             推奨 Lv.{stage.recommendedLevel}〜

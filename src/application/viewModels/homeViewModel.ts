@@ -8,6 +8,8 @@ export interface HomeViewModel {
   readonly playerName:          string;
   /** 相棒表示名（未設定時は空文字） */
   readonly mainMonsterName:     string;
+  /** 相棒レベル（未設定時は null） */
+  readonly mainMonsterLevel:    number | null;
   /** 相棒 monsterId（未設定時は null） */
   readonly mainMonsterId:       string | null;
   /** 相棒 monsterMasterId（画像取得用。未設定時は null） */

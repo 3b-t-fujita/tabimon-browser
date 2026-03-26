@@ -149,21 +149,21 @@ export default function AdventureBattlePage() {
   if (battlePhase === 'BATTLE_PREPARING' || battlePhase === 'FAILED') {
     return (
       <GameLayout>
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 bg-[#e9efe6] p-6">
           {battlePhase === 'FAILED' ? (
-            <>
-              <p className="text-red-400 font-bold">エラーが発生しました</p>
-              <p className="text-sm text-gray-400">
+            <div className="w-full max-w-sm rounded-[32px] bg-white px-6 py-8 text-center shadow-sm">
+              <p className="text-lg font-black text-[#9e3120]">エラーが発生しました</p>
+              <p className="mt-2 text-sm text-[#757872]">
                 {useBattleStore.getState().errorMessage ?? '不明なエラー'}
               </p>
               <button
                 type="button"
                 onClick={() => router.push('/adventure/play')}
-                className="mt-4 px-6 py-2 rounded bg-gray-700 text-white text-sm"
+                className="mt-5 rounded-full bg-[#29664c] px-6 py-3 text-sm font-black text-white"
               >
                 探索に戻る
               </button>
-            </>
+            </div>
           ) : (
             <BattlePreparingView />
           )}
@@ -175,11 +175,13 @@ export default function AdventureBattlePage() {
   if (battlePhase === 'BATTLE_RESULT_APPLYING') {
     return (
       <GameLayout>
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-          <p className="text-lg animate-pulse font-bold">
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 bg-[#e9efe6] p-6">
+          <div className="w-full max-w-sm rounded-[32px] bg-white px-6 py-8 text-center shadow-sm">
+          <p className="text-lg animate-pulse font-black text-[#1f3528]">
             {battleState?.outcome === 'WIN' ? '🎉 勝利！' : '💀 敗北...'}
           </p>
-          <p className="text-gray-400 text-sm">結果を反映中...</p>
+          <p className="mt-2 text-sm text-[#757872]">結果を反映中...</p>
+          </div>
         </div>
       </GameLayout>
     );

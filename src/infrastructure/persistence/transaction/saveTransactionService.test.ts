@@ -138,8 +138,8 @@ describe('SaveTransactionService', () => {
     const beforeLoad = await svc.load();
     expect(beforeLoad.ok).toBe(true);
 
-    // 仲間上限を超えるデータを保存しようとする（ownedMonsters > 5）
-    const tooManyMonsters = Array.from({ length: 6 }, (_, i) => ({
+    // 仲間上限を超えるデータを保存しようとする（ownedMonsters > 10）
+    const tooManyMonsters = Array.from({ length: 11 }, (_, i) => ({
       uniqueId:        toMonsterId(`monster-${i}`),
       monsterMasterId: toMonsterMasterId('MON_001'),
       displayName:     `モンスター${i}`,
@@ -226,7 +226,7 @@ describe('SaveTransactionService', () => {
     // 仲間数上限超えの破損データ
     const corrupt: MainSaveSnapshot = {
       ...createEmptyMainSave(),
-      ownedMonsters: Array.from({ length: 6 }, (_, i) => ({
+      ownedMonsters: Array.from({ length: 11 }, (_, i) => ({
         uniqueId:        toMonsterId(`m${i}`),
         monsterMasterId: toMonsterMasterId('MON_001'),
         displayName:     `M${i}`,

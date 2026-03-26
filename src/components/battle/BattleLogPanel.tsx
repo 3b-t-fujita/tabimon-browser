@@ -17,20 +17,20 @@ export default function BattleLogPanel({ log, maxLines = 6 }: BattleLogPanelProp
 
   if (recent.length === 0) {
     return (
-      <div className="p-3 bg-gray-900 rounded text-sm text-gray-500 min-h-[80px]">
+      <div className="min-h-[80px] rounded-[24px] bg-white p-4 text-sm text-[#757872] shadow-sm">
         戦闘開始を待っています...
       </div>
     );
   }
 
   return (
-    <div className="p-3 bg-gray-900 rounded text-sm min-h-[80px] max-h-40 overflow-y-auto">
+    <div className="max-h-40 min-h-[80px] overflow-y-auto rounded-[24px] bg-white p-4 text-sm shadow-sm">
       {recent.map((entry, idx) => (
-        <div key={`${entry.tick}-${idx}`} className="text-gray-200 leading-5">
-          <span className="text-gray-500 text-xs mr-1">[{entry.tick}]</span>
+        <div key={`${entry.tick}-${idx}`} className="leading-6 text-[#2c302b]">
+          <span className="mr-1 text-xs text-[#757872]">[{entry.tick}]</span>
           <span className="font-medium">{entry.actorName}</span>
           {' の '}
-          <span className="text-yellow-300">{entry.action}</span>
+          <span className="text-[#7d5231]">{entry.action}</span>
           {entry.targetName && (
             <>
               {' → '}
@@ -38,7 +38,7 @@ export default function BattleLogPanel({ log, maxLines = 6 }: BattleLogPanelProp
             </>
           )}
           {entry.value !== undefined && (
-            <span className="text-orange-400 ml-1">({entry.value})</span>
+            <span className="ml-1 text-[#b02500]">({entry.value})</span>
           )}
         </div>
       ))}

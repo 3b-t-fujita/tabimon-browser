@@ -1,18 +1,10 @@
-/**
- * バトル画面 パターンB — 臨場感強化型（確定版）
- * ワールド背景画像をバトルフィールドとして上部に表示し、
- * そのエリアで戦っている臨場感を演出する。
- * 下部：味方コンパクトカード + 光るスキルボタン。
- */
 'use client';
 
 import Image from 'next/image';
-import type { BattleState } from '@/domain/battle/BattleState';
 import type { BattleActor, BattleSkillState } from '@/domain/battle/BattleActor';
 import { getMonsterStandUrl } from '@/infrastructure/assets/monsterImageService';
 import type { BattleScreenProps } from './BattleScreenPatternA';
 
-// ── ステージID → ワールド ──────────────────────────────────────
 function getWorld(stageId: string): 'forest' | 'fire' | 'ice' {
   if (stageId.includes('_w1')) return 'forest';
   if (stageId.includes('_w2')) return 'fire';
@@ -21,38 +13,40 @@ function getWorld(stageId: string): 'forest' | 'fire' | 'ice' {
 
 const WORLD_THEME = {
   forest: {
-    bgImage:   '/assets/backgrounds/world_forest_bg_v1.webp',
-    // 背景画像下端 → ダーク下部へのオーバーレイ
-    overlay:   'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(5,46,22,0.55) 55%, rgba(10,17,30,1) 100%)',
-    accent:    '#22c55e',
-    accentDim: '#064e3b',
-    headerBg:  'linear-gradient(135deg, #064e3b 0%, #065f46 100%)',
-    ctaBg:     'linear-gradient(135deg, #064e3b 0%, #16a34a 100%)',
-    glow:      'rgba(34,197,94,0.35)',
-    icon:      '🌿',
-    label:     'ミドリの森',
+    shell: '#e9efe6',
+    accent: '#29664c',
+    accentSoft: '#b9f9d6',
+    accentText: '#0a4f36',
+    panel: 'rgba(255,255,255,0.76)',
+    panelStrong: 'rgba(255,255,255,0.88)',
+    fog: 'linear-gradient(to bottom, rgba(233,239,230,0.22) 0%, rgba(233,239,230,0.12) 26%, rgba(233,239,230,0.62) 72%, rgba(233,239,230,0.92) 100%)',
+    fieldGlow: 'radial-gradient(circle at 50% 78%, rgba(185,249,214,0.80), rgba(185,249,214,0.08) 60%, transparent 78%)',
+    bgImage: '/assets/backgrounds/world_forest_bg_v1.webp',
+    badge: '🌿 ミドリの森',
   },
   fire: {
-    bgImage:   '/assets/backgrounds/world_desert_bg_v1.webp',
-    overlay:   'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(67,20,7,0.60) 55%, rgba(10,17,30,1) 100%)',
-    accent:    '#f97316',
-    accentDim: '#7c2d12',
-    headerBg:  'linear-gradient(135deg, #7c2d12 0%, #9a3412 100%)',
-    ctaBg:     'linear-gradient(135deg, #7c2d12 0%, #ea580c 100%)',
-    glow:      'rgba(249,115,22,0.35)',
-    icon:      '🔥',
-    label:     'ほのおの山',
+    shell: '#f3ece3',
+    accent: '#9f4b18',
+    accentSoft: '#fac097',
+    accentText: '#5d2d0d',
+    panel: 'rgba(255,255,255,0.76)',
+    panelStrong: 'rgba(255,255,255,0.88)',
+    fog: 'linear-gradient(to bottom, rgba(243,236,227,0.20) 0%, rgba(243,236,227,0.10) 26%, rgba(243,236,227,0.60) 72%, rgba(243,236,227,0.92) 100%)',
+    fieldGlow: 'radial-gradient(circle at 50% 78%, rgba(250,192,151,0.76), rgba(250,192,151,0.10) 60%, transparent 78%)',
+    bgImage: '/assets/backgrounds/world_desert_bg_v1.webp',
+    badge: '🔥 ホノオ火山',
   },
   ice: {
-    bgImage:   '/assets/backgrounds/world_snow_bg_v1.webp',
-    overlay:   'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(8,47,73,0.60) 55%, rgba(10,17,30,1) 100%)',
-    accent:    '#38bdf8',
-    accentDim: '#0c4a6e',
-    headerBg:  'linear-gradient(135deg, #0c4a6e 0%, #075985 100%)',
-    ctaBg:     'linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%)',
-    glow:      'rgba(56,189,248,0.35)',
-    icon:      '❄️',
-    label:     'こおりの地',
+    shell: '#eaf2f4',
+    accent: '#2f6c77',
+    accentSoft: '#c9edf2',
+    accentText: '#17434a',
+    panel: 'rgba(255,255,255,0.76)',
+    panelStrong: 'rgba(255,255,255,0.88)',
+    fog: 'linear-gradient(to bottom, rgba(234,242,244,0.18) 0%, rgba(234,242,244,0.10) 26%, rgba(234,242,244,0.58) 72%, rgba(234,242,244,0.92) 100%)',
+    fieldGlow: 'radial-gradient(circle at 50% 78%, rgba(201,237,242,0.76), rgba(201,237,242,0.10) 60%, transparent 78%)',
+    bgImage: '/assets/backgrounds/world_snow_bg_v1.webp',
+    badge: '❄️ コオリ氷原',
   },
 } as const;
 
@@ -62,308 +56,356 @@ function hpColor(ratio: number): string {
   return '#ef4444';
 }
 
-// ── 敵カード（立ち絵フォーカス・背景上に浮かぶ） ───────────────
-function EnemyCard({ actor }: { actor: BattleActor }) {
-  const ratio    = Math.max(0, actor.currentHp / actor.maxHp);
-  const pct      = Math.round(ratio * 100);
-  const dead     = actor.currentHp <= 0;
+function actorScale(actor: BattleActor, isEnemy: boolean, isBossBattle: boolean): { size: number; y: string; x: string } {
+  if (isEnemy) {
+    return { size: isBossBattle ? 112 : 88, y: isBossBattle ? 'top-[16%]' : 'top-[20%]', x: '0%' };
+  }
+  if (actor.isMain) {
+    return { size: 156, y: 'bottom-[16%]', x: '0%' };
+  }
+  return { size: 86, y: 'bottom-[18%]', x: '0%' };
+}
+
+function compactName(name: string): string {
+  return name.length > 7 ? `${name.slice(0, 7)}…` : name;
+}
+
+function Figure({
+  actor,
+  isEnemy,
+  align,
+  accent,
+  accentSoft,
+  isBossBattle = false,
+}: {
+  actor: BattleActor;
+  isEnemy: boolean;
+  align: 'left' | 'center' | 'right';
+  accent: string;
+  accentSoft: string;
+  isBossBattle?: boolean;
+}) {
   const standUrl = getMonsterStandUrl(actor.monsterId ?? null);
+  const ratio = Math.max(0, actor.currentHp / actor.maxHp);
+  const dead = actor.currentHp <= 0;
+  const scale = actorScale(actor, isEnemy, isBossBattle);
+  const alignClass =
+    align === 'left'
+      ? isEnemy ? 'left-[11%]' : 'left-[4%]'
+      : align === 'right'
+        ? isEnemy ? 'right-[11%]' : 'right-[4%]'
+        : isEnemy ? 'left-1/2 -translate-x-1/2' : 'left-1/2 -translate-x-1/2';
 
   return (
-    <div
-      className={`flex flex-col items-center transition-opacity ${dead ? 'opacity-25' : ''}`}
-      style={{ minWidth: 84 }}
-    >
-      {/* 立ち絵（大・ドロップシャドウで地面に立っている感） */}
-      <div className="relative mb-2" style={{ width: 88, height: 88 }}>
+    <div className={`absolute ${scale.y} ${alignClass} flex flex-col items-center`}>
+      {!isEnemy && actor.isMain && (
+        <div
+          className="absolute left-1/2 top-1/2 -z-10 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"
+          style={{ background: `${accentSoft}cc` }}
+        />
+      )}
+      <div className="relative" style={{ width: scale.size, height: scale.size }}>
         {standUrl ? (
           <Image
             src={standUrl}
             alt={actor.displayName}
             fill
             className="object-contain"
-            sizes="88px"
+            sizes={`${scale.size}px`}
             style={{
               filter: dead
-                ? 'grayscale(1) brightness(0.5)'
-                : 'drop-shadow(0 6px 16px rgba(0,0,0,0.7)) drop-shadow(0 2px 4px rgba(0,0,0,0.9))',
+                ? 'grayscale(1) brightness(0.76)'
+                : actor.isMain
+                  ? `drop-shadow(0 18px 34px rgba(0,0,0,0.24)) drop-shadow(0 0 18px ${accentSoft})`
+                  : `drop-shadow(0 10px 22px rgba(0,0,0,0.20)) drop-shadow(0 2px 10px ${accentSoft})`,
             }}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-5xl">
-            {dead ? '💀' : '👾'}
+            {isEnemy ? '👾' : '🐾'}
           </div>
         )}
         {dead && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-slate-900/70 text-3xl">
-            💀
-          </div>
+          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-white/55 text-3xl">💤</div>
         )}
       </div>
 
-      {/* 名前（テキストシャドウで背景に埋もれない） */}
-      <p
-        className="mb-1.5 max-w-[92px] truncate text-center text-[11px] font-black text-white"
-        style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.8)' }}
+      <div
+        className="mt-1 min-w-[82px] max-w-[118px] rounded-[20px] border px-2.5 py-2 shadow-sm backdrop-blur-md"
+        style={{
+          background: 'rgba(255,255,255,0.82)',
+          borderColor: actor.isMain ? accent : isEnemy ? '#ead7cf' : accentSoft,
+        }}
       >
-        {actor.displayName}
-      </p>
-
-      {/* 個別 HP バー */}
-      <div className="w-full overflow-hidden rounded-full bg-black/40" style={{ height: 5 }}>
-        <div
-          className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, background: hpColor(ratio) }}
-        />
-      </div>
-      <p className="mt-0.5 text-[9px] text-white/50" style={{ textShadow: '0 1px 3px rgba(0,0,0,1)' }}>
-        {actor.currentHp} <span className="text-white/25">/ {actor.maxHp}</span>
-      </p>
-
-      {/* バフ表示 */}
-      {(actor.buffTurnsRemaining > 0 || actor.shieldHitsRemaining > 0) && (
-        <div className="mt-0.5 flex justify-center gap-0.5">
-          {actor.atkMultiplier > 1  && <span className="rounded bg-black/40 px-0.5 text-[8px] text-yellow-300">↑ATK</span>}
-          {actor.defMultiplier > 1  && <span className="rounded bg-black/40 px-0.5 text-[8px] text-blue-300">↑DEF</span>}
-          {actor.atkMultiplier < 1  && <span className="rounded bg-black/40 px-0.5 text-[8px] text-red-400">↓ATK</span>}
-          {actor.defMultiplier < 1  && <span className="rounded bg-black/40 px-0.5 text-[8px] text-orange-400">↓DEF</span>}
-          {actor.shieldHitsRemaining > 0 && (
-            <span className="rounded bg-black/40 px-0.5 text-[8px] text-cyan-400">🛡{actor.shieldHitsRemaining}</span>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ── 味方カード（下部コンパクト） ──────────────────────────────
-function AllyCard({ actor }: { actor: BattleActor }) {
-  const ratio    = Math.max(0, actor.currentHp / actor.maxHp);
-  const pct      = Math.round(ratio * 100);
-  const dead     = actor.currentHp <= 0;
-  const standUrl = getMonsterStandUrl(actor.monsterId ?? null);
-
-  return (
-    <div
-      className={`flex flex-1 flex-col items-center rounded-2xl p-2 transition-opacity ${dead ? 'opacity-30' : ''}`}
-      style={{
-        background:     'rgba(10,17,30,0.90)',
-        border:         actor.isMain ? '2px solid rgba(255,255,255,0.22)' : '1px solid rgba(255,255,255,0.07)',
-        backdropFilter: 'blur(4px)',
-      }}
-    >
-      <div className="relative mb-1" style={{ width: 40, height: 40 }}>
-        {standUrl ? (
-          <Image src={standUrl} alt={actor.displayName} fill className="object-contain" sizes="40px" />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-xl">
-            {dead ? '💀' : '🐾'}
-          </div>
-        )}
-      </div>
-      <p className="mb-1 max-w-[56px] truncate text-center text-[9px] font-bold text-white/70">
-        {actor.isMain && '★'}{actor.displayName}
-      </p>
-      <div className="w-full overflow-hidden rounded-full bg-slate-700" style={{ height: 3 }}>
-        <div
-          className="h-full rounded-full transition-all duration-300"
-          style={{ width: `${pct}%`, background: hpColor(ratio) }}
-        />
-      </div>
-      <p className="mt-0.5 text-[8px] text-white/30">{actor.currentHp}</p>
-    </div>
-  );
-}
-
-// ── Pattern B メインコンポーネント ─────────────────────────────
-export function BattleScreenPatternB({ battleState, isRunning, onSkillSelect }: BattleScreenProps) {
-  const world    = getWorld(battleState.stageId);
-  const theme    = WORLD_THEME[world];
-  const party    = battleState.actors.filter((a) => !a.isEnemy);
-  const enemies  = battleState.actors.filter((a) =>  a.isEnemy);
-  const mainActor  = party.find((a) => a.isMain);
-  const mainSkills = mainActor?.skills ?? [];
-  const lastLog    = battleState.log.slice(-2);
-
-  // 全敵の合算 HP
-  const totalMaxHp = enemies.reduce((s, e) => s + e.maxHp, 0);
-  const totalCurHp = enemies.reduce((s, e) => s + Math.max(0, e.currentHp), 0);
-  const enemyHpRatio = totalMaxHp > 0 ? totalCurHp / totalMaxHp : 0;
-
-  return (
-    <div className="flex flex-1 flex-col overflow-hidden" style={{ background: '#0a111e' }}>
-
-      {/* ══ ① ヘッダー（ワールドカラー） ══ */}
-      <header
-        className="shrink-0 flex items-center justify-between px-4 py-2.5"
-        style={{ background: theme.headerBg }}
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-base">{theme.icon}</span>
-          <span className="text-sm font-black text-white">
-            {battleState.isBoss ? '🔥 BOSS 戦！' : 'バトル中'}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          {battleState.outcome !== 'NONE' && (
-            <span className={`rounded-full px-2.5 py-0.5 text-xs font-black ${
-              battleState.outcome === 'WIN' ? 'bg-emerald-500 text-white' : 'bg-red-600 text-white'
-            }`}>
-              {battleState.outcome === 'WIN' ? '🎉 勝利！' : '💀 敗北'}
+        <div className="flex items-center justify-center gap-1">
+          {!isEnemy && actor.isMain && (
+            <span className="rounded-full px-1.5 py-0.5 text-[8px] font-black text-white" style={{ background: accent }}>
+              相棒
             </span>
           )}
-          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[10px] text-white/55">
-            {battleState.tickCount}
-          </span>
+          <p className={`truncate text-center font-black text-[#2c302b] ${actor.isMain ? 'text-[12px]' : 'text-[11px]'}`}>{compactName(actor.displayName)}</p>
         </div>
-      </header>
+        <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[#e6e9e1]">
+          <div
+            className="h-full rounded-full transition-all duration-300"
+            style={{ width: `${Math.round(ratio * 100)}%`, background: hpColor(ratio) }}
+          />
+        </div>
+        <p className="mt-1 text-center text-[9px] text-[#757872]">
+          {actor.currentHp}/{actor.maxHp}
+        </p>
+      </div>
+    </div>
+  );
+}
 
-      {/* ══ ② バトルフィールド（ワールド背景 + 敵） ══ */}
-      <section className="relative flex-1 overflow-hidden">
+function StatusPill({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone?: 'neutral' | 'accent';
+}) {
+  return (
+    <div
+      className="rounded-full px-3 py-1.5 text-center"
+      style={{ background: tone === 'accent' ? 'rgba(255,255,255,0.92)' : 'rgba(245,247,240,0.88)' }}
+    >
+      <p className="text-[9px] font-black uppercase tracking-[0.16em] text-[#6c4324]/70">{label}</p>
+      <p className="mt-0.5 text-[11px] font-bold text-[#2c302b]">{value}</p>
+    </div>
+  );
+}
 
-        {/* ワールド背景画像 */}
-        <Image
-          src={theme.bgImage}
-          alt={theme.label}
-          fill
-          className="object-cover object-center"
-          priority
-          sizes="100vw"
+function SkillButton({
+  skill,
+  accent,
+  accentSoft,
+  accentText,
+  disabled,
+  isPending,
+  onSelect,
+}: {
+  skill: BattleSkillState;
+  accent: string;
+  accentSoft: string;
+  accentText: string;
+  disabled: boolean;
+  isPending: boolean;
+  onSelect: () => void;
+}) {
+  const onCooldown = skill.cooldownRemaining > 0;
+  const canUse = !disabled && !onCooldown && !isPending;
+  const progress = onCooldown ? ((skill.cooldownSec - skill.cooldownRemaining) / skill.cooldownSec) * 100 : 100;
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      disabled={!canUse}
+      className="relative min-w-0 flex-1 overflow-hidden rounded-[22px] border px-3 py-3 text-left transition active:scale-[0.98] disabled:opacity-60"
+      style={{
+        background: 'rgba(255,255,255,0.92)',
+        borderColor: canUse || isPending ? accentSoft : '#e7e5e4',
+      }}
+    >
+      {onCooldown && (
+        <div
+          className="absolute inset-y-0 left-0"
+          style={{ width: `${progress}%`, background: `${accentSoft}88` }}
         />
+      )}
+      <div className="relative z-10 flex items-center gap-2">
+        <div
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-black"
+          style={{ background: canUse ? accentSoft : '#f5f5f4', color: canUse ? accentText : '#78716c' }}
+        >
+          {isPending ? '⏳' : onCooldown ? '⌛' : '⚡'}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[12px] font-black text-[#2c302b]">{skill.displayName}</p>
+          <p className="mt-0.5 truncate text-[10px] text-[#757872]">
+            {isPending ? '発動待機中' : onCooldown ? `CT ${skill.cooldownRemaining.toFixed(1)}秒` : 'タップで発動'}
+          </p>
+        </div>
+      </div>
+      {canUse && (
+        <div className="relative z-10 mt-2 rounded-full px-2 py-1 text-center text-[10px] font-black text-white" style={{ background: accent }}>
+          発動
+        </div>
+      )}
+    </button>
+  );
+}
 
-        {/* グラデーションオーバーレイ（上は透明・下でダーク下部へ溶ける） */}
-        <div className="absolute inset-0" style={{ background: theme.overlay }} />
+export function BattleScreenPatternB({ battleState, isRunning, onSkillSelect }: BattleScreenProps) {
+  const world = getWorld(battleState.stageId);
+  const theme = WORLD_THEME[world];
+  const party = battleState.actors.filter((actor) => !actor.isEnemy);
+  const enemies = battleState.actors.filter((actor) => actor.isEnemy);
+  const mainActor = party.find((actor) => actor.isMain);
+  const supportActors = party.filter((actor) => !actor.isMain).slice(0, 2);
+  const mainSkills = mainActor?.skills ?? [];
+  const latestLog = battleState.log.at(-1);
+  const totalEnemyHp = enemies.reduce((sum, actor) => sum + Math.max(0, actor.currentHp), 0);
+  const totalEnemyMaxHp = enemies.reduce((sum, actor) => sum + actor.maxHp, 0);
+  const totalEnemyRatio = totalEnemyMaxHp > 0 ? totalEnemyHp / totalEnemyMaxHp : 0;
+  const enemySlots = [enemies[0], enemies[1], enemies[2]];
+  const allySlots = [supportActors[0], mainActor, supportActors[1]];
 
-        {/* フィールド内コンテンツ */}
-        <div className="absolute inset-0 flex flex-col items-center justify-end pb-4 px-4">
-
-          {/* 全敵合算 HP バー（上部） */}
-          {enemies.length > 0 && (
-            <div
-              className="absolute top-3 left-1/2 -translate-x-1/2 w-52"
-              style={{ zIndex: 10 }}
-            >
-              <div className="mb-1 flex items-center justify-between text-[9px]">
+  return (
+    <div className="flex h-[100dvh] max-h-[100dvh] flex-1 flex-col overflow-hidden" style={{ background: theme.shell }}>
+      <header className="px-3 pb-2 pt-3">
+        <div
+          className="rounded-[28px] border px-4 py-3 shadow-sm backdrop-blur-xl"
+          style={{ background: theme.panelStrong, borderColor: 'rgba(255,255,255,0.7)' }}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <span
+                className="inline-flex rounded-full px-3 py-1 text-[10px] font-black"
+                style={{ background: theme.accentSoft, color: theme.accentText }}
+              >
+                {theme.badge}
+              </span>
+              <h1 className="mt-2 text-lg font-black text-[#1f3528]">
+                {battleState.isBoss ? 'ボスバトル' : 'エンカウント'}
+              </h1>
+            </div>
+            <div className="flex flex-col items-end gap-1.5">
+              <StatusPill label="経過" value={String(battleState.tickCount)} />
+              {battleState.outcome !== 'NONE' && (
                 <span
-                  className="font-bold text-red-300"
-                  style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}
+                  className="rounded-full px-3 py-1 text-[10px] font-black text-white"
+                  style={{ background: battleState.outcome === 'WIN' ? theme.accent : '#9e3120' }}
                 >
-                  ENEMY HP
+                  {battleState.outcome === 'WIN' ? '勝利' : '敗北'}
                 </span>
-                <span
-                  className="text-white/50"
-                  style={{ textShadow: '0 1px 4px rgba(0,0,0,0.9)' }}
-                >
-                  {totalCurHp} / {totalMaxHp}
-                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-center gap-2">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center justify-between text-[10px] font-bold text-[#595c57]">
+                <span>敵全体HP</span>
+                <span>{totalEnemyHp}/{totalEnemyMaxHp}</span>
               </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-black/50">
+              <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-[#e6e9e1]">
                 <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${Math.round(enemyHpRatio * 100)}%`, background: hpColor(enemyHpRatio) }}
+                  className="h-full rounded-full transition-all duration-300"
+                  style={{ width: `${Math.round(totalEnemyRatio * 100)}%`, background: hpColor(totalEnemyRatio) }}
                 />
               </div>
             </div>
-          )}
-
-          {/* 敵モンスター立ち絵（フィールド中央に配置） */}
-          <div className="flex items-end justify-center gap-8 mb-4" style={{ zIndex: 10 }}>
-            {enemies.map((e) => (
-              <EnemyCard key={e.id} actor={e} />
-            ))}
+            <StatusPill label="main" value={mainActor?.displayName ?? '未設定'} tone="accent" />
           </div>
+        </div>
+      </header>
 
-          {/* フローティングバトルログ */}
-          <div className="w-full space-y-0.5 px-2" style={{ zIndex: 10 }}>
-            {lastLog.map((entry, i) => (
-              <p
-                key={`${entry.tick}-${i}`}
-                className="text-center text-xs leading-5"
-                style={{
-                  opacity: lastLog.length > 1 && i === 0 ? 0.45 : 0.90,
-                  textShadow: '0 1px 6px rgba(0,0,0,1), 0 0 12px rgba(0,0,0,0.8)',
-                }}
-              >
-                <span className="font-bold text-white">{entry.actorName}</span>
+      <section className="relative mx-3 flex-1 overflow-hidden rounded-[34px] border border-white/70 shadow-sm">
+        <Image src={theme.bgImage} alt="" fill priority sizes="100vw" className="object-cover" />
+        <div className="absolute inset-0" style={{ background: theme.fog }} />
+        <div className="absolute inset-0" style={{ background: theme.fieldGlow }} />
+        <div className="absolute inset-x-0 top-[43%] h-px bg-white/30" />
+        <div className="absolute left-1/2 top-[57%] h-24 w-48 -translate-x-1/2 rounded-full bg-white/20 blur-3xl" />
+
+        <div className="absolute inset-x-4 top-3 flex justify-center">
+          <div
+            className="rounded-full border px-4 py-2 text-[10px] font-black shadow-sm backdrop-blur-md"
+            style={{ background: theme.panelStrong, borderColor: 'rgba(255,255,255,0.7)', color: theme.accentText }}
+          >
+            奥が敵、手前が味方
+          </div>
+        </div>
+
+        {enemySlots.map((actor, index) =>
+          actor ? (
+            <Figure
+              key={actor.id}
+              actor={actor}
+              isEnemy
+              align={index === 0 ? 'left' : index === 1 ? 'center' : 'right'}
+              accent={theme.accent}
+              accentSoft={theme.accentSoft}
+              isBossBattle={battleState.isBoss}
+            />
+          ) : null,
+        )}
+
+        {allySlots.map((actor, index) =>
+          actor ? (
+            <Figure
+              key={actor.id}
+              actor={actor}
+              isEnemy={false}
+              align={index === 0 ? 'left' : index === 1 ? 'center' : 'right'}
+              accent={theme.accent}
+              accentSoft={theme.accentSoft}
+            />
+          ) : null,
+        )}
+
+        {latestLog && (
+          <div className="absolute bottom-3 left-3 right-3">
+            <div
+              className="rounded-[22px] border px-4 py-3 shadow-sm backdrop-blur-xl"
+              style={{ background: theme.panel, borderColor: 'rgba(255,255,255,0.75)' }}
+            >
+              <p className="truncate text-[12px] text-[#2c302b]">
+                <span className="font-black">{latestLog.actorName}</span>
                 {' の '}
-                <span style={{ color: theme.accent }}>{entry.action}</span>
-                {entry.targetName && (
-                  <> → <span className="font-semibold text-white">{entry.targetName}</span></>
-                )}
-                {entry.value !== undefined && (
-                  <span className="ml-1 text-orange-300"> 💥{entry.value}</span>
-                )}
+                <span className="font-black" style={{ color: theme.accent }}>{latestLog.action}</span>
+                {latestLog.targetName && <> → <span className="font-bold">{latestLog.targetName}</span></>}
+                {latestLog.value !== undefined && <span className="ml-1 font-bold text-[#9f4b18]">({latestLog.value})</span>}
               </p>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* ══ ③ 味方コンパクトバー ══ */}
-      <section className="shrink-0 px-3 py-2" style={{ background: '#0a111e' }}>
-        <div className="flex gap-2">
-          {party.map((a) => <AllyCard key={a.id} actor={a} />)}
-        </div>
-      </section>
-
-      {/* ══ ④ スキルボタン（大・グロー） ══ */}
-      <section className="shrink-0 px-4 pb-5 pt-1" style={{ background: '#0a111e' }}>
-        {mainSkills.length === 0 ? (
-          <p className="text-center text-sm text-slate-500">スキルなし</p>
-        ) : (
-          <div className="flex flex-col gap-2">
-            {mainSkills.map((skill) => {
-              const onCD      = skill.cooldownRemaining > 0;
-              const isPending = battleState.pendingMainSkillId === skill.skillId;
-              const canUse    = isRunning && !onCD && !isPending;
-              const cdPct     = onCD
-                ? ((skill.cooldownSec - skill.cooldownRemaining) / skill.cooldownSec) * 100
-                : 100;
-
-              return (
-                <button
-                  key={skill.skillId}
-                  type="button"
-                  onClick={() => onSkillSelect(skill.skillId)}
-                  disabled={!canUse}
-                  className="relative w-full overflow-hidden rounded-2xl py-4 text-center font-black text-white transition active:scale-[0.97] disabled:opacity-55"
-                  style={{
-                    background: canUse ? theme.ctaBg : '#1e293b',
-                    border:     `2px solid ${canUse ? theme.accent : '#334155'}`,
-                    boxShadow:  canUse ? `0 6px 24px ${theme.glow}` : 'none',
-                  }}
-                >
-                  {/* CT 回復オーバーレイ */}
-                  {onCD && (
-                    <div
-                      className="absolute inset-y-0 left-0 rounded-2xl transition-all duration-300"
-                      style={{ width: `${cdPct}%`, background: `${theme.accent}20` }}
-                    />
-                  )}
-                  {/* 光沢（発動可能時） */}
-                  {canUse && (
-                    <span
-                      className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-2xl"
-                      style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.18), transparent)' }}
-                    />
-                  )}
-                  <span className="relative z-10 flex items-center justify-center gap-2 text-base">
-                    {isPending ? (
-                      <><span>⏳</span><span>{skill.displayName}</span><span className="text-sm font-normal opacity-65">発動待機中...</span></>
-                    ) : onCD ? (
-                      <><span>⌛</span><span>{skill.displayName}</span><span className="text-sm font-normal opacity-65">CT {skill.cooldownRemaining.toFixed(1)}s</span></>
-                    ) : (
-                      <><span>⚡</span><span>{skill.displayName}</span><span className="text-sm font-normal opacity-80">発動！</span></>
-                    )}
-                  </span>
-                </button>
-              );
-            })}
+            </div>
           </div>
         )}
       </section>
 
+      <section className="px-3 pb-3 pt-2">
+        <div
+          className="rounded-[28px] border px-3 py-3 shadow-sm backdrop-blur-xl"
+          style={{ background: theme.panelStrong, borderColor: 'rgba(255,255,255,0.72)' }}
+        >
+          <div className="mb-2 flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-black tracking-[0.14em] text-[#29664c]/70">相棒スキル</p>
+              <p className="mt-0.5 text-[11px] text-[#757872]">中央の相棒が次に使う行動を選びます</p>
+            </div>
+            <span
+              className="rounded-full px-3 py-1 text-[10px] font-black"
+              style={{ background: theme.accentSoft, color: theme.accentText }}
+            >
+              相棒が主役
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2">
+            {mainSkills.length === 0 ? (
+              <div className="col-span-2 rounded-[22px] bg-[#f5f7f0] px-4 py-4 text-center text-sm text-[#757872]">
+                使用できるスキルがありません。
+              </div>
+            ) : (
+              mainSkills.slice(0, 4).map((skill) => (
+                <SkillButton
+                  key={skill.skillId}
+                  skill={skill}
+                  accent={theme.accent}
+                  accentSoft={theme.accentSoft}
+                  accentText={theme.accentText}
+                  disabled={!isRunning}
+                  isPending={battleState.pendingMainSkillId === skill.skillId}
+                  onSelect={() => onSkillSelect(skill.skillId)}
+                />
+              ))
+            )}
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

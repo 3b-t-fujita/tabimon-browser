@@ -19,18 +19,9 @@ import type { StageSelectViewModel } from '@/application/viewModels/stageSelectV
 function worldLabel(worldId: number): string {
   switch (worldId) {
     case 1: return 'ミドリの森';
-    case 2: return 'ほのおの山';
-    case 3: return 'こおりの地';
+    case 2: return 'ホノオ火山';
+    case 3: return 'コオリ氷原';
     default: return `ワールド${worldId}`;
-  }
-}
-
-function difficultyLabel(difficulty: string): string {
-  switch (difficulty) {
-    case 'Easy':   return 'やさしい';
-    case 'Normal': return 'ふつう';
-    case 'Hard':   return 'むずかしい';
-    default:       return difficulty;
   }
 }
 
@@ -57,7 +48,7 @@ export class GetAvailableStagesUseCase {
         stageId:          m.stageId,
         stageName:        `${wLabel} Stage ${m.stageNo}`,
         worldLabel:       wLabel,
-        difficulty:       difficultyLabel(m.difficulty),
+        difficulty:       m.difficulty,
         recommendedLevel: m.recommendedLevel,
         isUnlocked,
       };

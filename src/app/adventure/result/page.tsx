@@ -14,9 +14,11 @@
  * 二重反映防止:
  *   - resultPendingFlag=false の場合は ResultAlreadyFinal → /home へリダイレクト
  */
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { GameLayout } from '@/components/common/GameLayout';
+import { PrimaryButton } from '@/components/common/PrimaryButton';
+import { SoftCard } from '@/components/common/SoftCard';
 import ResultSummaryView from '@/components/result/ResultSummaryView';
 import { AdventureResultType } from '@/common/constants/enums';
 import { useResultStore } from '@/stores/resultStore';
@@ -36,6 +38,7 @@ function parseResultType(raw: string | null): AdventureResultType | null {
 function AdventureResultContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
+  const [stageId, setStageId] = useState('');
   const {
     resultType, resultPhase, expGained, newLevel, leveledUp, stageUnlocked, statGains, evolved, evolvedName,
     errorMessage, isSaving,
@@ -72,6 +75,7 @@ function AdventureResultContent() {
         }
 
         const session = stateResult.value;
+        setStageId(session.stageId);
 
         // ---- 2. 報酬確定 ----
         const finalizeUC = new FinalizeAdventureResultUseCase();
@@ -105,7 +109,7 @@ function AdventureResultContent() {
           await closeUC.execute();
           setResultPhase('COMPLETED');
           // 少し待ってホームへ遷移（結果表示を見せる）
-          setTimeout(() => router.push('/home'), 1500);
+          setTimeout(() => router.push('/home'), 2200);
         }
       } finally {
         setIsSaving(false);
@@ -122,13 +126,9 @@ function AdventureResultContent() {
           <span className="text-4xl">⚠️</span>
           <p className="font-black text-red-500">エラーが発生しました</p>
           <p className="text-sm text-stone-400 text-center">{errorMessage}</p>
-          <button
-            type="button"
-            onClick={() => router.push('/home')}
-            className="mt-2 rounded-2xl bg-stone-800 px-6 py-3 text-sm font-bold text-white shadow"
-          >
+          <PrimaryButton onClick={() => router.push('/home')} className="mt-2 py-3 text-sm shadow-sm" background="#44403c">
             ホームへ戻る
-          </button>
+          </PrimaryButton>
         </div>
       </GameLayout>
     );
@@ -141,7 +141,7 @@ function AdventureResultContent() {
         <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6">
           <span className="text-4xl animate-pulse">🏆</span>
           <p className="text-base font-black text-stone-700 animate-pulse">リザルト確定中...</p>
-          <p className="text-sm text-stone-400">しばらくお待ちください</p>
+          <p className="text-sm text-stone-400">経験値や解放状況をまとめています</p>
         </div>
       </GameLayout>
     );
@@ -153,7 +153,7 @@ function AdventureResultContent() {
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-6" style={{ background: '#f8fafc' }}>
         <ResultSummaryView
           resultType={resultType}
-          stageId={''}
+          stageId={stageId}
           expGained={expGained}
           newLevel={newLevel}
           leveledUp={leveledUp}
@@ -164,21 +164,26 @@ function AdventureResultContent() {
         />
 
         {resultPhase === 'RESULT_FINALIZED' && (
-          <p className="text-center text-sm text-stone-400 animate-pulse">
-            {isSaving ? '処理中...' : '次の展開を確認中...'}
-          </p>
+          <SoftCard tone="soft" className="px-4 py-3 text-center">
+            <p className="text-sm text-stone-500 animate-pulse">
+              {isSaving ? '最終処理を進めています...' : '次の展開を確認しています...'}
+            </p>
+          </SoftCard>
         )}
 
         {resultPhase === 'CANDIDATE_PENDING' && (
           <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center">
             <p className="text-sm font-black text-emerald-700">✨ 新しい仲間候補がいます！</p>
+            <p className="mt-1 text-xs text-emerald-600">候補確認画面へ移動します</p>
           </div>
         )}
 
         {resultPhase === 'COMPLETED' && (
-          <p className="text-center text-sm text-stone-400 animate-pulse">
-            ホームへ戻ります...
-          </p>
+          <SoftCard tone="soft" className="px-4 py-3 text-center">
+            <p className="text-sm text-stone-500 animate-pulse">
+              ホームへ戻っています...
+            </p>
+          </SoftCard>
         )}
       </div>
     </GameLayout>

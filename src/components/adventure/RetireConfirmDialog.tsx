@@ -24,14 +24,14 @@ export function RetireConfirmDialog({ onConfirm, onCancel, isSaving }: Props) {
         {/* 警告ストライプ */}
         <div
           className="h-2 w-full"
-          style={{ background: 'linear-gradient(90deg, #ef4444, #f97316, #ef4444)' }}
+          style={{ background: 'linear-gradient(90deg, #7d5231, #b02500, #7d5231)' }}
         />
 
         <div className="px-6 pt-5 pb-6 flex flex-col gap-5">
           {/* テキスト */}
           <div className="flex flex-col gap-1.5">
-            <h2 className="text-lg font-black text-stone-800">冒険をやめますか？</h2>
-            <p className="text-sm text-stone-500 leading-relaxed">
+            <h2 className="text-lg font-black text-[#2c302b]">冒険をやめますか？</h2>
+            <p className="text-sm leading-relaxed text-[#595c57]">
               リタイアすると冒険は失敗扱いになります。<br />本当によろしいですか？
             </p>
           </div>
@@ -42,10 +42,10 @@ export function RetireConfirmDialog({ onConfirm, onCancel, isSaving }: Props) {
               type="button"
               onClick={onConfirm}
               disabled={isSaving}
-              className="w-full rounded-2xl py-3.5 text-sm font-black text-white shadow-lg transition active:scale-95 disabled:opacity-50"
+              className="w-full rounded-full py-3.5 text-sm font-black text-white shadow-lg transition active:scale-95 disabled:opacity-50"
               style={{
-                background: 'linear-gradient(135deg, #b91c1c, #ef4444)',
-                boxShadow:  '0 4px 14px rgba(239,68,68,0.4)',
+                background: 'linear-gradient(135deg, #7d5231, #b02500)',
+                boxShadow:  '0 4px 14px rgba(176,37,0,0.3)',
               }}
             >
               {isSaving ? '処理中...' : '🏳️ はい、リタイアする'}
@@ -54,7 +54,7 @@ export function RetireConfirmDialog({ onConfirm, onCancel, isSaving }: Props) {
               type="button"
               onClick={onCancel}
               disabled={isSaving}
-              className="w-full rounded-2xl border-2 border-stone-200 bg-white py-3.5 text-sm font-bold text-stone-700 transition hover:bg-stone-50 active:scale-95 disabled:opacity-50"
+              className="w-full rounded-full border-2 border-stone-200 bg-white py-3.5 text-sm font-bold text-[#595c57] transition hover:bg-stone-50 active:scale-95 disabled:opacity-50"
             >
               ⚔️ いいえ、続ける
             </button>

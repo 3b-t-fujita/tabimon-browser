@@ -59,13 +59,14 @@ export default function RootPage() {
 
       {/* 読み込み失敗 */}
       {!isBooting && currentRouteState === RouteState.LoadFailed && (
-        <div className="flex flex-1 flex-col items-center justify-center gap-4 p-8">
-          <div className="text-4xl">⚠️</div>
+        <div className="flex flex-1 flex-col items-center justify-center gap-4 bg-[#f5f7f0] p-8 text-center">
+          <div className="rounded-full bg-[#fff1ec] p-5 text-4xl">⚠️</div>
+          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#6c4324]/70">Boot Error</p>
           <ErrorBanner message={lastUiError ?? '読み込みに失敗しました'} />
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="mt-4 rounded-xl bg-stone-700 px-6 py-3 text-sm font-bold text-white"
+            className="mt-4 rounded-full bg-[#29664c] px-6 py-3 text-sm font-bold text-white shadow-sm"
           >
             再読み込み
           </button>

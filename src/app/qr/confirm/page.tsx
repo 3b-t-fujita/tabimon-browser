@@ -152,22 +152,28 @@ export default function QrConfirmPage() {
 
   return (
     <GameLayout>
-      <div className="flex flex-1 flex-col" style={{ background: '#f8fafc' }}>
+      <div className="flex flex-1 flex-col bg-[#f5f7f0] text-[#2c302b]">
 
-        {/* ヘッダー */}
-        <header className="shrink-0 border-b border-stone-200 bg-white px-4 py-3.5">
+        <header className="shrink-0 border-b border-emerald-950/5 bg-white/70 px-5 py-4 backdrop-blur-xl">
           <button
             type="button"
             onClick={() => router.back()}
-            className="flex items-center gap-1 rounded-full bg-stone-100 px-3 py-1.5 text-sm font-semibold text-stone-600"
+            className="rounded-full bg-[#e6e9e1] px-4 py-2 text-sm font-semibold text-[#29664c]"
           >
             ← 戻る
           </button>
-          <h1 className="mt-2 text-xl font-black text-stone-900">QR受取確認</h1>
-          <p className="text-xs text-stone-400 mt-0.5">受取先を選んでください</p>
+          <p className="mt-4 text-[10px] font-black uppercase tracking-[0.24em] text-[#6c4324]/70">Receive Confirm</p>
+          <h1 className="mt-1 text-[30px] font-black leading-tight text-[#1f3528]">QR受取確認</h1>
+          <p className="mt-2 text-sm text-[#595c57]">受取先を選んでください。</p>
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-6">
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-5">
+
+          <div className="rounded-[28px] bg-white p-5 shadow-sm">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#6c4324]/70">Incoming Buddy</p>
+            <p className="mt-2 text-lg font-black text-[#2c302b]">このQRをどこで受け取るか選びます</p>
+            <p className="mt-2 text-sm text-[#595c57]">仲間にするか、助っ人にするか、ここで決められます。</p>
+          </div>
 
           {/* payload プレビュー */}
           <QrPayloadPreview payload={parsedPayload} />
@@ -194,11 +200,11 @@ export default function QrConfirmPage() {
           style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}
         >
           <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #6b7280, #9ca3af)' }} />
+            <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #4f5d68, #7b8790)' }} />
             <div className="flex flex-col gap-4 px-6 pt-5 pb-6">
               <div>
-                <p className="font-black text-stone-800">本当に見送りますか？</p>
-                <p className="mt-1.5 text-sm text-stone-500 leading-relaxed">
+                <p className="font-black text-[#2c302b]">本当に見送りますか？</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-[#595c57]">
                   見送ると履歴に残りません。<br />同じQRを後で読み取ることもできます。
                 </p>
               </div>
@@ -207,7 +213,7 @@ export default function QrConfirmPage() {
                   type="button"
                   onClick={closeSkipConfirm}
                   disabled={isSaving}
-                  className="flex-1 rounded-2xl border-2 border-stone-200 py-3 text-sm font-bold text-stone-600 hover:bg-stone-50 disabled:opacity-50"
+                  className="flex-1 rounded-2xl border-2 border-stone-200 py-3 text-sm font-bold text-[#595c57] hover:bg-stone-50 disabled:opacity-50"
                 >
                   キャンセル
                 </button>
@@ -216,7 +222,7 @@ export default function QrConfirmPage() {
                   onClick={handleSkipConfirmed}
                   disabled={isSaving}
                   className="flex-1 rounded-2xl py-3 text-sm font-black text-white shadow disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg, #374151, #6b7280)' }}
+                  style={{ background: 'linear-gradient(135deg, #4f5d68, #334155)' }}
                 >
                   見送る
                 </button>

@@ -217,9 +217,9 @@ describe('ValidateQrDuplicateUseCase', () => {
     expect(result.errorCode).toBe(QrErrorCode.Duplicate);
   });
 
-  it('仲間上限5体で OwnedCapacityFull エラー（単純拒否・入替画面なし）', async () => {
+  it('仲間上限10体で OwnedCapacityFull エラー（単純拒否・入替画面なし）', async () => {
     const payload = await makeValidPayload();
-    const owned = Array.from({ length: 5 }, (_, i) => makeOwnedMonster(`mon-${i}`));
+    const owned = Array.from({ length: 10 }, (_, i) => makeOwnedMonster(`mon-${i}`));
     const result = new ValidateQrDuplicateUseCase().execute({
       payload,
       destination: 'owned',
@@ -283,8 +283,8 @@ describe('AcceptQrAsOwnedMonsterUseCase', () => {
       .toBe(payload.sourceUniqueMonsterIdFromQr);
   });
 
-  it('仲間上限5体で OwnedCapacityFull エラー（DB は変更しない）', async () => {
-    const owned = Array.from({ length: 5 }, (_, i) => makeOwnedMonster(`mon-${i}`));
+  it('仲間上限10体で OwnedCapacityFull エラー（DB は変更しない）', async () => {
+    const owned = Array.from({ length: 10 }, (_, i) => makeOwnedMonster(`mon-${i}`));
     await seedSave(owned);
     const payload = await makeValidPayload();
 
@@ -297,7 +297,7 @@ describe('AcceptQrAsOwnedMonsterUseCase', () => {
     // DB は変わらない
     const loaded = await new SaveTransactionService().load();
     if (!loaded.ok) return;
-    expect(loaded.value?.ownedMonsters).toHaveLength(5);
+    expect(loaded.value?.ownedMonsters).toHaveLength(10);
     expect(loaded.value?.qrReceiveHistory).toHaveLength(0);
   });
 });

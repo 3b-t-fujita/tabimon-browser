@@ -169,13 +169,18 @@ describe('AcceptPendingCandidateUseCase', () => {
     expect(loaded.value?.ownedMonsters).toHaveLength(5);
   });
 
-  it('仲間5体（上限）だと OwnedCapacityFull エラーになる（入替導線へ誘導）', async () => {
+  it('仲間10体（上限）だと OwnedCapacityFull エラーになる（入替導線へ誘導）', async () => {
     const mons = [
       makeOwnedMonster('mon-main', { isMain: true }),
       makeOwnedMonster('mon-2'),
       makeOwnedMonster('mon-3'),
       makeOwnedMonster('mon-4'),
       makeOwnedMonster('mon-5'),
+      makeOwnedMonster('mon-6'),
+      makeOwnedMonster('mon-7'),
+      makeOwnedMonster('mon-8'),
+      makeOwnedMonster('mon-9'),
+      makeOwnedMonster('mon-10'),
     ];
     const candidate = makeCandidate();
     await seedSave(mons, candidate);
@@ -188,7 +193,7 @@ describe('AcceptPendingCandidateUseCase', () => {
     // DB は変更されない
     const loaded = await new SaveTransactionService().load();
     if (!loaded.ok) return;
-    expect(loaded.value?.ownedMonsters).toHaveLength(5);
+    expect(loaded.value?.ownedMonsters).toHaveLength(10);
     expect(loaded.value?.pendingCandidate).not.toBeNull();
   });
 

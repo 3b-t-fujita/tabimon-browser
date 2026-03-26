@@ -6,6 +6,8 @@
  * 相棒は選択不可。
  */
 import type { OwnedMonster } from '@/domain/entities/OwnedMonster';
+import { SoftCard } from '@/components/common/SoftCard';
+import { UiChip } from '@/components/common/UiChip';
 
 interface CapacityReplacePanelProps {
   owned:        OwnedMonster[];
@@ -19,13 +21,17 @@ export default function CapacityReplacePanel({
   const releasable = owned.filter((m) => !m.isMain);
 
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-sm text-stone-600">
-        仲間が上限（{owned.length}/{owned.length}）です。
+    <SoftCard className="flex flex-col gap-3 p-5">
+      <div className="flex items-center justify-between">
+        <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">手放す仲間</p>
+        <UiChip background="#fff1ec" color="#b02500">上限 {owned.length}/{owned.length}</UiChip>
+      </div>
+      <p className="text-sm leading-6 text-[#595c57]">
+        仲間が上限に達しています。
         手放す仲間を選んでください（相棒は選択できません）。
       </p>
       {releasable.length === 0 && (
-        <p className="text-sm text-red-500">手放せる仲間がいません（全員相棒に設定されています）。</p>
+        <p className="text-sm text-[#b02500]">手放せる仲間がいません（全員相棒に設定されています）。</p>
       )}
       {releasable.map((m) => (
         <button
@@ -33,12 +39,12 @@ export default function CapacityReplacePanel({
           type="button"
           onClick={() => onSelect(m.uniqueId as string)}
           disabled={disabled}
-          className="flex justify-between items-center rounded-lg border border-stone-200 bg-white p-3 text-sm hover:bg-red-50 hover:border-red-300 disabled:opacity-50 transition"
+          className="flex items-center justify-between rounded-[22px] border border-stone-200 bg-[#f5f7f0] p-4 text-sm transition hover:bg-[#fff1ec] hover:border-[#fac097] disabled:opacity-50"
         >
-          <span className="font-medium">{m.displayName}</span>
-          <span className="text-stone-400">Lv.{m.level}</span>
+          <span className="font-medium text-[#2c302b]">{m.displayName}</span>
+          <span className="rounded-full bg-white px-3 py-1 text-[11px] font-black text-[#595c57]">Lv.{m.level}</span>
         </button>
       ))}
-    </div>
+    </SoftCard>
   );
 }

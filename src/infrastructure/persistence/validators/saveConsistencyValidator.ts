@@ -3,7 +3,7 @@
  *
  * Zodスキーマが型整合を担い、このモジュールは業務ルール整合性を担う:
  * - 相棒が ownedMonsters 内に存在すること
- * - 仲間上限 <= 5 / 助っ人上限 <= 10
+ * - 仲間上限 <= 10 / 助っ人上限 <= 10
  * - AdventureSession の status と必須フィールドの整合
  *   - SESSION_ACTIVE_BATTLE のとき battleCheckpointNodeIndex >= 0
  *   - SESSION_PENDING_RESULT のとき resultPendingFlag === true

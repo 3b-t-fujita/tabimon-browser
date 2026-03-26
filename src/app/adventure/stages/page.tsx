@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAdventureStore } from '@/stores/adventureStore';
 import { GetAvailableStagesUseCase } from '@/application/adventure/getAvailableStagesUseCase';
-import { StageList } from '@/components/adventure/StageList';
+import { StageListPatternStitch } from '@/components/adventure/StageListPatternStitch';
 import { GameLayout } from '@/components/common/GameLayout';
 import { ErrorBanner } from '@/components/common/ErrorBanner';
 
@@ -54,7 +54,7 @@ export default function AdventureStagesPage() {
         </div>
       )}
       {stageSelect && (
-        <StageList
+        <StageListPatternStitch
           vm={stageSelect}
           onBack={() => router.back()}
           onSelect={handleSelect}

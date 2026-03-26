@@ -13,7 +13,7 @@ interface Props {
   onSelect: (stageId: string) => void;
 }
 
-// worldLabel（'ミドリの森' | 'ほのおの山' | 'こおりの地'）に対応する設定
+// worldLabel（'ミドリの森' | 'ホノオ火山' | 'コオリ氷原'）に対応する設定
 const WORLD_CONFIG: Record<string, {
   icon:       string;
   label:      string;
@@ -30,17 +30,17 @@ const WORLD_CONFIG: Record<string, {
     sectionBg:  '#f0fdf4',
     sectionBdr: '#bbf7d0',
   },
-  'ほのおの山': {
+  'ホノオ火山': {
     icon:       '🔥',
-    label:      'ほのおの山',
+    label:      'ホノオ火山',
     sub:        '炎と溶岩が渦巻く灼熱のワールド',
     headerBg:   'linear-gradient(135deg, #7c2d12 0%, #9a3412 100%)',
     sectionBg:  '#fff7ed',
     sectionBdr: '#fed7aa',
   },
-  'こおりの地': {
+  'コオリ氷原': {
     icon:       '❄️',
-    label:      'こおりの地',
+    label:      'コオリ氷原',
     sub:        '雪と氷に閉ざされた極寒のワールド',
     headerBg:   'linear-gradient(135deg, #0c4a6e 0%, #075985 100%)',
     sectionBg:  '#f0f9ff',

@@ -18,6 +18,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GameLayout } from '@/components/common/GameLayout';
+import { PrimaryButton } from '@/components/common/PrimaryButton';
+import { SoftCard } from '@/components/common/SoftCard';
 import CandidateCard from '@/components/result/CandidateCard';
 import CandidateActionPanel from '@/components/result/CandidateActionPanel';
 import type { PendingCandidate } from '@/domain/entities/PendingCandidate';
@@ -111,7 +113,8 @@ export default function AdventureCandidatePage() {
       <GameLayout>
         <div className="flex flex-1 flex-col items-center justify-center gap-3 p-6">
           <span className="text-4xl animate-pulse">🐾</span>
-          <p className="text-base font-black text-stone-700 animate-pulse">候補を確認中...</p>
+          <p className="text-base font-black text-stone-700 animate-pulse">新しい仲間候補を確認中...</p>
+          <p className="text-sm text-stone-400">出会いの内容を読み込んでいます</p>
         </div>
       </GameLayout>
     );
@@ -125,13 +128,9 @@ export default function AdventureCandidatePage() {
           <span className="text-4xl">⚠️</span>
           <p className="font-black text-red-500">エラーが発生しました</p>
           <p className="text-sm text-stone-400 text-center">{errorMessage}</p>
-          <button
-            type="button"
-            onClick={() => router.push('/home')}
-            className="mt-2 rounded-2xl bg-stone-800 px-6 py-3 text-sm font-bold text-white shadow"
-          >
+          <PrimaryButton onClick={() => router.push('/home')} className="mt-2 py-3 text-sm shadow-sm" background="#44403c">
             ホームへ戻る
-          </button>
+          </PrimaryButton>
         </div>
       </GameLayout>
     );
@@ -141,7 +140,12 @@ export default function AdventureCandidatePage() {
 
   return (
     <GameLayout>
-      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-6" style={{ background: '#f8fafc' }}>
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto bg-[#f5f7f0] px-5 py-5">
+        <SoftCard className="p-5">
+          <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">新しいなかま</p>
+          <p className="mt-2 text-2xl font-black text-[#2c302b]">新しい仲間候補に出会いました</p>
+          <p className="mt-2 text-sm leading-6 text-[#595c57]">ここで仲間にするか、今回は見送るかを決められます。受け入れるとすぐに仲間一覧へ反映されます。</p>
+        </SoftCard>
 
         {/* 候補カード */}
         <CandidateCard candidate={candidate} displayName={displayName} />
@@ -162,11 +166,11 @@ export default function AdventureCandidatePage() {
           style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}
         >
           <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #f97316, #ef4444)' }} />
+            <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #7d5231, #b02500)' }} />
             <div className="flex flex-col gap-4 px-6 pt-5 pb-6">
               <div>
-                <p className="font-black text-stone-800">本当に見送りますか？</p>
-                <p className="mt-1.5 text-sm text-stone-500 leading-relaxed">
+                <p className="font-black text-[#2c302b]">本当に見送りますか？</p>
+                <p className="mt-1.5 text-sm leading-relaxed text-[#595c57]">
                   見送ると、この候補は二度と現れません。
                 </p>
               </div>
@@ -175,7 +179,7 @@ export default function AdventureCandidatePage() {
                   type="button"
                   onClick={() => setShowSkipConfirm(false)}
                   disabled={isSaving}
-                  className="flex-1 rounded-2xl border-2 border-stone-200 py-3 text-sm font-bold text-stone-600 hover:bg-stone-50 disabled:opacity-50"
+                  className="flex-1 rounded-2xl border-2 border-stone-200 py-3 text-sm font-bold text-[#595c57] hover:bg-stone-50 disabled:opacity-50"
                 >
                   キャンセル
                 </button>
@@ -184,7 +188,7 @@ export default function AdventureCandidatePage() {
                   onClick={handleSkipConfirmed}
                   disabled={isSaving}
                   className="flex-1 rounded-2xl py-3 text-sm font-black text-white shadow disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg, #b91c1c, #ef4444)' }}
+                  style={{ background: 'linear-gradient(135deg, #7d5231, #b02500)' }}
                 >
                   見送る
                 </button>

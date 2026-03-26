@@ -11,7 +11,7 @@ import { useMonsterStore } from '@/stores/monsterStore';
 import { useAdventureStore } from '@/stores/adventureStore';
 import { GetAdventureConfirmViewStateUseCase } from '@/application/adventure/getAdventureConfirmViewStateUseCase';
 import { StartAdventureUseCase } from '@/application/adventure/startAdventureUseCase';
-import { AdventureStartConfirmPanel } from '@/components/adventure/AdventureStartConfirmPanel';
+import { AdventureConfirmPanelB } from '@/components/adventure/AdventureConfirmPanelB';
 import { GameLayout } from '@/components/common/GameLayout';
 import { ErrorBanner } from '@/components/common/ErrorBanner';
 
@@ -87,10 +87,11 @@ function AdventureConfirmContent() {
         </div>
       )}
       {adventureConfirm && (
-        <AdventureStartConfirmPanel
+        <AdventureConfirmPanelB
           vm={adventureConfirm}
           onStart={handleStart}
           onBack={() => router.back()}
+          onEditParty={() => router.push('/party')}
           isStarting={isStarting}
           startError={startError}
         />

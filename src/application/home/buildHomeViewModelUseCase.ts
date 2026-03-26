@@ -29,6 +29,7 @@ export class BuildHomeViewModelUseCase {
     return {
       playerName:       player?.playerName ?? '（未設定）',
       mainMonsterName:      mainMonster?.displayName ?? '',
+      mainMonsterLevel:     mainMonster?.level ?? null,
       mainMonsterId:        player?.mainMonsterId ?? null,
       mainMonsterMasterId:  mainMonster?.monsterMasterId ?? null,
       ownedCount:       ownedMonsters.length,

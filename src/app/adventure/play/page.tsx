@@ -10,7 +10,7 @@
  * - ノード進行確定時は保存必須
  * - 保存失敗時は main を壊さない
  */
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { GameLayout } from '@/components/common/GameLayout';
 import { AdventureNodeView } from '@/components/adventure/AdventureNodeView';
@@ -44,6 +44,7 @@ const goalUC          = new ReachGoalUseCase();
 
 export default function AdventurePlayPage() {
   const router = useRouter();
+  const [nodeTotal, setNodeTotal] = useState(0);
   const {
     session, currentNode, explorePhase, branchOptions, eventMessage,
     isSaving, saveErrorMessage, showRetireDialog, pendingSession,
@@ -123,10 +124,11 @@ export default function AdventurePlayPage() {
       // ノード総数の取得（進行状況表示用）
       const stageMaster = await getStageMasterById(sess.stageId);
       const pattern = stageMaster ? await getNodePatternById(stageMaster.nodePatternId) : null;
-      const nodeTotal = pattern?.nodes.length ?? 0;
+      const total = pattern?.nodes.length ?? 0;
       if (cancelled) return;
 
-      applyNodePhase(sess, node, nodeTotal);
+      setNodeTotal(total);
+      applyNodePhase(sess, node, total);
     }
 
     load().catch((e) => {
@@ -315,8 +317,7 @@ export default function AdventurePlayPage() {
   // ----------------------------------------------------------------
   // レンダリング
   // ----------------------------------------------------------------
-  const nodeTotal  = 0; // フェーズ6 簡易版: ストアへの保持は後続フェーズで改善
-  const stageId    = session?.stageId ?? '';
+  const stageId = session?.stageId ?? '';
 
   // ワールドテーマ（stageId から導出）
   const worldAccent   = stageId.includes('_w1') ? '#10b981' : stageId.includes('_w2') ? '#f97316' : '#38bdf8';
@@ -334,32 +335,30 @@ export default function AdventurePlayPage() {
         />
       )}
 
-      <div className="flex flex-1 flex-col" style={{ background: '#f8fafc' }}>
+      <div className="flex flex-1 flex-col bg-[#f5f7f0] text-[#2c302b]">
 
         {/* ── ヘッダー ── */}
         <header
-          className="shrink-0 flex items-center justify-between px-4 py-3 border-b"
-          style={{ background: worldAccentDk, borderColor: `${worldAccent}40` }}
+          className="shrink-0 flex items-center justify-between border-b border-emerald-950/5 bg-white/70 px-5 py-4 backdrop-blur-xl"
         >
           <button
             type="button"
             onClick={openRetireDialog}
-            className="rounded-full px-3 py-1.5 text-xs font-bold transition"
-            style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.7)' }}
+            className="rounded-full bg-[#fff1ec] px-4 py-2 text-xs font-black text-[#b02500] transition"
           >
             ✕ やめる
           </button>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs font-black text-white opacity-80">{worldLabel}</span>
+          <div className="flex items-center gap-1.5 rounded-full bg-[#eff2ea] px-4 py-2 text-xs font-black text-[#29664c]">
+            {worldLabel}
           </div>
           <div className="w-16" />
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pb-5">
+        <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-5">
 
           {/* 保存エラー */}
           {explorePhase === 'SAVE_ERROR' && (
-            <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            <div className="rounded-[24px] bg-[#fff1ec] p-4 text-sm text-[#b02500]">
               <p className="font-black">保存エラー</p>
               <p className="mt-1">{saveErrorMessage}</p>
             </div>
@@ -402,25 +401,19 @@ export default function AdventurePlayPage() {
 
           {/* 戦闘準備中 */}
           {explorePhase === 'BATTLE_PREPARING' && (
-            <div
-              className="flex flex-col items-center gap-2 rounded-2xl border p-6 text-center"
-              style={{ borderColor: '#fca5a5', background: 'linear-gradient(135deg, #fef2f2, #fee2e2)' }}
-            >
+            <div className="flex flex-col items-center gap-2 rounded-[28px] bg-[#fff1ec] p-6 text-center">
               <span className="text-3xl">⚔️</span>
-              <p className="text-base font-black text-red-700">戦闘が始まります！</p>
-              {isSaving && <p className="text-xs text-red-400 animate-pulse">準備中...</p>}
+              <p className="text-base font-black text-[#b02500]">戦闘が始まります！</p>
+              {isSaving && <p className="text-xs text-[#d06345] animate-pulse">準備中...</p>}
             </div>
           )}
 
           {/* ゴール到達 */}
           {explorePhase === 'GOAL_REACHED' && (
-            <div
-              className="flex flex-col items-center gap-2 rounded-2xl border p-6 text-center"
-              style={{ borderColor: '#fde68a', background: 'linear-gradient(135deg, #fefce8, #fef9c3)' }}
-            >
+            <div className="flex flex-col items-center gap-2 rounded-[28px] bg-[#eef7f8] p-6 text-center">
               <span className="text-3xl">🏁</span>
-              <p className="text-base font-black text-amber-700">ゴール到達！</p>
-              {isSaving && <p className="text-xs text-amber-500 animate-pulse">結果を保存中...</p>}
+              <p className="text-base font-black text-[#1e4f57]">ゴール到達！</p>
+              {isSaving && <p className="text-xs text-[#4c7b83] animate-pulse">結果を保存中...</p>}
             </div>
           )}
 
@@ -430,14 +423,14 @@ export default function AdventurePlayPage() {
               type="button"
               onClick={handleProceedNode}
               disabled={isSaving}
-              className="relative w-full overflow-hidden rounded-2xl py-5 text-base font-black text-white shadow-lg transition active:scale-95 disabled:opacity-50"
+              className="relative w-full overflow-hidden rounded-full py-5 text-base font-black text-white shadow-lg transition active:scale-95 disabled:opacity-50"
               style={{
                 background: `linear-gradient(135deg, ${worldAccentDk}, ${worldAccent})`,
                 boxShadow:  `0 4px 16px ${worldAccent}50`,
               }}
             >
               <span
-                className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-2xl"
+                className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-full"
                 style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.15), transparent)' }}
               />
               <span className="relative z-10">

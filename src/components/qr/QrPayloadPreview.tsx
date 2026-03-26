@@ -1,61 +1,51 @@
 'use client';
 
-/**
- * QrPayloadV1 の内容をプレビュー表示するコンポーネント。
- */
 import type { QrPayloadV1 } from '@/domain/entities/QrPayload';
+import { personalityLabel } from '@/application/shared/labelHelpers';
+import { SoftCard } from '@/components/common/SoftCard';
+import { UiChip } from '@/components/common/UiChip';
 
 const WORLD_LABEL: Record<string, string> = {
-  WORLD_FOREST:  '🌿 ミドリの森',
+  WORLD_FOREST: '🌿 ミドリの森',
   WORLD_VOLCANO: '🔥 ホノオ火山',
-  WORLD_ICE:     '❄️ コオリ氷原',
+  WORLD_ICE: '❄️ コオリ氷原',
 };
+
 const ROLE_LABEL: Record<string, string> = {
-  ROLE_ATTACK:  '⚔️ アタック',
-  ROLE_GUARD:   '🛡️ ガード',
+  ROLE_ATTACK: '⚔️ アタック',
+  ROLE_GUARD: '🛡️ ガード',
   ROLE_SUPPORT: '💚 サポート',
 };
 
-interface QrPayloadPreviewProps {
-  payload: QrPayloadV1;
-}
-
-export default function QrPayloadPreview({ payload }: QrPayloadPreviewProps) {
+export default function QrPayloadPreview({ payload }: { payload: QrPayloadV1 }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
-      {/* ヘッダー帯 */}
-      <div className="flex items-center gap-2 border-b border-stone-100 px-4 py-2.5 bg-stone-50">
-        <span className="text-base">🐾</span>
-        <span className="text-xs font-black uppercase tracking-widest text-stone-400">モンスター情報</span>
+    <SoftCard className="overflow-hidden">
+      <div className="bg-[#eff2ea] px-5 py-4">
+        <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">モンスターデータ</p>
+        <p className="mt-2 text-2xl font-black text-[#2c302b]">{payload.displayName}</p>
       </div>
 
-      {/* メイン */}
-      <div className="px-4 py-3.5 flex flex-col gap-2.5">
-        {/* 名前 + レベル */}
-        <div className="flex items-baseline gap-3">
-          <span className="text-xl font-black text-stone-900">{payload.displayName}</span>
-          <span className="text-sm font-bold text-stone-400">Lv.{payload.level}</span>
-        </div>
-
-        {/* バッジ行 */}
-        <div className="flex flex-wrap gap-1.5">
-          <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-bold text-stone-600">
+      <div className="space-y-4 px-5 py-5">
+        <div className="flex flex-wrap gap-2">
+          <UiChip background="#b9f9d6" color="#0a4f36">
             {WORLD_LABEL[payload.worldId] ?? payload.worldId}
-          </span>
-          <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-bold text-stone-600">
+          </UiChip>
+          <UiChip background="#e6e9e1" color="#595c57">
             {ROLE_LABEL[payload.roleId] ?? payload.roleId}
-          </span>
-          <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-bold text-stone-600">
-            {payload.personalityId}
-          </span>
+          </UiChip>
+          <UiChip background="#fac097" color="#4a280a">
+            {personalityLabel(payload.personalityId)}
+          </UiChip>
+          <UiChip background="#eef7f8" color="#1e4f57">
+            Lv.{payload.level}
+          </UiChip>
         </div>
 
-        {/* チェックサム（サブ情報） */}
-        <div className="flex items-center justify-between border-t border-stone-100 pt-2.5 mt-0.5">
-          <span className="text-[10px] text-stone-400">checksum</span>
-          <span className="font-mono text-[10px] text-stone-300">{payload.checksumHash.slice(0, 16)}…</span>
+        <div className="rounded-[22px] bg-[#f5f7f0] px-4 py-4">
+          <p className="text-[10px] font-black tracking-[0.12em] text-[#6c4324]/70">確認コード</p>
+          <p className="mt-2 break-all font-mono text-xs text-[#757872]">{payload.checksumHash}</p>
         </div>
       </div>
-    </div>
+    </SoftCard>
   );
 }

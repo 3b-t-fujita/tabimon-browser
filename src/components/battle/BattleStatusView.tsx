@@ -25,7 +25,7 @@ function ActorStatus({ actor }: ActorStatusProps) {
   const imageUrl   = getMonsterStandUrl(actor.monsterId);
 
   return (
-    <div className={`p-2 rounded border ${isDead ? 'opacity-40 border-gray-600' : 'border-gray-500'}`}>
+    <div className={`rounded-[20px] bg-white p-3 shadow-sm ${isDead ? 'opacity-40' : ''}`}>
       {/* キャラクター画像 */}
       <div className="flex justify-center mb-1 h-14">
         {imageUrl ? (
@@ -48,13 +48,13 @@ function ActorStatus({ actor }: ActorStatusProps) {
         <span className="font-medium truncate max-w-[80px]">
           {actor.isMain ? '★ ' : ''}{actor.displayName}
         </span>
-        <span className="text-xs text-gray-400">
+        <span className="text-xs text-[#757872]">
           {actor.currentHp}/{actor.maxHp}
         </span>
       </div>
 
       {/* HP バー */}
-      <div className="h-2 bg-gray-700 rounded overflow-hidden">
+      <div className="h-2 overflow-hidden rounded-full bg-[#e6e9e1]">
         <div
           className={`h-full ${barColor} transition-all duration-300`}
           style={{ width: `${hpPercent}%` }}
@@ -63,7 +63,7 @@ function ActorStatus({ actor }: ActorStatusProps) {
 
       {/* バフ/デバフ表示 */}
       {actor.buffTurnsRemaining > 0 && (
-        <div className="text-xs mt-1 text-yellow-400">
+        <div className="mt-1 text-xs text-[#7d5231]">
           {actor.atkMultiplier > 1 ? '↑ATK' : actor.defMultiplier > 1 ? '↑DEF' : actor.atkMultiplier < 1 ? '↓ATK' : '↓DEF'}
           {` (${actor.buffTurnsRemaining})`}
         </div>
@@ -81,10 +81,10 @@ export default function BattleStatusView({ actors }: BattleStatusViewProps) {
   const enemies = actors.filter((a) =>  a.isEnemy);
 
   return (
-    <div className="grid grid-cols-2 gap-4 p-3 bg-gray-900 rounded">
+    <div className="grid grid-cols-2 gap-4 rounded-[28px] bg-[#f5f7f0] p-4">
       {/* パーティ */}
       <div>
-        <div className="text-xs text-blue-400 font-bold mb-2">味方</div>
+        <div className="mb-2 text-xs font-bold text-[#29664c]">味方</div>
         <div className="flex flex-col gap-2">
           {party.map((a) => <ActorStatus key={a.id} actor={a} />)}
         </div>
@@ -92,7 +92,7 @@ export default function BattleStatusView({ actors }: BattleStatusViewProps) {
 
       {/* 敵 */}
       <div>
-        <div className="text-xs text-red-400 font-bold mb-2">敵</div>
+        <div className="mb-2 text-xs font-bold text-[#b02500]">敵</div>
         <div className="flex flex-col gap-2">
           {enemies.map((a) => <ActorStatus key={a.id} actor={a} />)}
         </div>

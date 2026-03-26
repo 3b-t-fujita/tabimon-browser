@@ -10,6 +10,9 @@ import { useRouter } from 'next/navigation';
 import { CompleteInitialSetupUseCase } from '@/application/boot/completeInitialSetupUseCase';
 import { LoadHomeDataUseCase } from '@/application/home/loadHomeDataUseCase';
 import { useAppUiStore, RouteState } from '@/stores/appUiStore';
+import { PrimaryButton } from '@/components/common/PrimaryButton';
+import { SoftCard } from '@/components/common/SoftCard';
+import { UiChip } from '@/components/common/UiChip';
 import { ErrorBanner } from '@/components/common/ErrorBanner';
 import { WorldId } from '@/common/constants/enums';
 
@@ -110,18 +113,18 @@ export function InitialSetupForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-1 flex-col overflow-y-auto"
-      style={{ background: '#f8fafc' }}
+      className="flex flex-1 flex-col overflow-y-auto bg-[#f5f7f0] text-[#2c302b]"
     >
-      {/* ── ① ヒーロー ── */}
-      <div
-        className="shrink-0 flex flex-col items-center gap-3 px-5 pt-8 pb-6"
-        style={{
-          background: selectedWorld
-            ? `linear-gradient(to bottom, ${selectedWorld.bg}, #f8fafc)`
-            : 'linear-gradient(to bottom, #f0fdf4, #f8fafc)',
-        }}
-      >
+      <div className="shrink-0 px-5 pt-6">
+        <SoftCard className="overflow-hidden">
+          <div
+            className="flex flex-col items-center gap-3 px-5 pb-6 pt-8"
+            style={{
+              background: selectedWorld
+                ? `linear-gradient(to bottom, ${selectedWorld.bg}, #ffffff)`
+                : 'linear-gradient(to bottom, #eff2ea, #ffffff)',
+            }}
+          >
         {/* 立ち絵 or デフォルトアイコン */}
         <div style={{ minHeight: 120, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           {starterMonsterId && MONSTER_STAND_IMG[starterMonsterId] ? (
@@ -138,18 +141,20 @@ export function InitialSetupForm() {
             <span className="text-7xl" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.12))' }}>🗺️</span>
           )}
         </div>
-        <h1 className="text-2xl font-black text-stone-900">タビモンへようこそ</h1>
-        <p className="text-sm text-stone-500 text-center">冒険者の情報を設定してください</p>
+        <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">さいしょのぼうけん</p>
+        <h1 className="text-[clamp(26px,7vw,30px)] font-black tracking-tight text-[#1f3528]">タビモンへようこそ</h1>
+        <p className="text-sm text-[#595c57] text-center">冒険者の情報を設定して、最初の旅に出発しましょう。</p>
+          </div>
+        </SoftCard>
       </div>
 
-      {/* ── ② フォーム ── */}
-      <div className="flex flex-col gap-5 px-4 pt-2 pb-6">
+      <div className="flex flex-col gap-5 px-5 pt-5 pb-6">
 
         {errorMessage && <ErrorBanner message={errorMessage} />}
 
         {/* プレイヤー名 */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-[11px] font-black uppercase tracking-widest text-stone-400" htmlFor="playerName">
+          <label className="text-[11px] font-black tracking-[0.14em] text-stone-400" htmlFor="playerName">
             冒険者の名前（最大10文字）
           </label>
           <input
@@ -159,13 +164,13 @@ export function InitialSetupForm() {
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
             placeholder="例: タロウ"
-            className="rounded-2xl border-2 border-stone-200 bg-white px-4 py-3.5 text-base text-stone-900 outline-none transition focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
+            className="rounded-[24px] border-2 border-stone-200 bg-white px-4 py-4 text-base text-stone-900 outline-none transition focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
           />
         </div>
 
         {/* ワールド選択 */}
         <div className="flex flex-col gap-2">
-          <p className="text-[11px] font-black uppercase tracking-widest text-stone-400">
+          <p className="text-[11px] font-black tracking-[0.14em] text-stone-400">
             出発するワールド
           </p>
           <div className="flex flex-col gap-2">
@@ -176,7 +181,7 @@ export function InitialSetupForm() {
                   key={w.id}
                   type="button"
                   onClick={() => handleWorldChange(w.id)}
-                  className="relative flex items-center gap-3 overflow-hidden rounded-2xl border-2 px-4 py-3.5 text-left transition active:scale-95"
+                  className="relative flex items-center gap-3 overflow-hidden rounded-[24px] border-2 px-4 py-4 text-left shadow-sm transition active:scale-95"
                   style={isSelected
                     ? { borderColor: w.accent, background: w.bgGrad }
                     : { borderColor: '#e7e5e4', background: 'white' }
@@ -193,12 +198,9 @@ export function InitialSetupForm() {
                     <span className="text-xs text-stone-400">{w.desc}</span>
                   </div>
                   {isSelected && (
-                    <span
-                      className="ml-auto shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-black text-white"
-                      style={{ background: w.accent }}
-                    >
+                    <UiChip className="ml-auto shrink-0 text-[10px]" background={w.accent} color="#ffffff">
                       選択中
-                    </span>
+                    </UiChip>
                   )}
                 </button>
               );
@@ -209,7 +211,7 @@ export function InitialSetupForm() {
         {/* 初期相棒選択 */}
         {starterOptions.length > 0 && selectedWorld && (
           <div className="flex flex-col gap-2">
-            <p className="text-[11px] font-black uppercase tracking-widest text-stone-400">
+            <p className="text-[11px] font-black tracking-[0.14em] text-stone-400">
               最初の仲間
             </p>
             <div className="flex flex-col gap-2">
@@ -220,7 +222,7 @@ export function InitialSetupForm() {
                     key={s.id}
                     type="button"
                     onClick={() => setStarterMonsterId(s.id)}
-                    className="relative flex items-center gap-3 overflow-hidden rounded-2xl border-2 px-4 py-3.5 text-left transition active:scale-95"
+                  className="relative flex items-center gap-3 overflow-hidden rounded-[24px] border-2 px-4 py-4 text-left shadow-sm transition active:scale-95"
                     style={isSelected
                       ? { borderColor: selectedWorld.accent, background: selectedWorld.bgGrad }
                       : { borderColor: '#e7e5e4', background: 'white' }
@@ -251,12 +253,9 @@ export function InitialSetupForm() {
                       <span className="text-xs text-stone-400">Lv.1 からスタート</span>
                     </div>
                     {isSelected && (
-                      <span
-                        className="ml-auto shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-black text-white"
-                        style={{ background: selectedWorld.accent }}
-                      >
+                      <UiChip className="ml-auto shrink-0 text-[10px]" background={selectedWorld.accent} color="#ffffff">
                         選択中
-                      </span>
+                      </UiChip>
                     )}
                   </button>
                 );
@@ -266,28 +265,14 @@ export function InitialSetupForm() {
         )}
 
         {/* 送信ボタン */}
-        <button
+        <PrimaryButton
           type="submit"
           disabled={!canSubmit}
-          className="relative mt-2 w-full overflow-hidden rounded-2xl py-5 text-base font-black text-white shadow-lg transition active:scale-95 disabled:opacity-40"
-          style={canSubmit
-            ? {
-                background:  `linear-gradient(135deg, ${ctaAccentDk}, ${ctaAccent})`,
-                boxShadow:   `0 4px 16px ${ctaAccent}50`,
-              }
-            : { background: '#d6d3d1' }
-          }
+          className="mt-2 text-base"
+          background={canSubmit ? `linear-gradient(135deg, ${ctaAccentDk}, ${ctaAccent})` : '#d6d3d1'}
         >
-          {canSubmit && (
-            <span
-              className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-2xl"
-              style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.15), transparent)' }}
-            />
-          )}
-          <span className="relative z-10">
-            {isSubmitting ? '保存中...' : '🗺️ 冒険を始める'}
-          </span>
-        </button>
+          {isSubmitting ? '保存中...' : '🗺️ 冒険を始める'}
+        </PrimaryButton>
 
       </div>
     </form>

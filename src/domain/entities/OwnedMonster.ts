@@ -4,7 +4,7 @@
  * - 育成対象（経験値/レベルアップあり）
  * - 相棒設定可
  * - QR生成可（仲間のみ生成可、助っ人は生成不可）
- * - 上限5体（OwnedCapacityPolicy 参照）
+ * - 上限10体（OwnedCapacityPolicy 参照）
  *
  * 保存先: IndexedDB main_save → ownedMonsters ストア
  */

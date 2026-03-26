@@ -13,20 +13,11 @@ import { getStageMasterById } from '@/infrastructure/master/stageMasterRepositor
 import { ValidateAdventureStartUseCase } from './validateAdventureStartUseCase';
 import type { AdventureConfirmViewModel } from '@/application/viewModels/adventureConfirmViewModel';
 
-function difficultyLabel(difficulty: string): string {
-  switch (difficulty) {
-    case 'Easy':   return 'やさしい';
-    case 'Normal': return 'ふつう';
-    case 'Hard':   return 'むずかしい';
-    default:       return difficulty;
-  }
-}
-
 function worldLabel(worldId: number): string {
   switch (worldId) {
     case 1: return 'ミドリの森';
-    case 2: return 'ほのおの山';
-    case 3: return 'こおりの地';
+    case 2: return 'ホノオ火山';
+    case 3: return 'コオリ氷原';
     default: return `ワールド${worldId}`;
   }
 }
@@ -81,7 +72,7 @@ export class GetAdventureConfirmViewStateUseCase {
     const vm: AdventureConfirmViewModel = {
       stageId,
       stageName,
-      difficulty:       difficultyLabel(stageMaster.difficulty),
+      difficulty:       stageMaster.difficulty,
       recommendedLevel: stageMaster.recommendedLevel,
       main:             mainMon ? { displayName: mainMon.displayName, level: mainMon.level, monsterMasterId: mainMon.monsterMasterId } : null,
       supports,

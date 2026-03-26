@@ -3,7 +3,7 @@
  *
  * 確認観点:
  *   - プレイヤー名が ViewModel に反映される
- *   - 相棒名 / 仲間数 / 助っ人数が正しい
+ *   - 相棒名 / 相棒レベル / 仲間数 / 助っ人数が正しい
  *   - AdventureSession なし → canContinue=false
  *   - AdventureSession あり (SESSION_ACTIVE) → canContinue=true, reason='ACTIVE'
  *   - AdventureSession あり (SESSION_PENDING_RESULT) → canContinue=true, reason='PENDING_RESULT'
@@ -84,7 +84,7 @@ describe('BuildHomeViewModelUseCase', () => {
     };
     const vm = useCase.execute(save);
     expect(vm.ownedCount).toBe(1);
-    expect(vm.ownedCapacity).toBe(5);
+    expect(vm.ownedCapacity).toBe(10);
     expect(vm.supportCount).toBe(0);
     expect(vm.supportCapacity).toBe(10);
   });
@@ -109,6 +109,7 @@ describe('BuildHomeViewModelUseCase', () => {
     };
     const vm = useCase.execute(save);
     expect(vm.mainMonsterName).toBe('グリーニョ');
+    expect(vm.mainMonsterLevel).toBe(1);
     expect(vm.mainMonsterId).toBe(uniqueId);
   });
 

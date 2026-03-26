@@ -191,7 +191,7 @@ describe('確認3: 保存失敗時に main が壊れない', () => {
 
   beforeEach(() => { tx = makeTx(); });
 
-  it('仲間数上限(>5)超えでも既存 main が保持される', async () => {
+  it('仲間数上限(>10)超えでも既存 main が保持される', async () => {
     // 正常な初期状態を保存
     await tx.saveMultiple({
       player: {
@@ -202,8 +202,8 @@ describe('確認3: 保存失敗時に main が壊れない', () => {
       },
     });
 
-    // 仲間6体（上限超え）で保存試行
-    const overCapacity = Array.from({ length: 6 }, (_, i) => ({
+    // 仲間11体（上限超え）で保存試行
+    const overCapacity = Array.from({ length: 11 }, (_, i) => ({
       uniqueId:        toMonsterId(`over-${i}`),
       monsterMasterId: toMonsterMasterId('MON_001'),
       displayName:     `超過モン${i}`,

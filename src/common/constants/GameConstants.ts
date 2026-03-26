@@ -4,7 +4,7 @@
  */
 export const GameConstants = {
   // --- 所持・編成上限 ---
-  OWNED_MONSTER_CAPACITY:   5,    // 仲間上限
+  OWNED_MONSTER_CAPACITY:   10,   // 仲間上限
   SUPPORT_MONSTER_CAPACITY: 10,   // 助っ人上限
   PARTY_MAX_SUPPORTS:       2,    // 編成助っ人上限
   MAX_LEVEL:                30,   // レベル上限

@@ -11,11 +11,14 @@ interface BattlePreparingViewProps {
 
 export default function BattlePreparingView({ isBoss }: BattlePreparingViewProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-64 gap-4">
-      <div className="text-2xl font-bold animate-pulse">
+    <div className="flex min-h-64 flex-col items-center justify-center gap-4 rounded-[32px] bg-white p-8 text-center shadow-sm">
+      <div className="rounded-full bg-[#fff1ec] p-5 text-4xl">
+        {isBoss ? '🔥' : '⚔️'}
+      </div>
+      <div className="text-2xl font-bold animate-pulse text-[#2c302b]">
         {isBoss ? '⚔️ ボス戦！' : '⚔️ 戦闘開始準備中...'}
       </div>
-      <div className="text-gray-400 text-sm">しばらくお待ちください</div>
+      <div className="text-sm text-[#595c57]">しばらくお待ちください</div>
     </div>
   );
 }

@@ -210,17 +210,17 @@ export default function MonsterGalleryPage() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-1 flex-col min-h-screen bg-stone-50">
-      {/* ヘッダー */}
-      <header className="bg-emerald-600 px-5 py-4 sticky top-0 z-10 shadow">
-        <button type="button" onClick={() => router.back()} className="mb-1 text-sm text-emerald-100">
+    <div className="flex min-h-screen flex-1 flex-col bg-[#f5f7f0] text-[#2c302b]">
+      <header className="sticky top-0 z-10 border-b border-emerald-950/5 bg-white/70 px-5 py-4 backdrop-blur-xl">
+        <button type="button" onClick={() => router.back()} className="rounded-full bg-[#e6e9e1] px-4 py-2 text-sm font-semibold text-[#29664c]">
           ← 戻る
         </button>
-        <h1 className="text-xl font-bold text-white">キャラクター図鑑</h1>
-        <p className="text-xs text-emerald-200 mt-0.5">全 {MONSTERS.length} 体</p>
+        <p className="mt-4 text-[10px] font-black uppercase tracking-[0.24em] text-[#6c4324]/70">Monster Gallery</p>
+        <h1 className="mt-1 text-[30px] font-black leading-tight text-[#1f3528]">キャラクター図鑑</h1>
+        <p className="mt-2 text-sm text-[#595c57]">全 {MONSTERS.length} 体のモンスター一覧です。</p>
       </header>
 
-      <div className="flex flex-col gap-8 p-5 pb-10">
+      <div className="flex flex-col gap-8 px-5 py-5 pb-10">
         {SECTIONS.map((sec) => {
           let items: MonsterEntry[];
           if (sec.filter) {
@@ -234,7 +234,7 @@ export default function MonsterGalleryPage() {
           }
           return (
             <section key={sec.label}>
-              <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-stone-400">{sec.label}</h2>
+              <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-[#6c4324]/70">{sec.label}</h2>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {items.map((m) => (
                   <MonsterCard key={m.monsterId} m={m} />
