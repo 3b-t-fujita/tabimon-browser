@@ -15,6 +15,8 @@ export interface MonsterSkillViewModel {
   readonly displayName: string;
   /** 'SKILL_ATTACK' | 'SKILL_HEAL' | 'SKILL_BUFF' | 'SKILL_DEBUFF' | 'SKILL_NORMAL' */
   readonly skillType:   string;
+  readonly proficiencyUseCount: number;
+  readonly proficiencyStage: 0 | 1 | 2 | 3;
 }
 
 export interface OwnedMonsterDetailViewModel {
@@ -23,6 +25,9 @@ export interface OwnedMonsterDetailViewModel {
   readonly monsterMasterId:  string;
   readonly level:            number;
   readonly exp:              number;
+  readonly currentExp:       number;
+  readonly bondPoints:       number;
+  readonly bondRank:         0 | 1 | 2 | 3 | 4;
   readonly worldLabel:       string;
   readonly roleLabel:        string;
   readonly personalityLabel: string;

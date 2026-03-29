@@ -92,15 +92,16 @@ export class ApplyBattleResultUseCase {
         if (currentNode.nextNodeIndex === undefined || currentNode.nextNodeIndex === null) {
           return fail(AdventureErrorCode.SessionCorrupt, 'イベントノードに nextNodeIndex がありません');
         }
-        updatedSession = {
-          ...session,
-          currentNodeIndex:          currentNode.nextNodeIndex,
-          battleCheckpointNodeIndex: -1,
-          status:                    AdventureSessionStatus.Active,
-          pendingResultType:         null,
-          nextBattleBuffMultiplier:  1.0,
-          randomEventBattle:         false,
-        };
+          updatedSession = {
+            ...session,
+            currentNodeIndex:          currentNode.nextNodeIndex,
+            battleCheckpointNodeIndex: -1,
+            status:                    AdventureSessionStatus.Active,
+            pendingResultType:         null,
+            nextBattleBuffMultiplier:  1.0,
+            randomEventBattle:         false,
+            resultSkillUsageCounts:    battleState.usedMainSkillCounts,
+          };
         transition = 'CONTINUE_EXPLORE';
       } else {
         const isBoss = currentNode.nodeType === NodeType.Boss;
@@ -116,6 +117,7 @@ export class ApplyBattleResultUseCase {
             pendingResultType:         null,
             nextBattleBuffMultiplier:  1.0,
             randomEventBattle:         false,
+            resultSkillUsageCounts:    battleState.usedMainSkillCounts,
           };
           transition = 'CONTINUE_EXPLORE';
         } else {
@@ -128,6 +130,7 @@ export class ApplyBattleResultUseCase {
             pendingResultType:         AdventureResultType.Success,
             nextBattleBuffMultiplier:  1.0,
             randomEventBattle:         false,
+            resultSkillUsageCounts:    battleState.usedMainSkillCounts,
           };
           transition = 'PENDING_RESULT';
         }
@@ -142,6 +145,7 @@ export class ApplyBattleResultUseCase {
         pendingResultType:         AdventureResultType.Failure,
         nextBattleBuffMultiplier:  1.0,
         randomEventBattle:         false,
+        resultSkillUsageCounts:    battleState.usedMainSkillCounts,
       };
       transition = 'PENDING_RESULT';
     }

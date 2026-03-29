@@ -70,9 +70,9 @@ export class ValidateQrDuplicateUseCase {
 
 function errorMessage(code: string): string {
   switch (code) {
-    case QrErrorCode.Duplicate:           return 'このモンスターは既に仲間/助っ人にいます';
-    case QrErrorCode.OwnedCapacityFull:   return '仲間が上限（10体）に達しています';
-    case QrErrorCode.SupportCapacityFull: return '助っ人が上限（10体）に達しています';
+    case QrErrorCode.Duplicate:           return 'このモンスターは もう なかまか おたすけに いるよ';
+    case QrErrorCode.OwnedCapacityFull:   return 'なかまが いっぱいだよ';
+    case QrErrorCode.SupportCapacityFull: return 'おたすけが いっぱいだよ';
     default:                              return '受取できません';
   }
 }

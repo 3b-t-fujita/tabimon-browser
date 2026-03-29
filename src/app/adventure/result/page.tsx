@@ -39,8 +39,10 @@ function AdventureResultContent() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const [stageId, setStageId] = useState('');
+  const [nextRoute, setNextRoute] = useState<string | null>(null);
   const {
     resultType, resultPhase, expGained, newLevel, leveledUp, stageUnlocked, statGains, evolved, evolvedName,
+    bondPointsGained, bondRankBefore, bondRankAfter, skillUpdates, firstClearBonusExp, farmRewardMessage,
     errorMessage, isSaving,
     setResultType, setResultPhase, setRewardInfo, setError, setIsSaving, reset,
   } = useResultStore();
@@ -86,8 +88,8 @@ function AdventureResultContent() {
           return;
         }
 
-        const { updatedSession, expGained: exp, newLevel: lvl, leveledUp: lu, stageUnlocked: su, statGains: sg, evolved: ev, evolvedName: en } = finalizeResult.value;
-        setRewardInfo({ expGained: exp, newLevel: lvl, leveledUp: lu, stageUnlocked: su, statGains: sg, evolved: ev, evolvedName: en });
+        const { updatedSession, expGained: exp, newLevel: lvl, leveledUp: lu, stageUnlocked: su, statGains: sg, evolved: ev, evolvedName: en, bondPointsGained: bg, bondRankBefore: brb, bondRankAfter: bra, skillUpdates: sku, firstClearBonusExp: fcbe, farmRewardMessage: frm } = finalizeResult.value;
+        setRewardInfo({ expGained: exp, newLevel: lvl, leveledUp: lu, stageUnlocked: su, statGains: sg, evolved: ev, evolvedName: en, bondPointsGained: bg, bondRankBefore: brb, bondRankAfter: bra, skillUpdates: sku, firstClearBonusExp: fcbe, farmRewardMessage: frm });
         setResultPhase('RESULT_FINALIZED');
 
         // ---- 3. 候補抽選（SUCCESS のみ） ----
@@ -100,16 +102,15 @@ function AdventureResultContent() {
         }
 
         if (rollResult.value.candidate) {
-          // 候補あり → 候補画面へ
+          // 候補あり → CTA で候補画面へ
           setResultPhase('CANDIDATE_PENDING');
-          router.push('/adventure/candidate');
+          setNextRoute('/adventure/candidate');
         } else {
-          // 候補なし → セッションクローズ → ホーム
+          // 候補なし → セッションクローズ → CTA でホーム
           const closeUC = new CloseAdventureSessionUseCase();
           await closeUC.execute();
           setResultPhase('COMPLETED');
-          // 少し待ってホームへ遷移（結果表示を見せる）
-          setTimeout(() => router.push('/home'), 2200);
+          setNextRoute('/home');
         }
       } finally {
         setIsSaving(false);
@@ -155,12 +156,18 @@ function AdventureResultContent() {
           resultType={resultType}
           stageId={stageId}
           expGained={expGained}
+          firstClearBonusExp={firstClearBonusExp}
           newLevel={newLevel}
           leveledUp={leveledUp}
           stageUnlocked={stageUnlocked}
           statGains={statGains}
           evolved={evolved}
           evolvedName={evolvedName}
+          bondPointsGained={bondPointsGained}
+          bondRankBefore={bondRankBefore}
+          bondRankAfter={bondRankAfter}
+          skillUpdates={skillUpdates}
+          farmRewardMessage={farmRewardMessage}
         />
 
         {resultPhase === 'RESULT_FINALIZED' && (
@@ -172,17 +179,31 @@ function AdventureResultContent() {
         )}
 
         {resultPhase === 'CANDIDATE_PENDING' && (
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center">
+          <SoftCard tone="soft" className="space-y-3 px-4 py-4 text-center">
             <p className="text-sm font-black text-emerald-700">✨ 新しい仲間候補がいます！</p>
-            <p className="mt-1 text-xs text-emerald-600">候補確認画面へ移動します</p>
-          </div>
+            <p className="text-xs text-emerald-600">つぎに進むと候補確認画面へ移動します。</p>
+            <PrimaryButton
+              type="button"
+              onClick={() => nextRoute && router.push(nextRoute)}
+              className="py-3 text-sm shadow-sm"
+            >
+              候補を見に行く
+            </PrimaryButton>
+          </SoftCard>
         )}
 
         {resultPhase === 'COMPLETED' && (
-          <SoftCard tone="soft" className="px-4 py-3 text-center">
-            <p className="text-sm text-stone-500 animate-pulse">
-              ホームへ戻っています...
+          <SoftCard tone="soft" className="space-y-3 px-4 py-4 text-center">
+            <p className="text-sm text-stone-500">
+              結果の反映が終わりました。ホームへ戻れます。
             </p>
+            <PrimaryButton
+              type="button"
+              onClick={() => nextRoute && router.push(nextRoute)}
+              className="py-3 text-sm shadow-sm"
+            >
+              ホームへ戻る
+            </PrimaryButton>
           </SoftCard>
         )}
       </div>

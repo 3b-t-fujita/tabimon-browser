@@ -167,9 +167,18 @@ function applyAction(
   action: ChosenAction,
   state:  BattleState,
 ): BattleLogEntry {
+  if (actor.isMain && action.skill) {
+    state.usedMainSkillCounts[action.skill.skillId] = (state.usedMainSkillCounts[action.skill.skillId] ?? 0) + 1;
+  }
+
   const effAtk = actor.baseAtk * actor.atkMultiplier;
   const typeMult = (action.target) ? getTypeMultiplier(actor.worldId, action.target.worldId) : 1.0;
   const atkName = action.skill?.displayName ?? '通常攻撃';
+  const markHitReaction = (target: BattleActor) => {
+    state.hitReactionSequence += 1;
+    state.hitReactionVersions[target.id] = (state.hitReactionVersions[target.id] ?? 0) + 1;
+    state.hitReactionDelays[target.id] = Math.min((state.hitReactionSequence - 1) * 90, 180);
+  };
 
   if (action.type === 'NORMAL_ATK' && action.target) {
     const effDef = action.target.baseDef * action.target.defMultiplier;
@@ -177,6 +186,7 @@ function applyAction(
     dmg          = Math.max(1, Math.round(dmg * typeMult));
     dmg          = applyShield(action.target, dmg);
     action.target.currentHp = clampHp(action.target.currentHp - dmg, action.target.maxHp);
+    markHitReaction(action.target);
     return {
       tick: state.tickCount, actorName: actor.displayName,
       action: '通常攻撃', targetName: action.target.displayName, value: dmg,
@@ -219,6 +229,7 @@ function applyAction(
     dmg          = Math.max(1, Math.round(dmg * typeMult));
     dmg          = applyShield(action.target, dmg);
     action.target.currentHp = clampHp(action.target.currentHp - dmg, action.target.maxHp);
+    markHitReaction(action.target);
     return {
       tick: state.tickCount, actorName: actor.displayName,
       action: atkName, targetName: action.target.displayName, value: dmg,
@@ -240,6 +251,7 @@ function applyAction(
       dmg          = Math.max(1, Math.round(dmg * tTypeMult));
       dmg          = applyShield(t, dmg);
       t.currentHp  = clampHp(t.currentHp - dmg, t.maxHp);
+      markHitReaction(t);
       totalDmg    += dmg;
     }
     return {
@@ -319,6 +331,7 @@ export function processTick(state: BattleState): BattleState {
   if (state.outcome !== 'NONE') return state;
 
   const s = cloneBattleState(state);
+  s.hitReactionSequence = 0;
   // pendingMainSkillId を処理後にクリア
   let clearPendingSkill = false;
 

@@ -34,6 +34,14 @@ export interface SettingsState {
 }
 
 /**
+ * 日次の軽量行動記録
+ */
+export interface DailyRecord {
+  readonly date: string; // YYYY-MM-DD (local)
+  readonly homeTapCount: number;
+}
+
+/**
  * QR受取履歴エントリ
  */
 export interface QrReceiveHistoryEntry {
@@ -50,6 +58,7 @@ export interface MainSaveSnapshot {
   readonly player:               Player | null;
   readonly progress:             ProgressState | null;
   readonly settings:             SettingsState | null;
+  readonly dailyRecord:          DailyRecord | null;
   readonly ownedMonsters:        readonly OwnedMonster[];
   readonly supportMonsters:      readonly SupportMonster[];
   readonly qrReceiveHistory:     readonly QrReceiveHistoryEntry[];
@@ -70,6 +79,7 @@ export function createEmptyMainSave(): MainSaveSnapshot {
     player:           null,
     progress:         null,
     settings:         { bgmVolume: 1.0, sfxVolume: 1.0 },
+    dailyRecord:      null,
     ownedMonsters:    [],
     supportMonsters:  [],
     qrReceiveHistory: [],

@@ -16,7 +16,7 @@ export default function CandidateActionPanel({ onAccept, onSkip, disabled }: Can
   return (
     <div className="flex flex-col gap-2.5">
       <PrimaryButton onClick={onAccept} disabled={disabled} className="py-4 text-base">
-        🤝 仲間にする
+        🤝 なかまに する
       </PrimaryButton>
 
       <button
@@ -25,7 +25,7 @@ export default function CandidateActionPanel({ onAccept, onSkip, disabled }: Can
         disabled={disabled}
         className="w-full rounded-full border-2 border-stone-200 bg-white py-4 text-sm font-bold text-[#595c57] transition hover:bg-stone-50 active:scale-95 disabled:opacity-50"
       >
-        今回は見送る
+        こんかいは やめる
       </button>
     </div>
   );

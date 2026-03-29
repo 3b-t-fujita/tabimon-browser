@@ -12,7 +12,7 @@ interface Props {
 }
 
 export function AppScreenHeader({
-  backLabel = '戻る',
+  backLabel = 'もどる',
   onBack,
   eyebrow,
   title,

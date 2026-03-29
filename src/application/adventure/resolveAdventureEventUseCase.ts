@@ -20,7 +20,7 @@ import type { AdventureSession } from '@/domain/entities/AdventureSession';
 import { getStageMasterById } from '@/infrastructure/master/stageMasterRepository';
 import { getNodePatternById } from '@/infrastructure/master/nodePatternRepository';
 import { SaveTransactionService } from '@/infrastructure/persistence/transaction/saveTransactionService';
-import { rollRandomEvent, getEventMessageForType, type RandomEventType } from './eventMessageHelper';
+import { rollRandomEventForNode, getEventMessageForType, type RandomEventType } from './eventMessageHelper';
 
 export type ResolveAdventureEventErrorCode =
   | typeof AdventureErrorCode.SessionCorrupt
@@ -78,7 +78,7 @@ export class ResolveAdventureEventUseCase {
     }
 
     // ---- ランダムイベント決定 ----
-    const eventType = rollRandomEvent();
+    const eventType = rollRandomEventForNode(currentNode.nodeIndex);
     const eventMessage = getEventMessageForType(eventType);
 
     // ---- イベント種別に応じてセッション更新 ----

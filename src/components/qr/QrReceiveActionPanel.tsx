@@ -51,7 +51,7 @@ export default function QrReceiveActionPanel({
           className="pointer-events-none absolute inset-x-0 top-0 h-1/2 rounded-t-full"
           style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0.15), transparent)' }}
         />
-        <span className="relative z-10">🛡️ 助っ人にする</span>
+        <span className="relative z-10">🛡️ おたすけに する</span>
       </button>
 
       {/* 見送る */}
@@ -61,7 +61,7 @@ export default function QrReceiveActionPanel({
         disabled={disabled}
         className="w-full rounded-full border-2 border-stone-200 bg-white py-3.5 text-sm font-bold text-[#595c57] transition hover:bg-stone-50 active:scale-95 disabled:opacity-50"
       >
-        見送る
+        やめる
       </button>
     </div>
   );

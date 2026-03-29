@@ -113,6 +113,111 @@ describe('BuildHomeViewModelUseCase', () => {
     expect(vm.mainMonsterId).toBe(uniqueId);
   });
 
+  it('EXP 進捗と次レベルまでの残量が計算される', () => {
+    const uniqueId = toMonsterId('main-mon');
+    const save: MainSaveSnapshot = {
+      ...createEmptyMainSave(),
+      player: { ...BASE_PLAYER, mainMonsterId: uniqueId },
+      ownedMonsters: [{
+        uniqueId,
+        monsterMasterId: toMonsterMasterId('MON_001'),
+        displayName: 'グリーニョ',
+        worldId: WorldId.Forest,
+        role: RoleType.Attack,
+        level: 2,
+        exp: 10,
+        currentExp: 10,
+        personality: PersonalityType.Brave,
+        skillIds: [] as never[],
+        isMain: true,
+      }],
+    };
+    const vm = useCase.execute(save);
+    expect(vm.mainMonsterCurrentExp).toBe(10);
+    expect(vm.mainMonsterExpToNextLevel).toBe(100);
+    expect(vm.mainMonsterExpProgressRatio).toBeCloseTo(10 / 110, 5);
+  });
+
+  it('きずな初期値でランク0と次ランクまでの残量が計算される', () => {
+    const uniqueId = toMonsterId('main-mon');
+    const save: MainSaveSnapshot = {
+      ...createEmptyMainSave(),
+      player: { ...BASE_PLAYER, mainMonsterId: uniqueId },
+      ownedMonsters: [{
+        uniqueId,
+        monsterMasterId: toMonsterMasterId('MON_001'),
+        displayName: 'グリーニョ',
+        worldId: WorldId.Forest,
+        role: RoleType.Attack,
+        level: 1,
+        exp: 0,
+        currentExp: 0,
+        bondPoints: 0,
+        personality: PersonalityType.Brave,
+        skillIds: [] as never[],
+        isMain: true,
+      }],
+    };
+    const vm = useCase.execute(save);
+    expect(vm.mainMonsterBondRank).toBe(0);
+    expect(vm.mainMonsterBondToNextRank).toBe(50);
+    expect(vm.mainMonsterBondProgressRatio).toBe(0);
+  });
+
+  it('きずな境界値で次ランクまでの残量が計算される', () => {
+    const uniqueId = toMonsterId('main-mon');
+    const save: MainSaveSnapshot = {
+      ...createEmptyMainSave(),
+      player: { ...BASE_PLAYER, mainMonsterId: uniqueId },
+      ownedMonsters: [{
+        uniqueId,
+        monsterMasterId: toMonsterMasterId('MON_001'),
+        displayName: 'グリーニョ',
+        worldId: WorldId.Forest,
+        role: RoleType.Attack,
+        level: 1,
+        exp: 0,
+        currentExp: 0,
+        bondPoints: 150,
+        personality: PersonalityType.Brave,
+        skillIds: [] as never[],
+        isMain: true,
+      }],
+    };
+    const vm = useCase.execute(save);
+    expect(vm.mainMonsterBondRank).toBe(2);
+    expect(vm.mainMonsterBondToNextRank).toBe(250);
+    expect(vm.mainMonsterBondProgressRatio).toBe(0);
+  });
+
+  it('最大ランクと最大レベルでは進捗が満タン扱いになる', () => {
+    const uniqueId = toMonsterId('main-mon');
+    const save: MainSaveSnapshot = {
+      ...createEmptyMainSave(),
+      player: { ...BASE_PLAYER, mainMonsterId: uniqueId },
+      ownedMonsters: [{
+        uniqueId,
+        monsterMasterId: toMonsterMasterId('MON_001'),
+        displayName: 'グリーニョ',
+        worldId: WorldId.Forest,
+        role: RoleType.Attack,
+        level: 30,
+        exp: 0,
+        currentExp: 0,
+        bondPoints: 1000,
+        personality: PersonalityType.Brave,
+        skillIds: [] as never[],
+        isMain: true,
+      }],
+    };
+    const vm = useCase.execute(save);
+    expect(vm.mainMonsterExpProgressRatio).toBe(1);
+    expect(vm.mainMonsterExpToNextLevel).toBe(0);
+    expect(vm.mainMonsterBondRank).toBe(4);
+    expect(vm.mainMonsterBondProgressRatio).toBe(1);
+    expect(vm.mainMonsterBondToNextRank).toBe(0);
+  });
+
   it('AdventureSession なし → canContinue=false', () => {
     const save: MainSaveSnapshot = { ...createEmptyMainSave(), player: BASE_PLAYER };
     const vm = useCase.execute(save);

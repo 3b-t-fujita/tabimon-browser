@@ -1,9 +1,12 @@
 'use client';
 
+import { useMemo, useState } from 'react';
 import type { StageSelectViewModel } from '@/application/viewModels/stageSelectViewModel';
 import { AppScreenHeader } from '@/components/common/AppScreenHeader';
 import { SoftCard } from '@/components/common/SoftCard';
 import { UiChip } from '@/components/common/UiChip';
+import { getFarmTierLabel } from '@/domain/policies/farmStagePolicy';
+import { difficultyLabel } from '@/application/shared/labelHelpers';
 
 interface Props {
   vm: StageSelectViewModel;
@@ -25,7 +28,7 @@ const WORLD_THEME: Record<string, {
     button: 'linear-gradient(135deg, #29664c 0%, #246147 100%)',
     chip: '#b9f9d6',
     accentText: '#0a4f36',
-    note: '木漏れ日の奥へ、まずは森の入口から旅を始めよう',
+    note: 'もりへ いこう',
   },
   'ホノオ火山': {
     icon: '🔥',
@@ -33,7 +36,7 @@ const WORLD_THEME: Record<string, {
     button: 'linear-gradient(135deg, #7d5231 0%, #6c4324 100%)',
     chip: '#fac097',
     accentText: '#4a280a',
-    note: '熱を帯びた荒野へ。準備を整えて一気に踏み込もう',
+    note: 'かざんへ いこう',
   },
   'コオリ氷原': {
     icon: '❄️',
@@ -41,32 +44,35 @@ const WORLD_THEME: Record<string, {
     button: 'linear-gradient(135deg, #4c7b83 0%, #2f6c77 100%)',
     chip: '#d6f0f3',
     accentText: '#1e4f57',
-    note: '澄んだ空気の先へ。静かな氷原で新しい出会いを探そう',
+    note: 'こおりへ いこう',
   },
 };
 
 function getDifficultyChip(difficulty: string): { label: string; bg: string; text: string } {
-  if (difficulty.includes('やさ')) return { label: difficulty, bg: '#b9f9d6', text: '#0a4f36' };
-  if (difficulty.includes('むず')) return { label: difficulty, bg: '#fac097', text: '#4a280a' };
-  return { label: difficulty, bg: '#ffc972', text: '#482f00' };
+  if (difficulty === 'Easy' || difficulty.includes('やさ')) return { label: 'やさしい', bg: '#b9f9d6', text: '#0a4f36' };
+  if (difficulty === 'Hard' || difficulty.includes('むず')) return { label: 'むずかしい', bg: '#fac097', text: '#4a280a' };
+  return { label: 'ふつう', bg: '#ffc972', text: '#482f00' };
 }
 
 export function StageListPatternStitch({ vm, onBack, onSelect }: Props) {
-  const grouped = vm.stages.reduce<Record<string, Array<(typeof vm.stages)[number]>>>((acc, stage) => {
+  const [tab, setTab] = useState<'STORY' | 'FARM'>('STORY');
+  const activeStages = tab === 'STORY' ? vm.storyStages : vm.farmStages;
+  const grouped = activeStages.reduce<Record<string, Array<(typeof vm.stages)[number]>>>((acc, stage) => {
     const key = stage.worldLabel;
     if (!acc[key]) acc[key] = [];
     acc[key].push(stage);
     return acc;
   }, {});
+  const stageCount = useMemo(() => activeStages.length, [activeStages]);
 
   return (
     <div className="flex flex-1 flex-col bg-[#f5f7f0] text-[#2c302b]">
       <AppScreenHeader
-        backLabel="ホームへ戻る"
+        backLabel="ホームへ"
         onBack={onBack}
-        eyebrow="ぼうけんさき"
-        title="旅先を選ぼう"
-        description="次に向かうワールドを選んで、相棒たちとの冒険を進めよう。"
+        eyebrow="ステージ"
+        title="ステージを えらぼう"
+        description="いきたい ステージを えらぼう。"
       />
 
       <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-5 pb-6 pt-5">
@@ -74,15 +80,35 @@ export function StageListPatternStitch({ vm, onBack, onSelect }: Props) {
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-[10px] font-black tracking-[0.16em] text-[#6c4324]/70">ぼうけんガイド</p>
-              <p className="mt-2 text-lg font-black text-[#2c302b]">今行ける場所から少しずつ旅を広げよう</p>
+              <p className="mt-2 text-lg font-black text-[#2c302b]">
+                {tab === 'STORY' ? 'ものがたりを すすめよう' : 'そだてて つよくなろう'}
+              </p>
               <p className="mt-2 text-sm leading-6 text-[#595c57]">
-                解放済みのステージはそのまま出発できます。未解放の場所は次の目標として並べてあります。
+                {tab === 'STORY'
+                  ? 'ひらいた ところへ すぐ いけるよ。'
+                  : '3しゅるい から えらべるよ。'}
               </p>
             </div>
             <div className="rounded-full bg-white px-4 py-2 text-center">
-              <p className="text-[10px] font-black tracking-[0.12em] text-[#6c4324]/70">ワールド</p>
-              <p className="mt-1 text-2xl font-black text-[#2c302b]">{Object.keys(grouped).length}</p>
+              <p className="text-[10px] font-black tracking-[0.12em] text-[#6c4324]/70">ステージ</p>
+              <p className="mt-1 text-2xl font-black text-[#2c302b]">{stageCount}</p>
             </div>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => setTab('STORY')}
+              className={`rounded-full px-4 py-3 text-sm font-black transition ${tab === 'STORY' ? 'bg-[#29664c] text-white' : 'bg-white text-[#29664c]'}`}
+            >
+              ものがたり
+            </button>
+            <button
+              type="button"
+              onClick={() => setTab('FARM')}
+              className={`rounded-full px-4 py-3 text-sm font-black transition ${tab === 'FARM' ? 'bg-[#29664c] text-white' : 'bg-white text-[#29664c]'}`}
+            >
+              そだてる
+            </button>
           </div>
         </SoftCard>
 
@@ -93,7 +119,7 @@ export function StageListPatternStitch({ vm, onBack, onSelect }: Props) {
             button: 'linear-gradient(135deg, #29664c 0%, #246147 100%)',
             chip: '#e6e9e1',
             accentText: '#29664c',
-            note: 'まだ見ぬ土地へ足を踏み入れよう',
+            note: 'つぎの ステージへ いこう',
           };
           const nextStage = stages.find((stage) => stage.isUnlocked) ?? stages[0];
 
@@ -116,7 +142,7 @@ export function StageListPatternStitch({ vm, onBack, onSelect }: Props) {
                       disabled={!nextStage.isUnlocked}
                       className="rounded-full bg-white/14 px-4 py-2 text-sm font-black text-white backdrop-blur-sm transition active:scale-95 disabled:opacity-50"
                     >
-                      次の旅へ
+                      いく
                     </button>
                   )}
                 </div>
@@ -137,11 +163,30 @@ export function StageListPatternStitch({ vm, onBack, onSelect }: Props) {
                       <div className="flex items-start justify-between gap-4">
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
+                            {stage.stageType === 'FARM' && stage.farmCategory && (
+                              <UiChip background="#eef7f8" color="#1e4f57">
+                                {stage.farmCategory === 'EXP'
+                                  ? 'EXP'
+                                  : stage.farmCategory === 'BOND'
+                                    ? 'きずな'
+                                    : 'わざ'}
+                              </UiChip>
+                            )}
+                            {stage.stageType === 'FARM' && stage.difficultyTier && (
+                              <UiChip background="#f4efe7" color="#6c4324">
+                                {getFarmTierLabel(stage.difficultyTier)}
+                              </UiChip>
+                            )}
                             <UiChip background={difficulty.bg} color={difficulty.text}>
-                              {difficulty.label}
+                              {difficultyLabel(stage.difficulty) || difficulty.label}
                             </UiChip>
                             <UiChip background={theme.chip} color={theme.accentText}>
-                              推奨 Lv.{stage.recommendedLevel}
+                              {stage.stageType === 'FARM' && stage.recommendedBandLabel
+                                ? `めやす ${stage.recommendedBandLabel}`
+                                : `めやす Lv.${stage.recommendedLevel}`}
+                            </UiChip>
+                            <UiChip background="#f4efe7" color="#6c4324">
+                              {stage.estimatedMinutes} ふん
                             </UiChip>
                           </div>
 
@@ -149,10 +194,22 @@ export function StageListPatternStitch({ vm, onBack, onSelect }: Props) {
                             {stage.stageName}
                           </p>
                           <p className="mt-2 text-sm text-[#595c57]">
-                            {stage.isUnlocked
-                              ? '準備ができたらすぐに出発できます。'
-                              : '前のステージを進めると、この旅先が解放されます。'}
+                            {stage.stageType === 'FARM'
+                              ? (stage.supportText ?? 'あいぼうを そだてよう。')
+                              : stage.isUnlocked
+                                ? 'すぐに いけるよ。'
+                                : 'まえを クリアで ひらくよ。'}
                           </p>
+                          {stage.stageType === 'FARM' && stage.primaryEffectLabel ? (
+                            <p className="mt-2 text-xs font-black text-[#29664c]">
+                              {stage.primaryEffectLabel}
+                            </p>
+                          ) : null}
+                          {stage.stageType === 'STORY' && stage.firstClearBonusExp ? (
+                            <p className="mt-2 text-xs font-black text-[#29664c]">
+                              はじめて ぼーなす +{stage.firstClearBonusExp} EXP
+                            </p>
+                          ) : null}
                         </div>
 
                         <div className="shrink-0">
@@ -163,7 +220,7 @@ export function StageListPatternStitch({ vm, onBack, onSelect }: Props) {
                               color: stage.isUnlocked ? theme.accentText : '#757872',
                             }}
                           >
-                            {stage.isUnlocked ? '出発' : '未解放'}
+                            {stage.isUnlocked ? 'いく' : 'まだ'}
                           </span>
                         </div>
                       </div>

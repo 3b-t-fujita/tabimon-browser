@@ -5,6 +5,7 @@ import type { AdventureConfirmViewModel } from '@/application/viewModels/adventu
 import { PrimaryButton } from '@/components/common/PrimaryButton';
 import { UiChip } from '@/components/common/UiChip';
 import { getMonsterIconUrl } from '@/infrastructure/assets/monsterImageService';
+import { difficultyLabel } from '@/application/shared/labelHelpers';
 
 interface Props {
   vm: AdventureConfirmViewModel;
@@ -15,9 +16,9 @@ interface Props {
   startError: string | null;
 }
 
-function getWorldKey(stageId: string): 'forest' | 'fire' | 'ice' {
-  if (stageId.includes('_w1')) return 'forest';
-  if (stageId.includes('_w2')) return 'fire';
+function getWorldKey(worldLabel: string): 'forest' | 'fire' | 'ice' {
+  if (worldLabel.includes('ミドリ')) return 'forest';
+  if (worldLabel.includes('ホノオ')) return 'fire';
   return 'ice';
 }
 
@@ -52,9 +53,9 @@ const WORLD_THEME = {
 } as const;
 
 const DIFFICULTY_META: Record<string, { icon: string; exp: number; nodes: number; rare: string }> = {
-  やさしい: { icon: '⭐', exp: 30, nodes: 6, rare: '5%' },
-  ふつう: { icon: '⭐⭐', exp: 70, nodes: 7, rare: '10%' },
-  むずかしい: { icon: '⭐⭐⭐', exp: 120, nodes: 9, rare: '15%' },
+  Easy: { icon: '⭐', exp: 30, nodes: 6, rare: '5%' },
+  Normal: { icon: '⭐⭐', exp: 70, nodes: 7, rare: '10%' },
+  Hard: { icon: '⭐⭐⭐', exp: 120, nodes: 9, rare: '15%' },
 };
 
 function MonsterIcon({ masterId, fallback }: { masterId: string; fallback: string }) {
@@ -78,8 +79,8 @@ export function AdventureConfirmPanelB({
   isStarting,
   startError,
 }: Props) {
-  const theme = WORLD_THEME[getWorldKey(vm.stageId)];
-  const difficulty = DIFFICULTY_META[vm.difficulty] ?? DIFFICULTY_META['やさしい'];
+  const theme = WORLD_THEME[getWorldKey(vm.worldLabel)];
+  const difficulty = DIFFICULTY_META[vm.difficulty] ?? DIFFICULTY_META.Easy;
 
   return (
     <div className="flex flex-1 flex-col" style={{ background: theme.shell }}>
@@ -96,7 +97,7 @@ export function AdventureConfirmPanelB({
                 className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#f5f7f0] px-3 py-2 text-sm font-bold text-[#595c57] transition active:scale-95"
               >
                 <span>←</span>
-                <span>戻る</span>
+                <span>もどる</span>
               </button>
 
               <div className="flex items-start justify-between gap-3">
@@ -108,20 +109,20 @@ export function AdventureConfirmPanelB({
                     {vm.stageName}
                   </h1>
                   <p className="mt-2 text-sm text-[#757872]">
-                    この編成で冒険に出発します。
+                    これで いくよ。
                   </p>
                 </div>
 
                 <div className="shrink-0 rounded-[22px] px-3 py-3 text-center" style={{ background: theme.panelSoft }}>
                   <p className="text-[11px] font-black text-[#6c4324]/70">{difficulty.icon}</p>
-                  <p className="mt-1 text-[11px] font-bold text-[#595c57]">{vm.difficulty}</p>
+                  <p className="mt-1 text-[11px] font-bold text-[#595c57]">{difficultyLabel(vm.difficulty)}</p>
                   <p className="mt-1 text-[10px] text-[#9ca3af]">Lv.{vm.recommendedLevel}+</p>
                 </div>
               </div>
 
               <div className="mt-5 grid grid-cols-3 gap-3">
                 <div className="rounded-[22px] px-4 py-4" style={{ background: theme.panelSoft }}>
-                  <p className="text-[10px] font-black tracking-[0.12em] text-[#6c4324]/70">ルート数</p>
+                  <p className="text-[10px] font-black tracking-[0.12em] text-[#6c4324]/70">みち</p>
                   <p className="mt-2 text-xl font-black text-[#2c302b]">{difficulty.nodes}</p>
                 </div>
                 <div className="rounded-[22px] px-4 py-4" style={{ background: theme.panelSoft }}>
@@ -140,7 +141,7 @@ export function AdventureConfirmPanelB({
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-[11px] font-black tracking-[0.14em] text-[#29664c]/70">へんせい</p>
-                <p className="mt-1 text-sm text-[#757872]">相棒と助っ人を確認してから出発します。</p>
+                <p className="mt-1 text-sm text-[#757872]">みてから いこう。</p>
               </div>
               {onEditParty && (
                 <button
@@ -149,7 +150,7 @@ export function AdventureConfirmPanelB({
                   className="rounded-full px-4 py-2 text-xs font-black text-white transition active:scale-95"
                   style={{ background: theme.accent }}
                 >
-                  編成を変更
+                  へんせい
                 </button>
               )}
             </div>
@@ -172,8 +173,8 @@ export function AdventureConfirmPanelB({
                 </div>
               ) : (
                 <div className="rounded-[28px] border border-[#ffd1c8] bg-[#fff5f2] px-4 py-4">
-                  <p className="text-sm font-black text-[#9e3120]">相棒が設定されていません</p>
-                  <p className="mt-1 text-xs text-[#c2410c]">編成から相棒を選んでください。</p>
+                  <p className="text-sm font-black text-[#9e3120]">あいぼうが いないよ</p>
+                  <p className="mt-1 text-xs text-[#c2410c]">へんせいで えらぼう。</p>
                 </div>
               )}
 
@@ -189,8 +190,8 @@ export function AdventureConfirmPanelB({
                         +
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-stone-400">助っ人 {index + 1}</p>
-                        <p className="mt-1 text-xs text-stone-300">まだ選ばれていません</p>
+                        <p className="text-sm font-bold text-stone-400">おたすけ {index + 1}</p>
+                        <p className="mt-1 text-xs text-stone-300">まだ いないよ</p>
                       </div>
                     </div>
                   );
@@ -210,7 +211,7 @@ export function AdventureConfirmPanelB({
                       <p className="mt-1 text-sm text-[#757872]">Lv.{support.level}</p>
                     </div>
                     <UiChip background={theme.accentSoft} color={theme.accentText} className="text-[10px]">
-                      助っ人 {index + 1}
+                      おたすけ {index + 1}
                     </UiChip>
                   </div>
                 );
@@ -220,14 +221,14 @@ export function AdventureConfirmPanelB({
 
           {startError && (
             <section className="rounded-[28px] border border-[#ffd1c8] bg-[#fff5f2] px-5 py-4 shadow-sm">
-              <p className="text-sm font-black text-[#9e3120]">開始できません</p>
+              <p className="text-sm font-black text-[#9e3120]">まだ いけないよ</p>
               <p className="mt-1 text-sm text-[#c2410c]">{startError}</p>
             </section>
           )}
 
           {!vm.canStart && vm.cannotStartReason && (
             <section className="rounded-[28px] border border-[#fde68a] bg-[#fffbea] px-5 py-4 shadow-sm">
-              <p className="text-sm font-black text-[#7d5231]">確認事項</p>
+              <p className="text-sm font-black text-[#7d5231]">おしらせ</p>
               <p className="mt-1 text-sm text-[#9a6700]">{vm.cannotStartReason}</p>
             </section>
           )}
@@ -239,8 +240,8 @@ export function AdventureConfirmPanelB({
           {vm.canStart && !isStarting && (
             <p className="mb-2 text-center text-xs text-[#757872]">
               {vm.supports.length > 0
-                ? `${vm.supports.length}体の助っ人といっしょに出発します`
-                : '相棒ひとりで出発します'}
+                ? `${vm.supports.length}たいと いっしょに いくよ`
+                : 'あいぼう ひとりで いくよ'}
             </p>
           )}
           <PrimaryButton
@@ -250,7 +251,7 @@ export function AdventureConfirmPanelB({
               ? `linear-gradient(135deg, ${theme.accent} 0%, ${theme.accent}dd 100%)`
               : '#d6d3d1'}
           >
-            {isStarting ? '出発準備中...' : vm.canStart ? 'この編成で出発する' : '出発できません'}
+            {isStarting ? 'じゅんび中...' : vm.canStart ? 'これで いく' : 'まだ いけない'}
           </PrimaryButton>
         </div>
       </div>

@@ -10,8 +10,8 @@ const ACTIONS = [
     icon: '📤',
     eyebrow: 'Share',
     title: 'コードを作る',
-    description: '自分のモンスターを相手に見せて、旅の仲間として渡そう。',
-    hint: '相手に見せてスキャンしてもらう',
+    description: 'コードを みせよう。',
+    hint: 'みせて よんでもらう',
     path: '/qr/generate',
     shell: 'linear-gradient(135deg, #29664c 0%, #246147 100%)',
     pill: '#b9f9d6',
@@ -21,8 +21,8 @@ const ACTIONS = [
     icon: '📷',
     eyebrow: 'Receive',
     title: 'コードを読む',
-    description: '相手のQRを受け取って、助っ人や仲間として旅に迎えよう。',
-    hint: '画像を選んで交換内容を確認する',
+    description: 'コードを よみこもう。',
+    hint: 'がぞうを えらぶ',
     path: '/qr/scan',
     shell: 'linear-gradient(135deg, #7d5231 0%, #6c4324 100%)',
     pill: '#fac097',
@@ -38,8 +38,8 @@ export function QrMenuPatternStitch() {
       <AppScreenHeader
         onBack={() => router.back()}
         eyebrow="コードこうかん"
-        title="つながりのコード交換"
-        description="友だちと見せ合って、新しい仲間や助っ人との出会いを広げよう。"
+        title="コードこうかん"
+        description="つくるか よむか えらぼう。"
       />
 
       <div className="flex flex-1 flex-col gap-5 px-5 pb-6 pt-5">
@@ -49,10 +49,10 @@ export function QrMenuPatternStitch() {
               <div>
                 <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">コードこうかん</p>
                 <h2 className="mt-2 text-[26px] font-black leading-tight text-[#2c302b]">
-                  交換のわくわくを、やさしく分かりやすく
+                  かんたんに こうかん
                 </h2>
                 <p className="mt-3 max-w-[300px] text-sm leading-6 text-[#595c57]">
-                  生成と読取の2つを大きく並べて、初めてでも迷わず選べる入口にしています。
+                  つくるか よむか えらぼう。
                 </p>
               </div>
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-3xl shadow-sm">
@@ -95,12 +95,12 @@ export function QrMenuPatternStitch() {
                     </UiChip>
                     <p className="mt-3 text-sm text-[#595c57]">
                       {action.title === 'コードを作る'
-                        ? '自分のモンスターを相手に共有したいときはこちら。'
-                        : '相手のコードを受け取って内容を確認したいときはこちら。'}
+                        ? 'みせたい ときは こちら。'
+                        : 'うけとる ときは こちら。'}
                     </p>
                   </div>
                   <div className="shrink-0 rounded-full bg-[#e6e9e1] px-4 py-2 text-xs font-black text-[#2c302b]">
-                    進む
+                    いく
                   </div>
                 </div>
               </div>
@@ -112,10 +112,10 @@ export function QrMenuPatternStitch() {
           <p className="text-[10px] font-black tracking-[0.16em] text-[#6c4324]/70">ヒント</p>
           <div className="mt-3 grid gap-3">
             <div className="rounded-[22px] bg-white px-4 py-4 text-sm text-[#595c57]">
-              友だちに渡したいときは <span className="font-black text-[#2c302b]">コードを作る</span> を使います。
+              わたす なら <span className="font-black text-[#2c302b]">コードを作る</span>。
             </div>
             <div className="rounded-[22px] bg-white px-4 py-4 text-sm text-[#595c57]">
-              受け取りたいときは <span className="font-black text-[#2c302b]">コードを読む</span> から画像を選びます。
+              うけとる なら <span className="font-black text-[#2c302b]">コードを読む</span>。
             </div>
           </div>
         </SoftCard>

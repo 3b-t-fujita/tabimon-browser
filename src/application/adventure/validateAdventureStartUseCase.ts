@@ -19,6 +19,7 @@ import { AdventureErrorCode, MonsterErrorCode, SaveErrorCode } from '@/common/er
 import { AdventureSessionStatus } from '@/common/constants/enums';
 import { GameConstants } from '@/common/constants/GameConstants';
 import { isStageUnlocked } from '@/domain/policies/StageUnlockPolicy';
+import { isFarmStageUnlocked } from '@/domain/policies/farmStageUnlockPolicy';
 import { SaveTransactionService } from '@/infrastructure/persistence/transaction/saveTransactionService';
 import { getStageMasterById } from '@/infrastructure/master/stageMasterRepository';
 import type { StageId } from '@/types/ids';
@@ -67,8 +68,13 @@ export class ValidateAdventureStartUseCase {
       return fail(AdventureErrorCode.StageNotFound, `ステージが見つかりません: ${input.stageId}`);
     }
 
-    // --- 5. ステージ解放チェック（stageNo===1 は常に解放） ---
-    if (stageMaster.stageNo !== 1) {
+    // --- 5. ステージ解放チェック ---
+    if (stageMaster.stageType === 'FARM') {
+      const clearedStageIds = save.progress?.clearedStageIds ?? [];
+      if (!isFarmStageUnlocked(stageMaster, clearedStageIds)) {
+        return fail(AdventureErrorCode.StageNotUnlocked, 'このステージはまだ解放されていません');
+      }
+    } else if (stageMaster.stageNo !== 1) {
       const unlockedSet = new Set<StageId>(
         (save.progress?.unlockedStageIds ?? []).map(toStageId),
       );
@@ -81,21 +87,21 @@ export class ValidateAdventureStartUseCase {
     if (input.selectedSupportIds.length > GameConstants.PARTY_MAX_SUPPORTS) {
       return fail(
         MonsterErrorCode.SupportCapacityFull,
-        `助っ人は最大${GameConstants.PARTY_MAX_SUPPORTS}体までです`,
+        `おたすけは さいだい${GameConstants.PARTY_MAX_SUPPORTS}たいまでだよ`,
       );
     }
 
     // --- 7. 助っ人重複 ---
     const deduplicated = new Set(input.selectedSupportIds);
     if (deduplicated.size !== input.selectedSupportIds.length) {
-      return fail(MonsterErrorCode.DuplicateSupport, '同じ助っ人を重複して選択できません');
+      return fail(MonsterErrorCode.DuplicateSupport, 'おなじ おたすけは えらべないよ');
     }
 
     // --- 8. 各助っ人が supportMonsters に存在 ---
     for (const sid of input.selectedSupportIds) {
       const exists = save.supportMonsters.some((s) => s.supportId === sid);
       if (!exists) {
-        return fail(MonsterErrorCode.NotFound, `助っ人が見つかりません: ${sid}`);
+        return fail(MonsterErrorCode.NotFound, `おたすけが みつからないよ: ${sid}`);
       }
     }
 

@@ -20,8 +20,8 @@ export function PartyEditPanel({ vm, onAddSupport, onRemoveSupport, onBack }: Pr
       <AppScreenHeader
         onBack={onBack}
         eyebrow="へんせい"
-        title="編成"
-        description="相棒と助っ人を整えて、次の冒険に備えよう。"
+        title="へんせい"
+        description="なかまを ならべよう。"
       />
 
       <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-5">
@@ -42,14 +42,14 @@ export function PartyEditPanel({ vm, onAddSupport, onRemoveSupport, onBack }: Pr
             </div>
           ) : (
             <div className="mt-4 rounded-[24px] border border-dashed border-[#abaea8] bg-white px-4 py-4 text-sm text-[#757872]">
-              相棒未設定です。仲間一覧から設定してください。
+              あいぼうを えらぼう。
             </div>
           )}
         </SoftCard>
 
         <SoftCard className="p-5">
           <div className="flex items-center justify-between">
-            <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">助っ人</p>
+            <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">おたすけ</p>
             <UiChip background="#eff2ea" color="#29664c">
               {vm.selectedSupports.length} / 2
             </UiChip>
@@ -73,23 +73,23 @@ export function PartyEditPanel({ vm, onAddSupport, onRemoveSupport, onBack }: Pr
                   onClick={() => onRemoveSupport(s.supportId)}
                   className="rounded-full bg-[#fff1ec] px-4 py-2 text-xs font-black text-[#b02500]"
                 >
-                  外す
+                  はずす
                 </button>
               </div>
             ))}
 
             {Array.from({ length: 2 - vm.selectedSupports.length }).map((_, i) => (
               <div key={`empty-${i}`} className="rounded-[24px] border border-dashed border-[#abaea8] px-4 py-4 text-sm text-[#757872]">
-                空きスロット
+                あき
               </div>
             ))}
           </div>
         </SoftCard>
 
         <SoftCard className="p-5">
-          <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">助っ人候補</p>
+          <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">おたすけ</p>
           {vm.supportCandidates.length === 0 ? (
-            <p className="mt-4 text-sm leading-6 text-[#757872]">助っ人がまだいません。コード交換で新しい仲間を受け取ると、ここに編成候補が並びます。</p>
+            <p className="mt-4 text-sm leading-6 text-[#757872]">まだ いないよ。こうかんで ふやそう。</p>
           ) : (
             <ul className="mt-4 flex flex-col gap-3">
               {vm.supportCandidates.map((s) => (
@@ -142,7 +142,7 @@ function SupportCandidateRow({
             canAdd ? 'bg-[#29664c] text-white' : 'bg-[#e6e9e1] text-[#757872]'
           }`}
         >
-          追加
+          いれる
         </button>
       )}
     </li>

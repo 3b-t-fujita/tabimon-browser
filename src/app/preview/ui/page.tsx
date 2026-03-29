@@ -28,6 +28,13 @@ const homeVm: HomeViewModel = {
   playerName: 'タロウ',
   mainMonsterName: 'グリーニョ',
   mainMonsterLevel: 12,
+  mainMonsterCurrentExp: 34,
+  mainMonsterExpToNextLevel: 1066,
+  mainMonsterExpProgressRatio: 0.23,
+  mainMonsterBondPoints: 82,
+  mainMonsterBondRank: 1,
+  mainMonsterBondToNextRank: 68,
+  mainMonsterBondProgressRatio: 0.32,
   mainMonsterId: 'owned_001',
   mainMonsterMasterId: 'MON_GRASS_001',
   ownedCount: 8,
@@ -35,17 +42,38 @@ const homeVm: HomeViewModel = {
   supportCount: 2,
   supportCapacity: 10,
   canContinue: true,
-  continueStageId: 'ミドリの森 Stage 2',
+  continueStageId: 'ミドリの森 ステージ 2',
   continueType: 'ACTIVE',
 };
 
 const stagesVm: StageSelectViewModel = {
   stages: [
-    { stageId: 'stage_w1_01', stageName: 'ミドリの森 Stage 1', worldLabel: 'ミドリの森', difficulty: 'やさしい', recommendedLevel: 1, isUnlocked: true },
-    { stageId: 'stage_w1_02', stageName: 'ミドリの森 Stage 2', worldLabel: 'ミドリの森', difficulty: 'ふつう', recommendedLevel: 3, isUnlocked: true },
-    { stageId: 'stage_w1_03', stageName: 'ミドリの森 Stage 3', worldLabel: 'ミドリの森', difficulty: 'むずかしい', recommendedLevel: 5, isUnlocked: false },
-    { stageId: 'stage_w2_01', stageName: 'ホノオ火山 Stage 1', worldLabel: 'ホノオ火山', difficulty: 'ふつう', recommendedLevel: 6, isUnlocked: false },
-    { stageId: 'stage_w3_01', stageName: 'コオリ氷原 Stage 1', worldLabel: 'コオリ氷原', difficulty: 'むずかしい', recommendedLevel: 10, isUnlocked: false },
+    { stageId: 'stage_w1_01', stageName: 'ミドリの森 ステージ 1', worldLabel: 'ミドリの森', stageType: 'STORY', farmCategory: null, difficultyTier: null, difficulty: 'やさしい', recommendedLevel: 1, estimatedMinutes: 3, firstClearBonusExp: 20, recommendedBandLabel: null, primaryEffectLabel: null, supportText: null, isUnlocked: true },
+    { stageId: 'stage_w1_02', stageName: 'ミドリの森 ステージ 2', worldLabel: 'ミドリの森', stageType: 'STORY', farmCategory: null, difficultyTier: null, difficulty: 'ふつう', recommendedLevel: 3, estimatedMinutes: 5, firstClearBonusExp: 40, recommendedBandLabel: null, primaryEffectLabel: null, supportText: null, isUnlocked: true },
+    { stageId: 'stage_w1_03', stageName: 'ミドリの森 ステージ 3', worldLabel: 'ミドリの森', stageType: 'STORY', farmCategory: null, difficultyTier: null, difficulty: 'むずかしい', recommendedLevel: 5, estimatedMinutes: 7, firstClearBonusExp: 60, recommendedBandLabel: null, primaryEffectLabel: null, supportText: null, isUnlocked: false },
+    { stageId: 'stage_w2_01', stageName: 'ホノオ火山 ステージ 1', worldLabel: 'ホノオ火山', stageType: 'STORY', farmCategory: null, difficultyTier: null, difficulty: 'ふつう', recommendedLevel: 6, estimatedMinutes: 3, firstClearBonusExp: 20, recommendedBandLabel: null, primaryEffectLabel: null, supportText: null, isUnlocked: false },
+    { stageId: 'stage_w3_01', stageName: 'コオリ氷原 ステージ 1', worldLabel: 'コオリ氷原', stageType: 'STORY', farmCategory: null, difficultyTier: null, difficulty: 'むずかしい', recommendedLevel: 10, estimatedMinutes: 3, firstClearBonusExp: 20, recommendedBandLabel: null, primaryEffectLabel: null, supportText: null, isUnlocked: false },
+    { stageId: 'stage_farm_exp_early', stageName: 'けいけんちの草原・前半', worldLabel: 'ミドリの森', stageType: 'FARM', farmCategory: 'EXP', difficultyTier: 'EARLY', difficulty: 'やさしい', recommendedLevel: 1, estimatedMinutes: 3, firstClearBonusExp: null, recommendedBandLabel: 'Lv1〜14', primaryEffectLabel: '主な効果 +90 EXP', supportText: 'レベルを どんどん あげたいときに', isUnlocked: true },
+    { stageId: 'stage_farm_exp_late', stageName: 'けいけんちの草原・後半', worldLabel: 'ミドリの森', stageType: 'FARM', farmCategory: 'EXP', difficultyTier: 'LATE', difficulty: 'ふつう', recommendedLevel: 15, estimatedMinutes: 4, firstClearBonusExp: null, recommendedBandLabel: 'Lv15〜30', primaryEffectLabel: '主な効果 +165 EXP', supportText: 'つよくなった あいぼうを さらに のばそう', isUnlocked: true },
+    { stageId: 'stage_farm_bond_early', stageName: 'きずなの広場・前半', worldLabel: 'ホノオ火山', stageType: 'FARM', farmCategory: 'BOND', difficultyTier: 'EARLY', difficulty: 'やさしい', recommendedLevel: 1, estimatedMinutes: 3, firstClearBonusExp: null, recommendedBandLabel: 'Rank0〜2', primaryEffectLabel: '主な効果 成功 +18', supportText: 'あいぼうとの きずなを そだてよう', isUnlocked: true },
+    { stageId: 'stage_farm_bond_late', stageName: 'きずなの広場・後半', worldLabel: 'ホノオ火山', stageType: 'FARM', farmCategory: 'BOND', difficultyTier: 'LATE', difficulty: 'ふつう', recommendedLevel: 15, estimatedMinutes: 4, firstClearBonusExp: null, recommendedBandLabel: 'Rank2〜4', primaryEffectLabel: '主な効果 成功 +30', supportText: 'もっと ふかい きずなを めざそう', isUnlocked: true },
+    { stageId: 'stage_farm_skill_early', stageName: 'わざみがきの丘・前半', worldLabel: 'コオリ氷原', stageType: 'FARM', farmCategory: 'SKILL', difficultyTier: 'EARLY', difficulty: 'やさしい', recommendedLevel: 1, estimatedMinutes: 3, firstClearBonusExp: null, recommendedBandLabel: 'Stage0〜2', primaryEffectLabel: '主な効果 使用回数 ×2（上限 +6）', supportText: 'わざを たくさん つかって みがこう', isUnlocked: true },
+    { stageId: 'stage_farm_skill_late', stageName: 'わざみがきの丘・後半', worldLabel: 'コオリ氷原', stageType: 'FARM', farmCategory: 'SKILL', difficultyTier: 'LATE', difficulty: 'ふつう', recommendedLevel: 15, estimatedMinutes: 4, firstClearBonusExp: null, recommendedBandLabel: 'Stage2〜3', primaryEffectLabel: '主な効果 使用回数 ×3（上限 +9）', supportText: 'とくいわざを さらに きたえよう', isUnlocked: true },
+  ],
+  storyStages: [
+    { stageId: 'stage_w1_01', stageName: 'ミドリの森 ステージ 1', worldLabel: 'ミドリの森', stageType: 'STORY', farmCategory: null, difficultyTier: null, difficulty: 'やさしい', recommendedLevel: 1, estimatedMinutes: 3, firstClearBonusExp: 20, recommendedBandLabel: null, primaryEffectLabel: null, supportText: null, isUnlocked: true },
+    { stageId: 'stage_w1_02', stageName: 'ミドリの森 ステージ 2', worldLabel: 'ミドリの森', stageType: 'STORY', farmCategory: null, difficultyTier: null, difficulty: 'ふつう', recommendedLevel: 3, estimatedMinutes: 5, firstClearBonusExp: 40, recommendedBandLabel: null, primaryEffectLabel: null, supportText: null, isUnlocked: true },
+    { stageId: 'stage_w1_03', stageName: 'ミドリの森 ステージ 3', worldLabel: 'ミドリの森', stageType: 'STORY', farmCategory: null, difficultyTier: null, difficulty: 'むずかしい', recommendedLevel: 5, estimatedMinutes: 7, firstClearBonusExp: 60, recommendedBandLabel: null, primaryEffectLabel: null, supportText: null, isUnlocked: false },
+    { stageId: 'stage_w2_01', stageName: 'ホノオ火山 ステージ 1', worldLabel: 'ホノオ火山', stageType: 'STORY', farmCategory: null, difficultyTier: null, difficulty: 'ふつう', recommendedLevel: 6, estimatedMinutes: 3, firstClearBonusExp: 20, recommendedBandLabel: null, primaryEffectLabel: null, supportText: null, isUnlocked: false },
+    { stageId: 'stage_w3_01', stageName: 'コオリ氷原 ステージ 1', worldLabel: 'コオリ氷原', stageType: 'STORY', farmCategory: null, difficultyTier: null, difficulty: 'むずかしい', recommendedLevel: 10, estimatedMinutes: 3, firstClearBonusExp: 20, recommendedBandLabel: null, primaryEffectLabel: null, supportText: null, isUnlocked: false },
+  ],
+  farmStages: [
+    { stageId: 'stage_farm_exp_early', stageName: 'けいけんちの草原・前半', worldLabel: 'ミドリの森', stageType: 'FARM', farmCategory: 'EXP', difficultyTier: 'EARLY', difficulty: 'やさしい', recommendedLevel: 1, estimatedMinutes: 3, firstClearBonusExp: null, recommendedBandLabel: 'Lv1〜14', primaryEffectLabel: '主な効果 +90 EXP', supportText: 'レベルを どんどん あげたいときに', isUnlocked: true },
+    { stageId: 'stage_farm_exp_late', stageName: 'けいけんちの草原・後半', worldLabel: 'ミドリの森', stageType: 'FARM', farmCategory: 'EXP', difficultyTier: 'LATE', difficulty: 'ふつう', recommendedLevel: 15, estimatedMinutes: 4, firstClearBonusExp: null, recommendedBandLabel: 'Lv15〜30', primaryEffectLabel: '主な効果 +165 EXP', supportText: 'つよくなった あいぼうを さらに のばそう', isUnlocked: true },
+    { stageId: 'stage_farm_bond_early', stageName: 'きずなの広場・前半', worldLabel: 'ホノオ火山', stageType: 'FARM', farmCategory: 'BOND', difficultyTier: 'EARLY', difficulty: 'やさしい', recommendedLevel: 1, estimatedMinutes: 3, firstClearBonusExp: null, recommendedBandLabel: 'Rank0〜2', primaryEffectLabel: '主な効果 成功 +18', supportText: 'あいぼうとの きずなを そだてよう', isUnlocked: true },
+    { stageId: 'stage_farm_bond_late', stageName: 'きずなの広場・後半', worldLabel: 'ホノオ火山', stageType: 'FARM', farmCategory: 'BOND', difficultyTier: 'LATE', difficulty: 'ふつう', recommendedLevel: 15, estimatedMinutes: 4, firstClearBonusExp: null, recommendedBandLabel: 'Rank2〜4', primaryEffectLabel: '主な効果 成功 +30', supportText: 'もっと ふかい きずなを めざそう', isUnlocked: true },
+    { stageId: 'stage_farm_skill_early', stageName: 'わざみがきの丘・前半', worldLabel: 'コオリ氷原', stageType: 'FARM', farmCategory: 'SKILL', difficultyTier: 'EARLY', difficulty: 'やさしい', recommendedLevel: 1, estimatedMinutes: 3, firstClearBonusExp: null, recommendedBandLabel: 'Stage0〜2', primaryEffectLabel: '主な効果 使用回数 ×2（上限 +6）', supportText: 'わざを たくさん つかって みがこう', isUnlocked: true },
+    { stageId: 'stage_farm_skill_late', stageName: 'わざみがきの丘・後半', worldLabel: 'コオリ氷原', stageType: 'FARM', farmCategory: 'SKILL', difficultyTier: 'LATE', difficulty: 'ふつう', recommendedLevel: 15, estimatedMinutes: 4, firstClearBonusExp: null, recommendedBandLabel: 'Stage2〜3', primaryEffectLabel: '主な効果 使用回数 ×3（上限 +9）', supportText: 'とくいわざを さらに きたえよう', isUnlocked: true },
   ],
 };
 
@@ -55,13 +83,16 @@ const detailVm: OwnedMonsterDetailViewModel = {
   monsterMasterId: 'MON_GRASS_001',
   level: 12,
   exp: 340,
+  currentExp: 34,
+  bondPoints: 82,
+  bondRank: 1,
   worldLabel: 'ミドリの森',
   roleLabel: 'アタック',
   personalityLabel: 'やさしい',
   skillIds: ['skill_1', 'skill_2'],
   skills: [
-    { skillId: 'skill_1', displayName: 'リーフスラッシュ', skillType: 'SKILL_ATTACK' },
-    { skillId: 'skill_2', displayName: 'もりのいぶき', skillType: 'SKILL_BUFF' },
+    { skillId: 'skill_1', displayName: 'リーフスラッシュ', skillType: 'SKILL_ATTACK', proficiencyUseCount: 7, proficiencyStage: 1 },
+    { skillId: 'skill_2', displayName: 'もりのいぶき', skillType: 'SKILL_BUFF', proficiencyUseCount: 16, proficiencyStage: 2 },
   ],
   isMain: true,
   canRelease: false,
@@ -92,7 +123,8 @@ const partyVm: PartyEditViewModel = {
 
 const confirmVm: AdventureConfirmViewModel = {
   stageId: 'stage_w1_02',
-  stageName: 'ミドリの森 Stage 2',
+  stageName: 'ミドリの森 ステージ 2',
+  worldLabel: 'ミドリの森',
   difficulty: 'ふつう',
   recommendedLevel: 3,
   main: { displayName: 'グリーニョ', level: 12, monsterMasterId: 'MON_GRASS_001' },
@@ -187,12 +219,18 @@ export default function UiPreviewPage() {
                 resultType={AdventureResultType.Success}
                 stageId="stage_w1_02"
                 expGained={90}
+                firstClearBonusExp={40}
                 newLevel={13}
                 leveledUp
                 stageUnlocked
                 statGains={{ hp: 2, atk: 1, def: 1, spd: 1 }}
                 evolved={false}
                 evolvedName={null}
+                bondPointsGained={8}
+                bondRankBefore={1}
+                bondRankAfter={2}
+                skillUpdates={[{ skillId: 'skill_1', skillName: 'リーフスラッシュ', useCountBefore: 4, useCountAfter: 6, stageBefore: 0, stageAfter: 1 }]}
+                farmRewardMessage="わざが みがかれてきた！"
               />
             </div>
           </Frame>

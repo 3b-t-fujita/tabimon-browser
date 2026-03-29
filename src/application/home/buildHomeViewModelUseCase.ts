@@ -7,6 +7,7 @@ import type { MainSaveSnapshot } from '@/infrastructure/storage/models';
 import type { HomeViewModel } from '@/application/viewModels/homeViewModel';
 import { GameConstants } from '@/common/constants/GameConstants';
 import { AdventureSessionStatus } from '@/common/constants/enums';
+import { buildMainMonsterGrowthSummary } from './buildMainMonsterGrowthSummary';
 
 export class BuildHomeViewModelUseCase {
   execute(save: MainSaveSnapshot): HomeViewModel {
@@ -25,11 +26,25 @@ export class BuildHomeViewModelUseCase {
     const continueType  = canContinue
       ? (session!.status === AdventureSessionStatus.PendingResult ? 'PENDING_RESULT' : 'ACTIVE')
       : null;
+    const mainMonsterCurrentExp = mainMonster?.currentExp ?? mainMonster?.exp ?? null;
+    const mainMonsterBondPoints = mainMonster?.bondPoints ?? 0;
+    const growthSummary = buildMainMonsterGrowthSummary({
+      level: mainMonster?.level ?? null,
+      currentExp: mainMonsterCurrentExp,
+      bondPoints: mainMonsterBondPoints,
+    });
 
     return {
       playerName:       player?.playerName ?? '（未設定）',
       mainMonsterName:      mainMonster?.displayName ?? '',
       mainMonsterLevel:     mainMonster?.level ?? null,
+      mainMonsterCurrentExp,
+      mainMonsterExpToNextLevel: growthSummary.expToNextLevel,
+      mainMonsterExpProgressRatio: growthSummary.expProgressRatio,
+      mainMonsterBondPoints,
+      mainMonsterBondRank: growthSummary.bondRank,
+      mainMonsterBondToNextRank: growthSummary.bondToNextRank,
+      mainMonsterBondProgressRatio: growthSummary.bondProgressRatio,
       mainMonsterId:        player?.mainMonsterId ?? null,
       mainMonsterMasterId:  mainMonster?.monsterMasterId ?? null,
       ownedCount:       ownedMonsters.length,

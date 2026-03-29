@@ -12,6 +12,7 @@ import { SaveTransactionService } from '@/infrastructure/persistence/transaction
 import { getStageMasterById } from '@/infrastructure/master/stageMasterRepository';
 import { ValidateAdventureStartUseCase } from './validateAdventureStartUseCase';
 import type { AdventureConfirmViewModel } from '@/application/viewModels/adventureConfirmViewModel';
+import { getFarmStageName } from '@/domain/policies/farmStagePolicy';
 
 function worldLabel(worldId: number): string {
   switch (worldId) {
@@ -50,7 +51,10 @@ export class GetAdventureConfirmViewStateUseCase {
       return fail(AdventureErrorCode.StageNotFound, `ステージが見つかりません: ${stageId}`);
     }
     const wLabel = worldLabel(stageMaster.worldId);
-    const stageName = `${wLabel} Stage ${stageMaster.stageNo}`;
+    const stageName =
+      stageMaster.stageType === 'FARM' && stageMaster.farmCategory
+        ? getFarmStageName(stageMaster.farmCategory, stageMaster.difficultyTier ?? 'EARLY')
+        : `${wLabel} ステージ ${stageMaster.stageNo}`;
 
     // --- 相棒情報 ---
     const mainId  = save?.player?.mainMonsterId;
@@ -72,6 +76,7 @@ export class GetAdventureConfirmViewStateUseCase {
     const vm: AdventureConfirmViewModel = {
       stageId,
       stageName,
+      worldLabel: wLabel,
       difficulty:       stageMaster.difficulty,
       recommendedLevel: stageMaster.recommendedLevel,
       main:             mainMon ? { displayName: mainMon.displayName, level: mainMon.level, monsterMasterId: mainMon.monsterMasterId } : null,

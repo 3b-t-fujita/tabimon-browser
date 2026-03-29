@@ -47,10 +47,11 @@ npx next dev -H 0.0.0.0 -p 4100
 
 ```bash
 npm test
+npm run test:e2e
 npm run build
 ```
 
-現状、Vitest は通過しています。ビルドも通過しています。
+Vitest、Playwright、build をリリース前の基本確認として扱います。
 
 ## デザイン運用
 
@@ -58,6 +59,17 @@ npm run build
 
 - [UI デザインシステム](docs/ui_design_system.md)
 - [プレイテストチェックリスト](docs/playtest_checklist.md)
+- [Playwright テスト計画](docs/playwright_test_plan.md)
+- [V3 実行計画](docs/v3_execution_plan.md)
+- [V3 手動確認チェックリスト](docs/v3_manual_verification_checklist.md)
+- [V3 リリースチケット計画](docs/v3_release_ticket_plan.md)
+- [V3 リリース前 最終チェックリスト](docs/v3_release_final_checklist.md)
+- [V3 GitHub反映前 最終差分整理](docs/v3_final_diff_summary.md)
+- [V3 完了報告](docs/v3_completion_report.md)
+- [V3 仕様書](docs/spec_v3_overview.md)
+- [V3 技術仕様書](docs/spec_v3_technical.md)
+- [V2 仕様書](docs/spec_v2_overview.md)
+- [V2 技術仕様書](docs/spec_v2_technical.md)
 - [企画仕様](docs/spec_concept.md)
 - [技術仕様](docs/spec_technical.md)
 

@@ -95,7 +95,7 @@ export default function QrConfirmPage() {
       const uc = new AcceptQrAsSupportMonsterUseCase();
       const result = await uc.execute(parsedPayload);
       if (!result.ok) { setError(result.message ?? result.errorCode); return; }
-      setCompleted(`${result.value.addedSupport.displayName} を助っ人にしました！`);
+      setCompleted(`${result.value.addedSupport.displayName} を おたすけに した！`);
     }
 
     setTimeout(() => { reset(); router.push('/home'); }, 1200);
@@ -160,19 +160,19 @@ export default function QrConfirmPage() {
             onClick={() => router.back()}
             className="rounded-full bg-[#e6e9e1] px-4 py-2 text-sm font-semibold text-[#29664c]"
           >
-            ← 戻る
+            ← もどる
           </button>
-          <p className="mt-4 text-[10px] font-black uppercase tracking-[0.24em] text-[#6c4324]/70">Receive Confirm</p>
-          <h1 className="mt-1 text-[30px] font-black leading-tight text-[#1f3528]">QR受取確認</h1>
-          <p className="mt-2 text-sm text-[#595c57]">受取先を選んでください。</p>
+          <p className="mt-4 text-[10px] font-black uppercase tracking-[0.24em] text-[#6c4324]/70">コードうけとり</p>
+          <h1 className="mt-1 text-[30px] font-black leading-tight text-[#1f3528]">うけとり かくにん</h1>
+          <p className="mt-2 text-sm text-[#595c57]">どこで うけとる？</p>
         </header>
 
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto px-5 py-5">
 
           <div className="rounded-[28px] bg-white p-5 shadow-sm">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#6c4324]/70">Incoming Buddy</p>
-            <p className="mt-2 text-lg font-black text-[#2c302b]">このQRをどこで受け取るか選びます</p>
-            <p className="mt-2 text-sm text-[#595c57]">仲間にするか、助っ人にするか、ここで決められます。</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#6c4324]/70">きた コード</p>
+            <p className="mt-2 text-lg font-black text-[#2c302b]">どこで うけとる？</p>
+            <p className="mt-2 text-sm text-[#595c57]">なかまか おたすけを えらぼう。</p>
           </div>
 
           {/* payload プレビュー */}
@@ -187,7 +187,7 @@ export default function QrConfirmPage() {
           />
 
           {isSaving && (
-            <p className="text-center text-sm text-stone-400 animate-pulse">保存中...</p>
+            <p className="text-center text-sm text-stone-400 animate-pulse">ほぞん中...</p>
           )}
 
         </div>
@@ -203,9 +203,9 @@ export default function QrConfirmPage() {
             <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #4f5d68, #7b8790)' }} />
             <div className="flex flex-col gap-4 px-6 pt-5 pb-6">
               <div>
-                <p className="font-black text-[#2c302b]">本当に見送りますか？</p>
+                <p className="font-black text-[#2c302b]">ほんとうに やめる？</p>
                 <p className="mt-1.5 text-sm leading-relaxed text-[#595c57]">
-                  見送ると履歴に残りません。<br />同じQRを後で読み取ることもできます。
+                  やめても あとで よめるよ。
                 </p>
               </div>
               <div className="flex gap-2.5">
@@ -215,7 +215,7 @@ export default function QrConfirmPage() {
                   disabled={isSaving}
                   className="flex-1 rounded-2xl border-2 border-stone-200 py-3 text-sm font-bold text-[#595c57] hover:bg-stone-50 disabled:opacity-50"
                 >
-                  キャンセル
+                  やめない
                 </button>
                 <button
                   type="button"
@@ -224,7 +224,7 @@ export default function QrConfirmPage() {
                   className="flex-1 rounded-2xl py-3 text-sm font-black text-white shadow disabled:opacity-50"
                   style={{ background: 'linear-gradient(135deg, #4f5d68, #334155)' }}
                 >
-                  見送る
+                  やめる
                 </button>
               </div>
             </div>

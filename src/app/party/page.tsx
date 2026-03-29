@@ -37,12 +37,12 @@ export default function PartyPage() {
   // 初回ロード（選択中IDも渡して候補の isSelected フラグを設定する）
   async function loadParty(ids: string[] = selectedSupportIds) {
     const result = await new GetPartyEditStateUseCase().execute(ids);
-    if (!result.ok) { setSaveError('編成データの読み込みに失敗しました'); return; }
+    if (!result.ok) { setSaveError('へんせいの よみこみに しっぱいしたよ'); return; }
     setPartyEdit(result.value);
   }
 
   useEffect(() => {
-    loadParty().catch(() => setSaveError('予期しないエラーが発生しました'));
+    loadParty().catch(() => setSaveError('エラーが でたよ'));
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -50,7 +50,7 @@ export default function PartyPage() {
     const availableIds = (partyEdit?.supportCandidates ?? []).map((s) => s.supportId);
     const result = selectUseCase.execute(selectedSupportIds, supportId, availableIds);
     if (!result.ok) {
-      openErrorDialog('助っ人を追加できません', result.message ?? '追加に失敗しました');
+      openErrorDialog('おたすけを いれられないよ', result.message ?? 'いれられなかったよ');
       return;
     }
     const newIds = result.value;

@@ -47,7 +47,7 @@ export function HomeScreenPatternB({ vm, onContinue }: Props) {
               <p className="text-sm font-black text-white">{vm.ownedCount}<span className="text-xs font-normal text-emerald-300">/{vm.ownedCapacity}</span></p>
             </div>
             <div className="rounded-lg bg-white/10 px-2.5 py-1.5 text-center backdrop-blur-sm">
-              <p className="text-[10px] font-semibold text-emerald-300">助っ人</p>
+              <p className="text-[10px] font-semibold text-emerald-300">おたすけ</p>
               <p className="text-sm font-black text-white">{vm.supportCount}<span className="text-xs font-normal text-emerald-300">/{vm.supportCapacity}</span></p>
             </div>
           </div>

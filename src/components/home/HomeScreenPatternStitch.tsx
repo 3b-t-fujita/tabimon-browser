@@ -6,23 +6,25 @@ import type { HomeViewModel } from '@/application/viewModels/homeViewModel';
 import { PrimaryButton } from '@/components/common/PrimaryButton';
 import { SoftCard } from '@/components/common/SoftCard';
 import { getMonsterStandUrl } from '@/infrastructure/assets/monsterImageService';
+import { MainMonsterGrowthSummaryCard } from './MainMonsterGrowthSummaryCard';
 
 interface Props {
   vm: HomeViewModel;
   onContinue?: () => void;
+  onBuddyTap?: () => void;
 }
 
 const QUICK_ACTIONS = [
-  { icon: '🐾', label: '仲間一覧', sub: '相棒と仲間を見る', path: '/monsters', tone: 'bg-[#ffffff]' },
-  { icon: '🛡️', label: '編成', sub: '助っ人を整える', path: '/party', tone: 'bg-[#ffffff]' },
-  { icon: '📷', label: 'コード交換', sub: '友だちとつながる', path: '/qr', tone: 'bg-[#eff2ea]' },
+  { icon: '🐾', label: 'なかま', sub: 'なかまを みる', path: '/monsters', tone: 'bg-[#ffffff]' },
+  { icon: '🛡️', label: 'へんせい', sub: 'おたすけを えらぶ', path: '/party', tone: 'bg-[#ffffff]' },
+  { icon: '📷', label: 'こうかん', sub: 'ともだちと こうかん', path: '/qr', tone: 'bg-[#eff2ea]' },
 ] as const;
 
 const BOTTOM_NAV = [
   { icon: '🏠', label: 'ホーム', path: '/home', active: true },
-  { icon: '🐾', label: '仲間', path: '/monsters', active: false },
-  { icon: '🗺️', label: '冒険', path: '/adventure/stages', active: false },
-  { icon: '🛡️', label: '編成', path: '/party', active: false },
+  { icon: '🐾', label: 'なかま', path: '/monsters', active: false },
+  { icon: '🗺️', label: 'ぼうけん', path: '/adventure/stages', active: false },
+  { icon: '🛡️', label: 'へんせい', path: '/party', active: false },
   { icon: '📷', label: 'こうかん', path: '/qr', active: false },
 ] as const;
 
@@ -32,11 +34,12 @@ function getInitials(name: string): string {
   return trimmed.slice(0, 2).toUpperCase();
 }
 
-export function HomeScreenPatternStitch({ vm, onContinue }: Props) {
+export function HomeScreenPatternStitch({ vm, onContinue, onBuddyTap }: Props) {
   const router = useRouter();
   const mainStandUrl = getMonsterStandUrl(vm.mainMonsterMasterId);
-  const buddyLabel = vm.mainMonsterName || '相棒未設定';
+  const buddyLabel = vm.mainMonsterName || 'あいぼう なし';
   const buddyLevel = vm.mainMonsterLevel !== null ? `Lv.${vm.mainMonsterLevel}` : 'Lv.--';
+  const canOpenBuddyDetail = Boolean(vm.mainMonsterId);
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-[#f5f7f0] font-sans text-[#2c302b]">
@@ -55,7 +58,7 @@ export function HomeScreenPatternStitch({ vm, onContinue }: Props) {
             type="button"
             onClick={() => router.push('/party')}
             className="flex h-10 w-10 items-center justify-center rounded-full text-[#29664c] transition hover:bg-emerald-100/60 active:scale-95"
-            aria-label="編成へ"
+            aria-label="へんせいへ"
           >
             <span className="text-lg">⚙️</span>
           </button>
@@ -80,7 +83,7 @@ export function HomeScreenPatternStitch({ vm, onContinue }: Props) {
           />
 
           <div className="relative z-10 flex h-full w-full flex-col items-center px-6 pt-14">
-            <div className="relative mt-10 h-64 w-64">
+            <button type="button" onClick={onBuddyTap} className="relative mt-10 h-64 w-64">
               {mainStandUrl ? (
                 <Image
                   src={mainStandUrl}
@@ -106,15 +109,32 @@ export function HomeScreenPatternStitch({ vm, onContinue }: Props) {
                   {buddyLevel}
                 </p>
               </div>
-            </div>
+            </button>
           </div>
         </section>
 
         <div className="-mt-1 px-6">
+          <div className="mb-4">
+            <MainMonsterGrowthSummaryCard
+              monsterName={vm.mainMonsterName}
+              level={vm.mainMonsterLevel}
+              expProgressRatio={vm.mainMonsterExpProgressRatio}
+              expToNextLevel={vm.mainMonsterExpToNextLevel}
+              bondRank={vm.mainMonsterBondRank}
+              bondProgressRatio={vm.mainMonsterBondProgressRatio}
+              bondToNextRank={vm.mainMonsterBondToNextRank}
+              onOpenDetail={() => {
+                if (canOpenBuddyDetail) {
+                  router.push(`/monsters/${vm.mainMonsterId}`);
+                }
+              }}
+            />
+          </div>
+
           <PrimaryButton onClick={() => router.push('/adventure/stages')}>
             <span className="flex items-center justify-center gap-3 text-white">
               <span className="text-[28px]">🗺️</span>
-              <span className="text-xl font-black tracking-[0.12em]">冒険へ出発</span>
+              <span className="text-xl font-black tracking-[0.12em]">ぼうけんへ いく</span>
             </span>
           </PrimaryButton>
 
@@ -130,8 +150,8 @@ export function HomeScreenPatternStitch({ vm, onContinue }: Props) {
                     {vm.continueType === 'PENDING_RESULT' ? '📋' : '▶'}
                   </div>
                   <div>
-                    <p className="text-sm font-black text-[#2c302b]">続きから</p>
-                    <p className="mt-1 text-xs text-[#595c57]">{vm.continueStageId ?? '進行中の冒険があります'}</p>
+                    <p className="text-sm font-black text-[#2c302b]">つづき</p>
+                    <p className="mt-1 text-xs text-[#595c57]">{vm.continueStageId ?? 'つづきが あるよ'}</p>
                   </div>
                 </div>
                 <span className="text-xl text-[#757872]">›</span>
@@ -179,13 +199,13 @@ export function HomeScreenPatternStitch({ vm, onContinue }: Props) {
 
             <SoftCard tone="muted" className="p-5">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-black text-[#595c57]">最近の記録</h4>
+                <h4 className="text-sm font-black text-[#595c57]">さいきん</h4>
                 <button
                   type="button"
                   onClick={() => router.push('/monsters/gallery')}
                   className="text-xs font-black text-[#29664c]"
                 >
-                  図鑑を見る
+                  ずかん
                 </button>
               </div>
 
@@ -194,10 +214,10 @@ export function HomeScreenPatternStitch({ vm, onContinue }: Props) {
                   <div className="h-2 w-2 rounded-full bg-[#29664c]" />
                   <div className="min-w-0 flex-1">
                     <p className="text-[clamp(13px,3.6vw,14px)] font-semibold leading-tight tracking-tight text-[#2c302b]">
-                      {vm.mainMonsterName ? `${vm.mainMonsterName}と森の旅支度を整えました` : '次の相棒を迎える準備をしましょう'}
+                      {vm.mainMonsterName ? `${vm.mainMonsterName}と つぎへ いこう` : 'あいぼうを えらぼう'}
                     </p>
                     <p className="mt-1 text-[11px] text-[#757872]">
-                      仲間 {vm.ownedCount}/{vm.ownedCapacity} ・ 助っ人 {vm.supportCount}/{vm.supportCapacity}
+                      なかま {vm.ownedCount}/{vm.ownedCapacity} ・ おたすけ {vm.supportCount}/{vm.supportCapacity}
                     </p>
                   </div>
                 </div>
@@ -210,16 +230,16 @@ export function HomeScreenPatternStitch({ vm, onContinue }: Props) {
                   >
                     <p className="text-[11px] font-black tracking-[0.12em] text-[#6c4324]/70">なかま</p>
                     <p className="mt-2 text-2xl font-black text-[#2c302b]">{vm.ownedCount}</p>
-                    <p className="mt-1 text-xs text-[#595c57]">集まった仲間たち</p>
+                    <p className="mt-1 text-xs text-[#595c57]">なかまの かず</p>
                   </button>
                   <button
                     type="button"
                     onClick={() => router.push('/party')}
                     className="rounded-[22px] bg-white px-4 py-4 text-left"
                   >
-                    <p className="text-[11px] font-black tracking-[0.12em] text-[#6c4324]/70">助っ人</p>
+                    <p className="text-[11px] font-black tracking-[0.12em] text-[#6c4324]/70">おたすけ</p>
                     <p className="mt-2 text-2xl font-black text-[#2c302b]">{vm.supportCount}</p>
-                    <p className="mt-1 text-xs text-[#595c57]">旅に連れていける助っ人</p>
+                    <p className="mt-1 text-xs text-[#595c57]">おたすけの かず</p>
                   </button>
                 </div>
               </div>

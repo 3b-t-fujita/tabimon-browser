@@ -33,3 +33,12 @@ export function personalityLabel(personality: string): string {
     default:                       return personality;
   }
 }
+
+export function difficultyLabel(difficulty: string): string {
+  switch (difficulty) {
+    case 'Easy': return 'かんたん';
+    case 'Normal': return 'ふつう';
+    case 'Hard': return 'むずかしい';
+    default: return difficulty;
+  }
+}

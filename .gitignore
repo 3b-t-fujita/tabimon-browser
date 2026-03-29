@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright 生成物
+/.playwright-cli/
+/playwright-report/
+/test-results/
+
+# codex 起動ログ
+.codex-next-start-*.log
+
+# ローカル開発ツール設定（必要なら個別に add）
+# .claude/launch.json

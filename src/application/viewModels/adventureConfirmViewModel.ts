@@ -18,6 +18,7 @@ export interface AdventureConfirmSupportViewModel {
 export interface AdventureConfirmViewModel {
   readonly stageId:          string;
   readonly stageName:        string;
+  readonly worldLabel:       string;
   readonly difficulty:       string;
   readonly recommendedLevel: number;
   readonly main:             AdventureConfirmMainViewModel | null;

@@ -71,4 +71,10 @@ export interface AdventureSession {
    * 戦闘後は false にリセットする。
    */
   readonly randomEventBattle: boolean;
+
+  /**
+   * 直近バトルで相棒が使用したスキル回数。
+   * V3 の熟練反映用。リザルト確定後は空に戻す。
+   */
+  readonly resultSkillUsageCounts?: Readonly<Record<string, number>>;
 }

@@ -282,7 +282,7 @@ export function BattleScreenPatternA({ battleState, isRunning, onSkillSelect }: 
             />
           ))
         )}
-        <p className="text-center text-[9px] text-slate-700">助っ人・敵は自動行動（0.5秒/tick）</p>
+        <p className="text-center text-[9px] text-slate-700">おたすけと てきは じどうで うごくよ</p>
       </section>
 
     </div>

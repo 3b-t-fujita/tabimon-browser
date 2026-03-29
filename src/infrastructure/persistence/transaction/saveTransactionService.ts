@@ -24,6 +24,13 @@ import {
 } from '@/infrastructure/persistence/db/tabimonDb';
 import { MainSaveSnapshotSchema } from '@/infrastructure/persistence/validators/saveSchemas';
 import { validateSaveConsistency } from '@/infrastructure/persistence/validators/saveConsistencyValidator';
+import {
+  backupV2PayloadIfNeeded,
+  getStoredSaveVersion,
+  migrateMainSaveSnapshotToV3,
+  SAVE_VERSION_V3,
+  setStoredSaveVersion,
+} from '@/infrastructure/persistence/migrations/v3SaveMigration';
 
 // ---------------------------------------------------------------------------
 // 内部ヘルパー
@@ -63,6 +70,7 @@ function mergeSnapshots(
     player:           temp.player           !== undefined ? temp.player           : main.player,
     progress:         temp.progress         !== undefined ? temp.progress         : main.progress,
     settings:         temp.settings         !== undefined ? temp.settings         : main.settings,
+    dailyRecord:      temp.dailyRecord      !== undefined ? temp.dailyRecord      : main.dailyRecord,
     ownedMonsters:    temp.ownedMonsters     !== undefined ? temp.ownedMonsters    : main.ownedMonsters,
     supportMonsters:  temp.supportMonsters   !== undefined ? temp.supportMonsters  : main.supportMonsters,
     qrReceiveHistory: temp.qrReceiveHistory  !== undefined ? temp.qrReceiveHistory : main.qrReceiveHistory,
@@ -170,6 +178,7 @@ export class SaveTransactionService implements SaveTransactionPort {
           payload,
           updatedAt: now,
         });
+        await setStoredSaveVersion(db, SAVE_VERSION_V3);
       } catch (e) {
         // main への書き込み失敗 → ロールバック（temp を削除して失敗を返す）
         this._state = SaveStateType.RollingBack;
@@ -207,7 +216,29 @@ export class SaveTransactionService implements SaveTransactionPort {
     const db = getDatabase();
     try {
       const main = await readMain(db);
-      return ok(main);
+      if (!main) return ok(null);
+
+      const version = await getStoredSaveVersion(db);
+      if (version >= SAVE_VERSION_V3) {
+        return ok(main);
+      }
+
+      const originalPayload = JSON.stringify(main);
+      const migrated = migrateMainSaveSnapshotToV3(main);
+      const validationResult = validateSnapshot(migrated);
+      if (!validationResult.ok) {
+        return fail(validationResult.errorCode, validationResult.message);
+      }
+
+      await backupV2PayloadIfNeeded(db, originalPayload);
+      await db.saves.put({
+        id: SAVE_KEY_MAIN,
+        payload: JSON.stringify(migrated),
+        updatedAt: new Date().toISOString(),
+      });
+      await setStoredSaveVersion(db, SAVE_VERSION_V3);
+
+      return ok(migrated);
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
       return fail(SaveErrorCode.LoadFailed, `読み込み中にエラーが発生しました: ${msg}`);

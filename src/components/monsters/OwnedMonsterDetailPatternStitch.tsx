@@ -79,7 +79,7 @@ export function OwnedMonsterDetailPatternStitch({ vm, onSetMain, onRelease, onBa
                     {vm.personalityLabel}
                   </UiChip>
                   <p className="mt-3 text-sm leading-6 text-white/82">
-                    この子の成長や役割を見ながら、相棒設定やQR共有をすぐに行えます。
+                    EXP と きずなを みよう。
                   </p>
                 </div>
               </div>
@@ -88,11 +88,26 @@ export function OwnedMonsterDetailPatternStitch({ vm, onSetMain, onRelease, onBa
         </section>
 
         <div className="mt-5 flex flex-col gap-4 px-5">
+          <SoftCard className="p-5" tone="muted">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-[22px] bg-white px-4 py-4">
+                <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">EXP</p>
+                <p className="mt-2 text-2xl font-black text-[#2c302b]">{vm.currentExp}</p>
+                <p className="mt-1 text-xs text-[#595c57]">いまの EXP</p>
+              </div>
+              <div className="rounded-[22px] bg-white px-4 py-4">
+                <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">きずな</p>
+                <p className="mt-2 text-2xl font-black text-[#2c302b]">ランク {vm.bondRank}</p>
+                <p className="mt-1 text-xs text-[#595c57]">{vm.bondPoints} pt</p>
+              </div>
+            </div>
+          </SoftCard>
+
           <SoftCard className="p-5" tone="soft" >
             <div className="flex items-center justify-between">
               <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">つよさ</p>
               <UiChip background={theme.chip} color={theme.accentText}>
-                育成確認
+                そだち
               </UiChip>
             </div>
 
@@ -122,6 +137,10 @@ export function OwnedMonsterDetailPatternStitch({ vm, onSetMain, onRelease, onBa
                       {skill.skillType}
                     </span>
                   </div>
+                  <div className="mt-3 flex items-center justify-between text-xs text-[#595c57]">
+                    <span>じゅくれん {skill.proficiencyStage}</span>
+                    <span>{skill.proficiencyUseCount} かい つかった</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -135,7 +154,7 @@ export function OwnedMonsterDetailPatternStitch({ vm, onSetMain, onRelease, onBa
                 className="py-4 text-sm"
                 background={theme.shell}
               >
-                {isSaving ? '設定中...' : '相棒に設定する'}
+                {isSaving ? 'せってい中...' : 'あいぼうに する'}
               </PrimaryButton>
             )}
 
@@ -154,7 +173,7 @@ export function OwnedMonsterDetailPatternStitch({ vm, onSetMain, onRelease, onBa
                 disabled={isSaving || !vm.canRelease}
                 className="rounded-[24px] bg-[#fff1ec] px-4 py-4 text-sm font-black text-[#b02500] shadow-sm transition active:scale-[0.99] disabled:opacity-50"
               >
-                {vm.canRelease ? '🗑️ 手放す' : '手放し不可'}
+                {vm.canRelease ? '🗑️ はなす' : 'はなせない'}
               </button>
             </div>
           </div>

@@ -11,8 +11,9 @@ import { HomeScreenPatternStitch } from './HomeScreenPatternStitch';
 interface Props {
   vm: HomeViewModel;
   onContinue?: () => void;
+  onBuddyTap?: () => void;
 }
 
-export function HomeScreen({ vm, onContinue }: Props) {
-  return <HomeScreenPatternStitch vm={vm} onContinue={onContinue} />;
+export function HomeScreen({ vm, onContinue, onBuddyTap }: Props) {
+  return <HomeScreenPatternStitch vm={vm} onContinue={onContinue} onBuddyTap={onBuddyTap} />;
 }

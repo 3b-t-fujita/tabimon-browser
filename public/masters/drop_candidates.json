@@ -15,5 +15,14 @@
     { "poolId": "pool_drop_w2", "monsterId": "mon_014", "weight": 0.03 },
     { "poolId": "pool_drop_w3", "monsterId": "mon_012", "weight": 0.08 },
     { "poolId": "pool_drop_w3", "monsterId": "mon_015", "weight": 0.03 }
+    ,{ "poolId": "pool_farm_w1", "monsterId": "mon_001", "weight": 1 },
+    { "poolId": "pool_farm_w1", "monsterId": "mon_002", "weight": 1 },
+    { "poolId": "pool_farm_w1", "monsterId": "mon_003", "weight": 1 },
+    { "poolId": "pool_farm_w2", "monsterId": "mon_004", "weight": 1 },
+    { "poolId": "pool_farm_w2", "monsterId": "mon_005", "weight": 1 },
+    { "poolId": "pool_farm_w2", "monsterId": "mon_006", "weight": 1 },
+    { "poolId": "pool_farm_w3", "monsterId": "mon_007", "weight": 1 },
+    { "poolId": "pool_farm_w3", "monsterId": "mon_008", "weight": 1 },
+    { "poolId": "pool_farm_w3", "monsterId": "mon_009", "weight": 1 }
   ]
 }

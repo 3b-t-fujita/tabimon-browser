@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import type { BattleActor, BattleSkillState } from '@/domain/battle/BattleActor';
 import { getMonsterStandUrl } from '@/infrastructure/assets/monsterImageService';
 import type { BattleScreenProps } from './BattleScreenPatternA';
@@ -77,6 +78,8 @@ function Figure({
   accent,
   accentSoft,
   isBossBattle = false,
+  hitReactionVersion = 0,
+  hitReactionDelayMs = 0,
 }: {
   actor: BattleActor;
   isEnemy: boolean;
@@ -84,7 +87,10 @@ function Figure({
   accent: string;
   accentSoft: string;
   isBossBattle?: boolean;
+  hitReactionVersion?: number;
+  hitReactionDelayMs?: number;
 }) {
+  const [isHitReacting, setIsHitReacting] = useState(false);
   const standUrl = getMonsterStandUrl(actor.monsterId ?? null);
   const ratio = Math.max(0, actor.currentHp / actor.maxHp);
   const dead = actor.currentHp <= 0;
@@ -96,6 +102,20 @@ function Figure({
         ? isEnemy ? 'right-[11%]' : 'right-[4%]'
         : isEnemy ? 'left-1/2 -translate-x-1/2' : 'left-1/2 -translate-x-1/2';
 
+  useEffect(() => {
+    if (hitReactionVersion <= 0 || dead) return;
+    let endTimer: number | null = null;
+    const startTimer = window.setTimeout(() => {
+      setIsHitReacting(true);
+      endTimer = window.setTimeout(() => setIsHitReacting(false), 220);
+    }, hitReactionDelayMs);
+
+    return () => {
+      window.clearTimeout(startTimer);
+      if (endTimer) window.clearTimeout(endTimer);
+    };
+  }, [hitReactionVersion, hitReactionDelayMs, dead]);
+
   return (
     <div className={`absolute ${scale.y} ${alignClass} flex flex-col items-center`}>
       {!isEnemy && actor.isMain && (
@@ -104,7 +124,10 @@ function Figure({
           style={{ background: `${accentSoft}cc` }}
         />
       )}
-      <div className="relative" style={{ width: scale.size, height: scale.size }}>
+      <div
+        className={`relative ${isHitReacting ? 'animate-[battle-hit-shake_220ms_ease-out]' : ''}`}
+        style={{ width: scale.size, height: scale.size }}
+      >
         {standUrl ? (
           <Image
             src={standUrl}
@@ -257,6 +280,16 @@ export function BattleScreenPatternB({ battleState, isRunning, onSkillSelect }: 
 
   return (
     <div className="flex h-[100dvh] max-h-[100dvh] flex-1 flex-col overflow-hidden" style={{ background: theme.shell }}>
+      <style jsx>{`
+        @keyframes battle-hit-shake {
+          0% { transform: translate3d(0, 0, 0) scale(1); }
+          20% { transform: translate3d(-3px, 0, 0) scale(0.995); }
+          40% { transform: translate3d(3px, 0, 0) scale(1.005); }
+          60% { transform: translate3d(-2px, 0, 0) scale(0.998); }
+          80% { transform: translate3d(2px, 0, 0) scale(1.002); }
+          100% { transform: translate3d(0, 0, 0) scale(1); }
+        }
+      `}</style>
       <header className="px-3 pb-2 pt-3">
         <div
           className="rounded-[28px] border px-4 py-3 shadow-sm backdrop-blur-xl"
@@ -271,17 +304,17 @@ export function BattleScreenPatternB({ battleState, isRunning, onSkillSelect }: 
                 {theme.badge}
               </span>
               <h1 className="mt-2 text-lg font-black text-[#1f3528]">
-                {battleState.isBoss ? 'ボスバトル' : 'エンカウント'}
+                {battleState.isBoss ? 'ボスバトル' : 'バトル'}
               </h1>
             </div>
             <div className="flex flex-col items-end gap-1.5">
-              <StatusPill label="経過" value={String(battleState.tickCount)} />
+              <StatusPill label="じかん" value={String(battleState.tickCount)} />
               {battleState.outcome !== 'NONE' && (
                 <span
                   className="rounded-full px-3 py-1 text-[10px] font-black text-white"
                   style={{ background: battleState.outcome === 'WIN' ? theme.accent : '#9e3120' }}
                 >
-                  {battleState.outcome === 'WIN' ? '勝利' : '敗北'}
+                  {battleState.outcome === 'WIN' ? 'かった' : 'まけた'}
                 </span>
               )}
             </div>
@@ -290,7 +323,7 @@ export function BattleScreenPatternB({ battleState, isRunning, onSkillSelect }: 
           <div className="mt-3 flex items-center gap-2">
             <div className="min-w-0 flex-1">
               <div className="flex items-center justify-between text-[10px] font-bold text-[#595c57]">
-                <span>敵全体HP</span>
+                <span>てきHP</span>
                 <span>{totalEnemyHp}/{totalEnemyMaxHp}</span>
               </div>
               <div className="mt-1.5 h-2.5 overflow-hidden rounded-full bg-[#e6e9e1]">
@@ -300,7 +333,7 @@ export function BattleScreenPatternB({ battleState, isRunning, onSkillSelect }: 
                 />
               </div>
             </div>
-            <StatusPill label="main" value={mainActor?.displayName ?? '未設定'} tone="accent" />
+            <StatusPill label="あいぼう" value={mainActor?.displayName ?? 'みてい'} tone="accent" />
           </div>
         </div>
       </header>
@@ -317,7 +350,7 @@ export function BattleScreenPatternB({ battleState, isRunning, onSkillSelect }: 
             className="rounded-full border px-4 py-2 text-[10px] font-black shadow-sm backdrop-blur-md"
             style={{ background: theme.panelStrong, borderColor: 'rgba(255,255,255,0.7)', color: theme.accentText }}
           >
-            奥が敵、手前が味方
+            うえが てき / したが みかた
           </div>
         </div>
 
@@ -331,6 +364,8 @@ export function BattleScreenPatternB({ battleState, isRunning, onSkillSelect }: 
               accent={theme.accent}
               accentSoft={theme.accentSoft}
               isBossBattle={battleState.isBoss}
+              hitReactionVersion={battleState.hitReactionVersions[actor.id] ?? 0}
+              hitReactionDelayMs={battleState.hitReactionDelays[actor.id] ?? 0}
             />
           ) : null,
         )}
@@ -344,6 +379,8 @@ export function BattleScreenPatternB({ battleState, isRunning, onSkillSelect }: 
               align={index === 0 ? 'left' : index === 1 ? 'center' : 'right'}
               accent={theme.accent}
               accentSoft={theme.accentSoft}
+              hitReactionVersion={battleState.hitReactionVersions[actor.id] ?? 0}
+              hitReactionDelayMs={battleState.hitReactionDelays[actor.id] ?? 0}
             />
           ) : null,
         )}
@@ -373,21 +410,21 @@ export function BattleScreenPatternB({ battleState, isRunning, onSkillSelect }: 
         >
           <div className="mb-2 flex items-center justify-between">
             <div>
-              <p className="text-[10px] font-black tracking-[0.14em] text-[#29664c]/70">相棒スキル</p>
-              <p className="mt-0.5 text-[11px] text-[#757872]">中央の相棒が次に使う行動を選びます</p>
+              <p className="text-[10px] font-black tracking-[0.14em] text-[#29664c]/70">あいぼうの わざ</p>
+              <p className="mt-0.5 text-[11px] text-[#757872]">わざを えらぼう。</p>
             </div>
             <span
               className="rounded-full px-3 py-1 text-[10px] font-black"
               style={{ background: theme.accentSoft, color: theme.accentText }}
             >
-              相棒が主役
+              あいぼう
             </span>
           </div>
 
           <div className="grid grid-cols-2 gap-2">
             {mainSkills.length === 0 ? (
               <div className="col-span-2 rounded-[22px] bg-[#f5f7f0] px-4 py-4 text-center text-sm text-[#757872]">
-                使用できるスキルがありません。
+                つかえる わざが ないよ。
               </div>
             ) : (
               mainSkills.slice(0, 4).map((skill) => (

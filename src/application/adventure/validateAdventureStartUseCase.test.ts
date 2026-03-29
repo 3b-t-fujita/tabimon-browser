@@ -20,9 +20,11 @@ import { _resetStageMasterCache } from '@/infrastructure/master/stageMasterRepos
 
 const MOCK_STAGES = {
   items: [
-    { stageId: 'stage_w1_1', worldId: 1, stageNo: 1, difficulty: 'Easy',   recommendedLevel: 1,  nodePatternId: 'p1', unlockStageId: 'stage_w1_2', baseExp: 30 },
-    { stageId: 'stage_w1_2', worldId: 1, stageNo: 2, difficulty: 'Normal', recommendedLevel: 8,  nodePatternId: 'p2', unlockStageId: null,          baseExp: 70 },
-    { stageId: 'stage_w2_1', worldId: 2, stageNo: 1, difficulty: 'Easy',   recommendedLevel: 1,  nodePatternId: 'p3', unlockStageId: 'stage_w2_2', baseExp: 30 },
+    { stageId: 'stage_w1_1', worldId: 1, stageNo: 1, stageType: 'STORY', difficulty: 'Easy',   recommendedLevel: 1, estimatedMinutes: 3, nodePatternId: 'p1', enemyGroupPoolId: 'eg1', rewardGroupId: 'r1', bossEnemyGroupId: 'b1', unlockStageId: 'stage_w1_2', candidateMonsterPoolId: 'c1', baseExp: 30 },
+    { stageId: 'stage_w1_2', worldId: 1, stageNo: 2, stageType: 'STORY', difficulty: 'Normal', recommendedLevel: 8, estimatedMinutes: 5, nodePatternId: 'p2', enemyGroupPoolId: 'eg2', rewardGroupId: 'r2', bossEnemyGroupId: 'b2', unlockStageId: null, candidateMonsterPoolId: 'c2', baseExp: 70 },
+    { stageId: 'stage_w2_1', worldId: 2, stageNo: 1, stageType: 'STORY', difficulty: 'Easy',   recommendedLevel: 1, estimatedMinutes: 3, nodePatternId: 'p3', enemyGroupPoolId: 'eg3', rewardGroupId: 'r3', bossEnemyGroupId: 'b3', unlockStageId: 'stage_w2_2', candidateMonsterPoolId: 'c3', baseExp: 30 },
+    { stageId: 'stage_farm_bond_early', worldId: 2, stageNo: 13, stageType: 'FARM', farmCategory: 'BOND', difficultyTier: 'EARLY', difficulty: 'Easy', recommendedLevel: 1, estimatedMinutes: 3, nodePatternId: 'p4', enemyGroupPoolId: 'eg4', rewardGroupId: 'r4', bossEnemyGroupId: 'b4', unlockStageId: null, candidateMonsterPoolId: 'c4', baseExp: 35 },
+    { stageId: 'stage_farm_bond_late', worldId: 2, stageNo: 14, stageType: 'FARM', farmCategory: 'BOND', difficultyTier: 'LATE', difficulty: 'Normal', recommendedLevel: 15, estimatedMinutes: 4, nodePatternId: 'p5', enemyGroupPoolId: 'eg5', rewardGroupId: 'r5', bossEnemyGroupId: 'b5', unlockStageId: null, candidateMonsterPoolId: 'c5', baseExp: 55 },
   ],
 };
 
@@ -65,6 +67,7 @@ async function seedWithMonsters(
   ownedMonsters: OwnedMonster[],
   supports: SupportMonster[] = [],
   unlockedStageIds: string[] = ['stage_w1_1', 'stage_w2_1', 'stage_w3_1'],
+  clearedStageIds: string[] = [],
 ): Promise<void> {
   const tx = resetDb();
   await tx.saveMultiple({
@@ -77,7 +80,7 @@ async function seedWithMonsters(
     },
     ownedMonsters,
     supportMonsters: supports,
-    progress: { unlockedStageIds, clearedStageIds: [] },
+    progress: { unlockedStageIds, clearedStageIds },
   });
 }
 
@@ -144,6 +147,28 @@ describe('ValidateAdventureStartUseCase', () => {
     await seedWithMonsters('mon-1', [makeMonster('mon-1', true)], [], []);
     const uc = new ValidateAdventureStartUseCase();
     const result = await uc.execute({ stageId: 'stage_w1_1', selectedSupportIds: [] });
+    expect(result.ok).toBe(true);
+  });
+
+  it('そだてる前半は物語ステージ1クリアで通過', async () => {
+    await seedWithMonsters('mon-1', [makeMonster('mon-1', true)], [], [], ['stage_w1_1']);
+    const uc = new ValidateAdventureStartUseCase();
+    const result = await uc.execute({ stageId: 'stage_farm_bond_early', selectedSupportIds: [] });
+    expect(result.ok).toBe(true);
+  });
+
+  it('そだてる後半は物語ステージ2未クリアだと失敗', async () => {
+    await seedWithMonsters('mon-1', [makeMonster('mon-1', true)], [], [], ['stage_w1_1']);
+    const uc = new ValidateAdventureStartUseCase();
+    const result = await uc.execute({ stageId: 'stage_farm_bond_late', selectedSupportIds: [] });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.errorCode).toBe(AdventureErrorCode.StageNotUnlocked);
+  });
+
+  it('そだてる後半は物語ステージ2クリアで通過', async () => {
+    await seedWithMonsters('mon-1', [makeMonster('mon-1', true)], [], [], ['stage_w2_2']);
+    const uc = new ValidateAdventureStartUseCase();
+    const result = await uc.execute({ stageId: 'stage_farm_bond_late', selectedSupportIds: [] });
     expect(result.ok).toBe(true);
   });
 

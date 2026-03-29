@@ -61,8 +61,8 @@ export class AcceptQrAsSupportMonsterUseCase {
       return fail(
         policyErr as AcceptQrAsSupportErrorCode,
         policyErr === QrErrorCode.Duplicate
-          ? 'このモンスターは既に仲間/助っ人にいます'
-          : '助っ人が上限（10体）に達しています',
+          ? 'このモンスターは もう なかまか おたすけに いるよ'
+          : 'おたすけが いっぱいだよ',
       );
     }
 

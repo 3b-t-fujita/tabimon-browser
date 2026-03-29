@@ -63,6 +63,7 @@ export const AdventureSessionSchema = z.object({
   // ランダムイベント用。既存セーブとの後方互換のため optional + default
   nextBattleBuffMultiplier: z.number().min(1.0).max(2.0).optional().default(1.0),
   randomEventBattle:        z.boolean().optional().default(false),
+  resultSkillUsageCounts:   z.record(nonEmptyString, z.number().int().nonnegative()).optional().default({}),
 });
 
 // --- Player ---
@@ -82,8 +83,20 @@ export const OwnedMonsterSchema = z.object({
   role:            nonEmptyString,
   level:           z.number().int().min(1).max(GameConstants.MAX_LEVEL),
   exp:             z.number().int().nonnegative(),
+  currentExp:      z.number().int().nonnegative().optional().default(0),
+  bondPoints:      z.number().int().nonnegative().optional().default(0),
+  bondRank:        z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4)]).optional().default(0),
   personality:     nonEmptyString,
   skillIds:        z.array(nonEmptyString).max(3),
+  skillProficiency:z.record(
+    nonEmptyString,
+    z.object({
+      useCount: z.number().int().nonnegative(),
+      stage: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3)]),
+    }),
+  ).optional().default({}),
+  evolutionBranchId: z.string().nullable().optional().default(null),
+  bondMilestoneRead: z.array(z.number().int().nonnegative()).optional().default([]),
   isMain:          z.boolean(),
 });
 
@@ -128,11 +141,18 @@ export const SettingsStateSchema = z.object({
   sfxVolume: z.number().min(0).max(1),
 });
 
+// --- DailyRecord ---
+export const DailyRecordSchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  homeTapCount: z.number().int().nonnegative(),
+});
+
 // --- MainSaveSnapshot (全体) ---
 export const MainSaveSnapshotSchema = z.object({
   player:           PlayerSchema.nullable(),
   progress:         ProgressStateSchema.nullable(),
   settings:         SettingsStateSchema.nullable(),
+  dailyRecord:      DailyRecordSchema.nullable().optional().default(null),
   ownedMonsters:    z.array(OwnedMonsterSchema),
   supportMonsters:  z.array(SupportMonsterSchema),
   qrReceiveHistory: z.array(QrReceiveHistoryEntrySchema),

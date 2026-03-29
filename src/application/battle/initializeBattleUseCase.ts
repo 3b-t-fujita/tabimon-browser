@@ -23,6 +23,7 @@ import { getStageMasterById } from '@/infrastructure/master/stageMasterRepositor
 import { getNodePatternById } from '@/infrastructure/master/nodePatternRepository';
 import { SaveTransactionService } from '@/infrastructure/persistence/transaction/saveTransactionService';
 import { buildEnemyActors } from './buildEnemyActorsService';
+import { getFarmEnemyStrengthMultiplier } from '@/domain/policies/farmStagePolicy';
 
 export type InitializeBattleErrorCode =
   | typeof AdventureErrorCode.SessionNotFound
@@ -130,6 +131,10 @@ export class InitializeBattleUseCase {
       }
     }
 
+    if (stageMaster.stageType === 'FARM' && stageMaster.difficultyTier) {
+      strengthMultiplier *= getFarmEnemyStrengthMultiplier(stageMaster.difficultyTier);
+    }
+
     const enemyActors = await buildEnemyActors(poolId, strengthMultiplier);
     if (enemyActors.length === 0) {
       return fail(
@@ -186,6 +191,10 @@ export class InitializeBattleUseCase {
       outcome:            'NONE',
       tickCount:          0,
       pendingMainSkillId: null,
+      usedMainSkillCounts: {},
+      hitReactionVersions: {},
+      hitReactionDelays: {},
+      hitReactionSequence: 0,
     };
 
     return ok(initialState);

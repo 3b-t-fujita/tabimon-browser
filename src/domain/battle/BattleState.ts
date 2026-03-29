@@ -32,6 +32,14 @@ export interface BattleState {
   tickCount:          number;
   /** プレイヤーがキューした相棒スキルID（null = キューなし） */
   pendingMainSkillId: string | null;
+  /** 相棒がこの戦闘で使ったスキル回数 */
+  usedMainSkillCounts: Record<string, number>;
+  /** 被ダメージリアクション用の更新カウンタ */
+  hitReactionVersions: Record<string, number>;
+  /** 被ダメージリアクションの遅延ms */
+  hitReactionDelays: Record<string, number>;
+  /** tick 内の被弾順カウンタ */
+  hitReactionSequence: number;
 }
 
 /** BattleState の深いクローン（tick 処理前に必ず使う） */
@@ -43,5 +51,9 @@ export function cloneBattleState(state: BattleState): BattleState {
       skills: a.skills.map((s) => ({ ...s })),
     })),
     log: [...state.log],
+    usedMainSkillCounts: { ...state.usedMainSkillCounts },
+    hitReactionVersions: { ...state.hitReactionVersions },
+    hitReactionDelays: { ...state.hitReactionDelays },
+    hitReactionSequence: state.hitReactionSequence,
   };
 }

@@ -53,7 +53,7 @@ export function StageCard({ stage, onSelect }: Props) {
   const wStyle  = WORLD_STYLE[world];
   const dStyle  = DIFFICULTY_STYLE[stage.difficulty] ?? { stars: 1, bg: '#f3f4f6', text: '#374151', label: stage.difficulty };
 
-  // "ほのおの山 Stage 1" → "Stage 1"（ワールド名を除去）
+  // 「ほのおの山 ステージ 1」→「ステージ 1」（ワールド名を除去）
   const displayName = stage.stageName.startsWith(stage.worldLabel + ' ')
     ? stage.stageName.slice(stage.worldLabel.length + 1)
     : stage.stageName;

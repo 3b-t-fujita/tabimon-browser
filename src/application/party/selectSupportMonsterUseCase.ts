@@ -28,13 +28,13 @@ export class SelectSupportMonsterUseCase {
     availableSupportIds: string[],
   ): Result<string[], SelectSupportErrorCode> {
     if (!availableSupportIds.includes(supportId)) {
-      return fail(SelectSupportErrorCode.NotFound, `助っ人が見つかりません: ${supportId}`);
+      return fail(SelectSupportErrorCode.NotFound, `おたすけが みつからないよ: ${supportId}`);
     }
     if (currentSelection.includes(supportId)) {
-      return fail(SelectSupportErrorCode.Duplicate, 'すでに選択済みの助っ人です');
+      return fail(SelectSupportErrorCode.Duplicate, 'もう えらんでいる おたすけだよ');
     }
     if (currentSelection.length >= GameConstants.PARTY_MAX_SUPPORTS) {
-      return fail(SelectSupportErrorCode.AtCapacity, `助っ人は最大${GameConstants.PARTY_MAX_SUPPORTS}体まで選択できます`);
+      return fail(SelectSupportErrorCode.AtCapacity, `おたすけは さいだい${GameConstants.PARTY_MAX_SUPPORTS}たいまでだよ`);
     }
     return ok([...currentSelection, supportId]);
   }

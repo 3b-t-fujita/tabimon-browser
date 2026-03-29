@@ -12,6 +12,8 @@ import { getMonsterMasterById, computeStats } from '@/infrastructure/master/mons
 import { buildSkillSnapshot } from '@/infrastructure/master/skillMasterRepository';
 import { toSkillId } from '@/types/ids';
 import type { OwnedMonsterDetailViewModel, MonsterSkillViewModel } from '@/application/viewModels/ownedMonsterDetailViewModel';
+import { calculateBondRank } from '@/domain/policies/bondPolicy';
+import { calculateSkillProficiencyStage } from '@/domain/policies/skillProficiencyPolicy';
 
 export type GetDetailErrorCode = SaveErrorCode | typeof MonsterErrorCode.NotFound;
 
@@ -39,7 +41,12 @@ export class GetOwnedMonsterDetailUseCase {
         skillId:     monster.skillIds[i] as string,
         displayName: snap?.displayName ?? monster.skillIds[i] as string,
         skillType:   snap?.skillType   ?? 'SKILL_NORMAL',
+        proficiencyUseCount: monster.skillProficiency?.[monster.skillIds[i] as string]?.useCount ?? 0,
+        proficiencyStage: monster.skillProficiency?.[monster.skillIds[i] as string]?.stage
+          ?? calculateSkillProficiencyStage(monster.skillProficiency?.[monster.skillIds[i] as string]?.useCount ?? 0),
       }));
+
+    const bondPoints = monster.bondPoints ?? 0;
 
     return ok({
       uniqueId:          monster.uniqueId,
@@ -47,6 +54,9 @@ export class GetOwnedMonsterDetailUseCase {
       monsterMasterId:   monster.monsterMasterId,
       level:             monster.level,
       exp:               monster.exp,
+      currentExp:        monster.currentExp ?? monster.exp,
+      bondPoints,
+      bondRank:          calculateBondRank(bondPoints),
       worldLabel:        worldLabel(monster.worldId),
       roleLabel:         roleLabel(monster.role),
       personalityLabel:  personalityLabel(monster.personality),

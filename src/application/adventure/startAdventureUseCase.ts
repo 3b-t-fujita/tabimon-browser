@@ -22,6 +22,7 @@ import { AdventureErrorCode, MonsterErrorCode, SaveErrorCode } from '@/common/er
 import { AdventureSessionStatus } from '@/common/constants/enums';
 import { GameConstants } from '@/common/constants/GameConstants';
 import { isStageUnlocked } from '@/domain/policies/StageUnlockPolicy';
+import { isFarmStageUnlocked } from '@/domain/policies/farmStageUnlockPolicy';
 import type { AdventureSession } from '@/domain/entities/AdventureSession';
 import { SaveTransactionService } from '@/infrastructure/persistence/transaction/saveTransactionService';
 import { getStageMasterById } from '@/infrastructure/master/stageMasterRepository';
@@ -68,7 +69,12 @@ export class StartAdventureUseCase {
       return fail(AdventureErrorCode.StageNotFound, `ステージが見つかりません: ${input.stageId}`);
     }
 
-    if (stageMaster.stageNo !== 1) {
+    if (stageMaster.stageType === 'FARM') {
+      const clearedStageIds = save.progress?.clearedStageIds ?? [];
+      if (!isFarmStageUnlocked(stageMaster, clearedStageIds)) {
+        return fail(AdventureErrorCode.StageNotUnlocked, 'このステージはまだ解放されていません');
+      }
+    } else if (stageMaster.stageNo !== 1) {
       const unlockedSet = new Set<StageId>(
         (save.progress?.unlockedStageIds ?? []).map(toStageId),
       );
@@ -80,18 +86,18 @@ export class StartAdventureUseCase {
     if (input.selectedSupportIds.length > GameConstants.PARTY_MAX_SUPPORTS) {
       return fail(
         MonsterErrorCode.SupportCapacityFull,
-        `助っ人は最大${GameConstants.PARTY_MAX_SUPPORTS}体までです`,
+        `おたすけは さいだい${GameConstants.PARTY_MAX_SUPPORTS}たいまでだよ`,
       );
     }
 
     const deduplicated = new Set(input.selectedSupportIds);
     if (deduplicated.size !== input.selectedSupportIds.length) {
-      return fail(MonsterErrorCode.DuplicateSupport, '同じ助っ人を重複して選択できません');
+      return fail(MonsterErrorCode.DuplicateSupport, 'おなじ おたすけは えらべないよ');
     }
 
     for (const sid of input.selectedSupportIds) {
       if (!save.supportMonsters.some((s) => s.supportId === sid)) {
-        return fail(MonsterErrorCode.NotFound, `助っ人が見つかりません: ${sid}`);
+        return fail(MonsterErrorCode.NotFound, `おたすけが みつからないよ: ${sid}`);
       }
     }
 

@@ -16,6 +16,11 @@ import { SaveErrorCode } from '@/common/errors/AppErrorCode';
 import type { MainSaveSnapshot } from '@/infrastructure/storage/models';
 import { createEmptyMainSave } from '@/infrastructure/storage/models';
 import { toPlayerId, toWorldId, toMonsterId, toMonsterMasterId, toSkillId } from '@/types/ids';
+import {
+  SAVE_META_KEY_V2_BACKUP,
+  SAVE_META_KEY_VERSION,
+  SAVE_VERSION_V3,
+} from '@/infrastructure/persistence/migrations/v3SaveMigration';
 
 // ---------------------------------------------------------------------------
 // テスト用ヘルパー
@@ -90,6 +95,96 @@ describe('SaveTransactionService', () => {
     if (loadResult.ok) {
       expect(loadResult.value?.player?.playerName).toBe('テストプレイヤー');
     }
+  });
+
+  it('V2 セーブを load すると V3 項目を補完して返す', async () => {
+    const db = new TabimonDatabase();
+    _resetDatabaseForTest(db);
+    await db.saves.clear();
+    await db.saveMeta.clear();
+
+    const v2Like: MainSaveSnapshot = {
+      ...createEmptyMainSave(),
+      player: {
+        playerId: toPlayerId('player-1'),
+        playerName: 'テストプレイヤー',
+        worldId: toWorldId('WORLD_FOREST'),
+        mainMonsterId: toMonsterId('monster-1'),
+      },
+      ownedMonsters: [{
+        uniqueId: toMonsterId('monster-1'),
+        monsterMasterId: toMonsterMasterId('MON_GRASS_001'),
+        displayName: 'グリーニョ',
+        worldId: WorldId.Forest,
+        role: RoleType.Attack,
+        level: 3,
+        exp: 42,
+        personality: PersonalityType.Brave,
+        skillIds: [toSkillId('SKILL_LEAF_SLASH')],
+        isMain: true,
+      }],
+    };
+
+    await db.saves.put({
+      id: SAVE_KEY_MAIN,
+      payload: JSON.stringify(v2Like),
+      updatedAt: new Date().toISOString(),
+    });
+
+    svc = new SaveTransactionService();
+    const result = await svc.load();
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value?.ownedMonsters[0]?.currentExp).toBe(42);
+    expect(result.value?.ownedMonsters[0]?.bondPoints).toBe(0);
+    expect(result.value?.ownedMonsters[0]?.bondRank).toBe(0);
+    expect(result.value?.ownedMonsters[0]?.skillProficiency).toEqual({
+      SKILL_LEAF_SLASH: { useCount: 0, stage: 0 },
+    });
+    expect(result.value?.ownedMonsters[0]?.evolutionBranchId).toBeNull();
+    expect(result.value?.ownedMonsters[0]?.bondMilestoneRead).toEqual([]);
+    expect(result.value?.dailyRecord).toBeNull();
+
+    const stored = await db.saves.get(SAVE_KEY_MAIN);
+    expect(stored?.payload).toContain('"currentExp":42');
+    expect(stored?.payload).toContain('"bondPoints":0');
+  });
+
+  it('V2 セーブ移行時にバックアップとバージョン情報を保存する', async () => {
+    const db = new TabimonDatabase();
+    _resetDatabaseForTest(db);
+    await db.saves.clear();
+    await db.saveMeta.clear();
+
+    const v2Like: MainSaveSnapshot = {
+      ...createEmptyMainSave(),
+      player: {
+        playerId: toPlayerId('player-1'),
+        playerName: 'テストプレイヤー',
+        worldId: toWorldId('WORLD_FOREST'),
+        mainMonsterId: null,
+      },
+    };
+
+    await db.saves.put({
+      id: SAVE_KEY_MAIN,
+      payload: JSON.stringify(v2Like),
+      updatedAt: new Date().toISOString(),
+    });
+
+    svc = new SaveTransactionService();
+    const result = await svc.load();
+
+    expect(result.ok).toBe(true);
+    const versionMeta = await db.saveMeta.get(SAVE_META_KEY_VERSION);
+    const backupMeta = await db.saveMeta.get(SAVE_META_KEY_V2_BACKUP);
+    expect(versionMeta?.value).toBe(String(SAVE_VERSION_V3));
+    expect(backupMeta?.value).toBe(JSON.stringify(v2Like));
+
+    const stored = await db.saves.get(SAVE_KEY_MAIN);
+    expect(stored?.payload).toContain('"playerName":"テストプレイヤー"');
+    expect(stored?.payload).toContain('"dailyRecord":null');
   });
 
   it('saveMultiple 完了後 temp_save が残っていないこと', async () => {

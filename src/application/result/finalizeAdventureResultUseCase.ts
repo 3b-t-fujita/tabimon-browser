@@ -25,6 +25,17 @@ import { getStageMasterById } from '@/infrastructure/master/stageMasterRepositor
 import { getMonsterMasterById, computeStats } from '@/infrastructure/master/monsterMasterRepository';
 import { SaveTransactionService } from '@/infrastructure/persistence/transaction/saveTransactionService';
 import { calculateAdventureRewards } from './calculateAdventureRewardsService';
+import { GameConstants } from '@/common/constants/GameConstants';
+import { calculateBondRank } from '@/domain/policies/bondPolicy';
+import { calculateSkillProficiencyStage } from '@/domain/policies/skillProficiencyPolicy';
+import {
+  getFarmBondGain,
+  getFarmResultMessage,
+  getFarmSkillCap,
+  getFarmSkillMultiplier,
+} from '@/domain/policies/farmStagePolicy';
+import { buildSkillSnapshot } from '@/infrastructure/master/skillMasterRepository';
+import type { FarmDifficultyTier } from '@/domain/entities/StageMaster';
 
 export type FinalizeAdventureResultErrorCode =
   | typeof AdventureErrorCode.SessionNotFound
@@ -52,6 +63,70 @@ export interface FinalizeResultPayload {
   statGains:      StatGains | null;
   evolved:        boolean;
   evolvedName:    string | null;
+  bondPointsGained: number;
+  bondRankBefore: number;
+  bondRankAfter: number;
+  skillUpdates: Array<{ skillId: string; skillName: string; useCountBefore: number; useCountAfter: number; stageBefore: number; stageAfter: number }>;
+  firstClearBonusExp: number;
+  farmRewardMessage: string | null;
+}
+
+function bondGainForResult(resultType: AdventureResultType): number {
+  switch (resultType) {
+    case AdventureResultType.Success: return GameConstants.ADVENTURE_BOND_GAIN_SUCCESS;
+    case AdventureResultType.Failure: return GameConstants.ADVENTURE_BOND_GAIN_FAILURE;
+    case AdventureResultType.Retire: return GameConstants.ADVENTURE_BOND_GAIN_RETIRE;
+  }
+}
+
+function scaleSkillUsageCounts(
+  rawCounts: Readonly<Record<string, number>>,
+  multiplier: number,
+  cap: number,
+): Record<string, number> {
+  const entries = Object.entries(rawCounts);
+  if (entries.length === 0) return {};
+
+  const boosted = entries.map(([skillId, count]) => ({
+    skillId,
+    raw: count,
+    boosted: count * multiplier,
+  }));
+  const totalBoosted = boosted.reduce((sum, item) => sum + item.boosted, 0);
+  if (totalBoosted <= cap) {
+    return Object.fromEntries(boosted.map((item) => [item.skillId, item.boosted]));
+  }
+
+  const provisional = boosted.map((item) => {
+    const scaled = (item.boosted / totalBoosted) * cap;
+    return {
+      skillId: item.skillId,
+      whole: Math.floor(scaled),
+      fraction: scaled - Math.floor(scaled),
+    };
+  });
+
+  let remaining = cap - provisional.reduce((sum, item) => sum + item.whole, 0);
+  provisional
+    .sort((a, b) => b.fraction - a.fraction)
+    .forEach((item) => {
+      if (remaining <= 0) return;
+      item.whole += 1;
+      remaining -= 1;
+    });
+
+  return Object.fromEntries(provisional.map((item) => [item.skillId, item.whole]));
+}
+
+function getFarmSkillUsageCounts(
+  rawCounts: Readonly<Record<string, number>>,
+  difficultyTier: FarmDifficultyTier,
+): Record<string, number> {
+  return scaleSkillUsageCounts(
+    rawCounts,
+    getFarmSkillMultiplier(difficultyTier),
+    getFarmSkillCap(difficultyTier),
+  );
 }
 
 export class FinalizeAdventureResultUseCase {
@@ -84,10 +159,16 @@ export class FinalizeAdventureResultUseCase {
     const mainId   = save.player?.mainMonsterId;
     const mainMon  = save.ownedMonsters.find((m) => m.uniqueId === mainId);
 
+    const wasClearedBefore = (save.progress?.clearedStageIds ?? []).includes(session.stageId as string);
+    const firstClearBonusExp =
+      resultType === AdventureResultType.Success && !wasClearedBefore
+        ? (stageMaster.firstClearBonusExp ?? 0)
+        : 0;
+
     // ---- 経験値計算 ----
     const oldLevel = mainMon?.level ?? 1;
     const { expGained, newLevel, newExp, leveledUp } = await calculateAdventureRewards(
-      stageMaster.baseExp,
+      stageMaster.baseExp + firstClearBonusExp,
       resultType,
       oldLevel,
       mainMon?.exp ?? 0,
@@ -108,9 +189,78 @@ export class FinalizeAdventureResultUseCase {
     }
 
     // ---- 相棒モンスター更新 ----
+    const isFarmBondStage = stageMaster.stageType === 'FARM' && stageMaster.farmCategory === 'BOND' && !!stageMaster.difficultyTier;
+    const isFarmSkillStage = stageMaster.stageType === 'FARM' && stageMaster.farmCategory === 'SKILL' && !!stageMaster.difficultyTier;
+    const bondGain = isFarmBondStage
+      ? getFarmBondGain(stageMaster.difficultyTier!, resultType)
+      : bondGainForResult(resultType);
+    const skillUsageCounts = isFarmSkillStage
+      ? getFarmSkillUsageCounts(session.resultSkillUsageCounts ?? {}, stageMaster.difficultyTier!)
+      : (session.resultSkillUsageCounts ?? {});
+    const farmRewardMessage =
+      stageMaster.stageType === 'FARM' && stageMaster.farmCategory && stageMaster.difficultyTier
+        ? getFarmResultMessage(stageMaster.farmCategory, stageMaster.difficultyTier)
+        : null;
+    let bondRankBefore = 0;
+    let bondRankAfter = 0;
+    const skillUpdates: FinalizeResultPayload['skillUpdates'] = [];
+    const skillNames = Object.fromEntries(
+      await Promise.all(
+        Object.keys(skillUsageCounts).map(async (skillId) => {
+          const skillSnapshot = await buildSkillSnapshot(skillId as OwnedMonster['skillIds'][number]);
+          return [skillId, skillSnapshot?.displayName ?? skillId] as const;
+        }),
+      ),
+    );
+
     let updatedOwned: OwnedMonster[] = save.ownedMonsters.map((m) => {
       if (m.uniqueId !== mainId) return m;
+      const bondPointsBefore = m.bondPoints ?? 0;
+      const bondPointsAfter = bondPointsBefore + bondGain;
+      bondRankBefore = calculateBondRank(bondPointsBefore);
+      bondRankAfter = calculateBondRank(bondPointsAfter);
+
+      const nextSkillProficiency = { ...(m.skillProficiency ?? {}) };
+      for (const [skillId, addedCount] of Object.entries(skillUsageCounts)) {
+        const current = nextSkillProficiency[skillId] ?? { useCount: 0, stage: 0 as const };
+        const useCountAfter = current.useCount + addedCount;
+        const stageAfter = calculateSkillProficiencyStage(useCountAfter);
+        nextSkillProficiency[skillId] = { useCount: useCountAfter, stage: stageAfter };
+        skillUpdates.push({
+          skillId,
+          skillName: skillNames[skillId] ?? skillId,
+          useCountBefore: current.useCount,
+          useCountAfter,
+          stageBefore: current.stage,
+          stageAfter,
+        });
+      }
+
       return { ...m, level: newLevel, exp: newExp };
+    });
+
+    updatedOwned = updatedOwned.map((m) => {
+      if (m.uniqueId !== mainId) return m;
+      const bondPointsBefore = m.bondPoints ?? 0;
+      const bondPointsAfter = bondPointsBefore + bondGain;
+      const nextSkillProficiency = { ...(m.skillProficiency ?? {}) };
+      for (const [skillId, addedCount] of Object.entries(skillUsageCounts)) {
+        const current = nextSkillProficiency[skillId] ?? { useCount: 0, stage: 0 as const };
+        const useCountAfter = current.useCount + addedCount;
+        nextSkillProficiency[skillId] = {
+          useCount: useCountAfter,
+          stage: calculateSkillProficiencyStage(useCountAfter),
+        };
+      }
+      return {
+        ...m,
+        level: newLevel,
+        exp: newExp,
+        currentExp: newExp,
+        bondPoints: bondPointsAfter,
+        bondRank: calculateBondRank(bondPointsAfter),
+        skillProficiency: nextSkillProficiency,
+      };
     });
 
     // ---- 進化チェック（Lv15 に到達 かつ evolvesTo がある場合）----
@@ -158,6 +308,7 @@ export class FinalizeAdventureResultUseCase {
       ...session,
       resultPendingFlag: false,
       status:            AdventureSessionStatus.Completed,
+      resultSkillUsageCounts: {},
     };
 
     // ---- 保存 ----
@@ -174,6 +325,22 @@ export class FinalizeAdventureResultUseCase {
       return fail(SaveErrorCode.SaveFailed, saveResult.message);
     }
 
-    return ok({ updatedSession, expGained, newLevel, leveledUp, stageUnlocked, resultType, statGains, evolved, evolvedName });
+    return ok({
+      updatedSession,
+      expGained,
+      newLevel,
+      leveledUp,
+      stageUnlocked,
+      resultType,
+      statGains,
+      evolved,
+      evolvedName,
+      bondPointsGained: bondGain,
+      bondRankBefore,
+      bondRankAfter,
+      skillUpdates,
+      firstClearBonusExp,
+      farmRewardMessage,
+    });
   }
 }

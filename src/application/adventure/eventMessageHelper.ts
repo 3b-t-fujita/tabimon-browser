@@ -13,6 +13,15 @@ export function rollRandomEvent(): RandomEventType {
   return 'BATTLE';
 }
 
+export function rollRandomEventForNode(nodeIndex: number): RandomEventType {
+  if (nodeIndex !== 5) return rollRandomEvent();
+
+  const r = Math.random();
+  if (r < 0.375) return 'HEAL';
+  if (r < 0.75) return 'NOTHING';
+  return 'BOOST';
+}
+
 export function getEventMessageForType(type: RandomEventType): string {
   switch (type) {
     case 'HEAL':    return '☀️ 清らかな泉を発見した！　仲間のコンディションが整った気がする。';

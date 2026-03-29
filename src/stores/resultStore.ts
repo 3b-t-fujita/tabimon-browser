@@ -26,6 +26,12 @@ interface ResultStoreState {
   statGains:      StatGains | null;
   evolved:        boolean;
   evolvedName:    string | null;
+  bondPointsGained: number;
+  bondRankBefore: number;
+  bondRankAfter: number;
+  skillUpdates: Array<{ skillId: string; skillName: string; useCountBefore: number; useCountAfter: number; stageBefore: number; stageAfter: number }>;
+  firstClearBonusExp: number;
+  farmRewardMessage: string | null;
   candidate:      PendingCandidate | null;
   errorMessage:   string | null;
   isSaving:       boolean;
@@ -36,7 +42,21 @@ interface ResultStoreState {
 interface ResultStoreActions {
   setResultType(t: AdventureResultType | null): void;
   setResultPhase(p: ResultPhase): void;
-  setRewardInfo(info: { expGained: number; newLevel: number; leveledUp: boolean; stageUnlocked: boolean; statGains: StatGains | null; evolved: boolean; evolvedName: string | null }): void;
+  setRewardInfo(info: {
+    expGained: number;
+    newLevel: number;
+    leveledUp: boolean;
+    stageUnlocked: boolean;
+    statGains: StatGains | null;
+    evolved: boolean;
+    evolvedName: string | null;
+    bondPointsGained: number;
+    bondRankBefore: number;
+    bondRankAfter: number;
+    skillUpdates: Array<{ skillId: string; skillName: string; useCountBefore: number; useCountAfter: number; stageBefore: number; stageAfter: number }>;
+    firstClearBonusExp: number;
+    farmRewardMessage: string | null;
+  }): void;
   setCandidate(c: PendingCandidate | null): void;
   setError(msg: string | null): void;
   setIsSaving(v: boolean): void;
@@ -55,6 +75,12 @@ const INITIAL: ResultStoreState = {
   statGains:       null,
   evolved:         false,
   evolvedName:     null,
+  bondPointsGained: 0,
+  bondRankBefore: 0,
+  bondRankAfter: 0,
+  skillUpdates: [],
+  firstClearBonusExp: 0,
+  farmRewardMessage: null,
   candidate:       null,
   errorMessage:    null,
   isSaving:        false,

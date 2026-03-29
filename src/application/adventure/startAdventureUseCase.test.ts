@@ -31,8 +31,10 @@ import { _resetSkillMasterCache } from '@/infrastructure/master/skillMasterRepos
 
 const MOCK_STAGES = {
   items: [
-    { stageId: 'stage_w1_1', worldId: 1, stageNo: 1, difficulty: 'Easy', recommendedLevel: 1, nodePatternId: 'p1', unlockStageId: 'stage_w1_2', baseExp: 30 },
-    { stageId: 'stage_w1_2', worldId: 1, stageNo: 2, difficulty: 'Normal', recommendedLevel: 8, nodePatternId: 'p2', unlockStageId: null, baseExp: 70 },
+    { stageId: 'stage_w1_1', worldId: 1, stageNo: 1, stageType: 'STORY', difficulty: 'Easy', recommendedLevel: 1, estimatedMinutes: 3, nodePatternId: 'p1', enemyGroupPoolId: 'eg1', rewardGroupId: 'r1', bossEnemyGroupId: 'b1', unlockStageId: 'stage_w1_2', candidateMonsterPoolId: 'c1', baseExp: 30 },
+    { stageId: 'stage_w1_2', worldId: 1, stageNo: 2, stageType: 'STORY', difficulty: 'Normal', recommendedLevel: 8, estimatedMinutes: 5, nodePatternId: 'p2', enemyGroupPoolId: 'eg2', rewardGroupId: 'r2', bossEnemyGroupId: 'b2', unlockStageId: null, candidateMonsterPoolId: 'c2', baseExp: 70 },
+    { stageId: 'stage_farm_exp_early', worldId: 1, stageNo: 11, stageType: 'FARM', farmCategory: 'EXP', difficultyTier: 'EARLY', difficulty: 'Easy', recommendedLevel: 1, estimatedMinutes: 3, nodePatternId: 'p3', enemyGroupPoolId: 'eg3', rewardGroupId: 'r3', bossEnemyGroupId: 'b3', unlockStageId: null, candidateMonsterPoolId: 'c3', baseExp: 90 },
+    { stageId: 'stage_farm_exp_late', worldId: 1, stageNo: 12, stageType: 'FARM', farmCategory: 'EXP', difficultyTier: 'LATE', difficulty: 'Normal', recommendedLevel: 15, estimatedMinutes: 4, nodePatternId: 'p4', enemyGroupPoolId: 'eg4', rewardGroupId: 'r4', bossEnemyGroupId: 'b4', unlockStageId: null, candidateMonsterPoolId: 'c4', baseExp: 165 },
   ],
 };
 const MOCK_MONSTERS = { items: [] };
@@ -66,7 +68,12 @@ function makeMonster(id: string, isMain: boolean): OwnedMonster {
   };
 }
 
-async function seedSave(mainId: string, monsters: OwnedMonster[], unlockedStageIds: string[] = ['stage_w1_1', 'stage_w2_1']): Promise<void> {
+async function seedSave(
+  mainId: string,
+  monsters: OwnedMonster[],
+  unlockedStageIds: string[] = ['stage_w1_1', 'stage_w2_1'],
+  clearedStageIds: string[] = [],
+): Promise<void> {
   const tx = resetAll();
   await tx.saveMultiple({
     ...createEmptyMainSave(),
@@ -75,7 +82,7 @@ async function seedSave(mainId: string, monsters: OwnedMonster[], unlockedStageI
       worldId: toWorldId(WorldId.Forest), mainMonsterId: toMonsterId(mainId),
     },
     ownedMonsters: monsters,
-    progress: { unlockedStageIds, clearedStageIds: [] },
+    progress: { unlockedStageIds, clearedStageIds },
   });
 }
 
@@ -233,6 +240,31 @@ describe('StartAdventureUseCase', () => {
     });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.errorCode).toBe(AdventureErrorCode.StageNotUnlocked);
+  });
+
+  it('そだてる前半は物語ステージ1クリアで開始できる', async () => {
+    await seedSave('mon-1', [makeMonster('mon-1', true)], ['stage_w1_1'], ['stage_w2_1']);
+    const result = await new StartAdventureUseCase().execute({
+      stageId: 'stage_farm_exp_early', selectedSupportIds: [],
+    });
+    expect(result.ok).toBe(true);
+  });
+
+  it('そだてる後半は物語ステージ2未クリアだと開始できない', async () => {
+    await seedSave('mon-1', [makeMonster('mon-1', true)], ['stage_w1_1'], ['stage_w2_1']);
+    const result = await new StartAdventureUseCase().execute({
+      stageId: 'stage_farm_exp_late', selectedSupportIds: [],
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.errorCode).toBe(AdventureErrorCode.StageNotUnlocked);
+  });
+
+  it('そだてる後半は物語ステージ2クリアで開始できる', async () => {
+    await seedSave('mon-1', [makeMonster('mon-1', true)], ['stage_w1_1'], ['stage_w3_2']);
+    const result = await new StartAdventureUseCase().execute({
+      stageId: 'stage_farm_exp_late', selectedSupportIds: [],
+    });
+    expect(result.ok).toBe(true);
   });
 
   it('助っ人重複は失敗する', async () => {

@@ -12,6 +12,13 @@ import { SaveErrorCode } from '@/common/errors/AppErrorCode';
 import { SaveTransactionService } from '@/infrastructure/persistence/transaction/saveTransactionService';
 import { getAllStageMasters } from '@/infrastructure/master/stageMasterRepository';
 import { isStageUnlocked } from '@/domain/policies/StageUnlockPolicy';
+import { isFarmStageUnlocked } from '@/domain/policies/farmStageUnlockPolicy';
+import {
+  getFarmPrimaryEffectLabel,
+  getFarmRecommendedBandLabel,
+  getFarmStageName,
+  getFarmSupportText,
+} from '@/domain/policies/farmStagePolicy';
 import { toStageId } from '@/types/ids';
 import type { StageId } from '@/types/ids';
 import type { StageSelectViewModel } from '@/application/viewModels/stageSelectViewModel';
@@ -37,23 +44,51 @@ export class GetAvailableStagesUseCase {
     const unlockedSet = new Set<StageId>(
       (save?.progress?.unlockedStageIds ?? []).map(toStageId),
     );
+    const clearedStageIds = save?.progress?.clearedStageIds ?? [];
 
     const masters = await getAllStageMasters();
 
     const stages = masters.map((m) => {
-      // stageNo===1 は常に解放
-      const isUnlocked = m.stageNo === 1 || isStageUnlocked(toStageId(m.stageId), unlockedSet);
+      const isUnlocked = m.stageType === 'FARM'
+        ? isFarmStageUnlocked(m, clearedStageIds)
+        : m.stageNo === 1 || isStageUnlocked(toStageId(m.stageId), unlockedSet);
       const wLabel = worldLabel(m.worldId);
+      const recommendedBandLabel =
+        m.stageType === 'FARM' && m.farmCategory && m.difficultyTier
+          ? getFarmRecommendedBandLabel(m.farmCategory, m.difficultyTier)
+          : null;
+      const primaryEffectLabel =
+        m.stageType === 'FARM' && m.farmCategory && m.difficultyTier
+          ? getFarmPrimaryEffectLabel(m.farmCategory, m.difficultyTier, m.baseExp)
+          : null;
+      const supportText =
+        m.stageType === 'FARM' && m.farmCategory && m.difficultyTier
+          ? getFarmSupportText(m.farmCategory, m.difficultyTier)
+          : null;
       return {
         stageId:          m.stageId,
-        stageName:        `${wLabel} Stage ${m.stageNo}`,
+        stageName:        m.stageType === 'FARM' && m.farmCategory
+          ? getFarmStageName(m.farmCategory, m.difficultyTier ?? 'EARLY')
+          : `${wLabel} ステージ ${m.stageNo}`,
         worldLabel:       wLabel,
+        stageType:        m.stageType,
+        farmCategory:     m.farmCategory ?? null,
+        difficultyTier:   m.difficultyTier ?? null,
         difficulty:       m.difficulty,
         recommendedLevel: m.recommendedLevel,
+        estimatedMinutes: m.estimatedMinutes,
+        firstClearBonusExp: m.firstClearBonusExp ?? null,
+        recommendedBandLabel,
+        primaryEffectLabel,
+        supportText,
         isUnlocked,
       };
     });
 
-    return ok({ stages });
+    return ok({
+      stages,
+      storyStages: stages.filter((stage) => stage.stageType === 'STORY'),
+      farmStages: stages.filter((stage) => stage.stageType === 'FARM'),
+    });
   }
 }

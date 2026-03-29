@@ -4,12 +4,9 @@
  */
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { CompleteInitialSetupUseCase } from '@/application/boot/completeInitialSetupUseCase';
-import { LoadHomeDataUseCase } from '@/application/home/loadHomeDataUseCase';
-import { useAppUiStore, RouteState } from '@/stores/appUiStore';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { PrimaryButton } from '@/components/common/PrimaryButton';
 import { SoftCard } from '@/components/common/SoftCard';
 import { UiChip } from '@/components/common/UiChip';
@@ -26,7 +23,7 @@ const WORLD_OPTIONS = [
     accentDk:'#064e3b',
     bg:      '#f0fdf4',
     bgGrad:  'linear-gradient(135deg, #f0fdf4, #dcfce7)',
-    desc:    '緑豊かな森の世界。草・自然系モンスターが暮らす',
+    desc:    'みどりが いっぱい',
   },
   {
     id:      WorldId.Volcano,
@@ -36,7 +33,7 @@ const WORLD_OPTIONS = [
     accentDk:'#7c2d12',
     bg:      '#fff7ed',
     bgGrad:  'linear-gradient(135deg, #fff7ed, #ffedd5)',
-    desc:    '灼熱の火山地帯。炎・岩系モンスターが棲む',
+    desc:    'あつい かざん',
   },
   {
     id:      WorldId.Ice,
@@ -46,7 +43,7 @@ const WORLD_OPTIONS = [
     accentDk:'#0c4a6e',
     bg:      '#f0f9ff',
     bgGrad:  'linear-gradient(135deg, #f0f9ff, #e0f2fe)',
-    desc:    '極寒の氷の大地。氷・水系モンスターが息づく',
+    desc:    'つめたい こおり',
   },
 ] as const;
 
@@ -66,53 +63,72 @@ const MONSTER_STAND_IMG: Record<string, string> = {
 
 export function InitialSetupForm() {
   const router = useRouter();
-  const { setHomeViewModel, setRouteState } = useAppUiStore();
+  const searchParams = useSearchParams();
 
-  const [playerName,       setPlayerName]       = useState('');
+  const [playerName,       setPlayerName]       = useState('たびびと');
   const [selectedWorldId,  setSelectedWorldId]  = useState('');
-  const [starterMonsterId, setStarterMonsterId] = useState('');
   const [isSubmitting,     setIsSubmitting]     = useState(false);
   const [errorMessage,     setErrorMessage]     = useState<string | null>(null);
 
   function handleWorldChange(worldId: string) {
     setSelectedWorldId(worldId);
-    setStarterMonsterId('');
   }
 
   const selectedWorld  = WORLD_OPTIONS.find((w) => w.id === selectedWorldId) ?? null;
   const starterOptions = STARTER_BY_WORLD[selectedWorldId] ?? [];
-  const canSubmit      = playerName.trim() && selectedWorldId && starterMonsterId && !isSubmitting;
+  const starterMonsterId = starterOptions[0]?.id ?? '';
+  const normalizedPlayerName = playerName.trim() || 'たびびと';
+  const missingReasons = [
+    !selectedWorldId ? 'ワールド' : null,
+  ].filter((value): value is string => value !== null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!canSubmit) return;
+  async function submitSetup(worldId: string, starterMonsterId: string, name: string) {
+    if (isSubmitting) return;
+    if (!worldId || !starterMonsterId) {
+      setErrorMessage('いく せかいを えらんでね。');
+      return;
+    }
 
     setIsSubmitting(true);
     setErrorMessage(null);
     try {
-      const result = await new CompleteInitialSetupUseCase().execute({ playerName, worldId: selectedWorldId, starterMonsterId });
+      const { CompleteInitialSetupUseCase } = await import('@/application/boot/completeInitialSetupUseCase');
+      const result = await new CompleteInitialSetupUseCase().execute({
+        playerName: name,
+        worldId,
+        starterMonsterId,
+      });
       if (!result.ok) {
-        setErrorMessage(result.message ?? '保存に失敗しました');
+        setErrorMessage(result.message ?? 'ほぞんに しっぱいしたよ');
         return;
       }
-      const loadOutcome = await new LoadHomeDataUseCase().execute();
-      if (loadOutcome.ok) setHomeViewModel(loadOutcome.homeViewModel);
-      setRouteState(RouteState.Home);
       router.push('/home');
     } catch (err) {
       console.error('[InitialSetupForm]', err);
-      setErrorMessage('予期しないエラーが発生しました。もう一度お試しください。');
+      setErrorMessage('エラーが でたよ。もう いちど ためしてね。');
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  useEffect(() => {
+    const worldId = searchParams.get('worldId');
+    if (!worldId) return;
+    const starterMonsterId = STARTER_BY_WORLD[worldId]?.[0]?.id ?? '';
+    void submitSetup(worldId, starterMonsterId, normalizedPlayerName);
+    // searchParams の変更を拾って GET submit 復帰にも追従する
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  function handleSubmit() {
+    void submitSetup(selectedWorldId, starterMonsterId, normalizedPlayerName);
   }
 
   const ctaAccent   = selectedWorld?.accent   ?? '#10b981';
   const ctaAccentDk = selectedWorld?.accentDk ?? '#064e3b';
 
   return (
-    <form
-      onSubmit={handleSubmit}
+    <div
       className="flex flex-1 flex-col overflow-y-auto bg-[#f5f7f0] text-[#2c302b]"
     >
       <div className="shrink-0 px-5 pt-6">
@@ -143,7 +159,7 @@ export function InitialSetupForm() {
         </div>
         <p className="text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">さいしょのぼうけん</p>
         <h1 className="text-[clamp(26px,7vw,30px)] font-black tracking-tight text-[#1f3528]">タビモンへようこそ</h1>
-        <p className="text-sm text-[#595c57] text-center">冒険者の情報を設定して、最初の旅に出発しましょう。</p>
+        <p className="text-sm text-[#595c57] text-center">なまえと せかいを きめよう。</p>
           </div>
         </SoftCard>
       </div>
@@ -155,7 +171,7 @@ export function InitialSetupForm() {
         {/* プレイヤー名 */}
         <div className="flex flex-col gap-1.5">
           <label className="text-[11px] font-black tracking-[0.14em] text-stone-400" htmlFor="playerName">
-            冒険者の名前（最大10文字）
+            なまえ（10もじまで）
           </label>
           <input
             id="playerName"
@@ -163,7 +179,7 @@ export function InitialSetupForm() {
             maxLength={10}
             value={playerName}
             onChange={(e) => setPlayerName(e.target.value)}
-            placeholder="例: タロウ"
+            placeholder="れい: たろう"
             className="rounded-[24px] border-2 border-stone-200 bg-white px-4 py-4 text-base text-stone-900 outline-none transition focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
           />
         </div>
@@ -171,22 +187,28 @@ export function InitialSetupForm() {
         {/* ワールド選択 */}
         <div className="flex flex-col gap-2">
           <p className="text-[11px] font-black tracking-[0.14em] text-stone-400">
-            出発するワールド
+            いく せかい
           </p>
           <div className="flex flex-col gap-2">
             {WORLD_OPTIONS.map((w) => {
               const isSelected = selectedWorldId === w.id;
               return (
-                <button
+                <label
                   key={w.id}
-                  type="button"
-                  onClick={() => handleWorldChange(w.id)}
                   className="relative flex items-center gap-3 overflow-hidden rounded-[24px] border-2 px-4 py-4 text-left shadow-sm transition active:scale-95"
                   style={isSelected
                     ? { borderColor: w.accent, background: w.bgGrad }
                     : { borderColor: '#e7e5e4', background: 'white' }
                   }
                 >
+                  <input
+                    type="radio"
+                    name="worldId"
+                    value={w.id}
+                    checked={isSelected}
+                    onChange={() => handleWorldChange(w.id)}
+                    className="h-5 w-5 accent-emerald-600"
+                  />
                   <span className="text-2xl">{w.emoji}</span>
                   <div className="flex flex-col gap-0.5">
                     <span
@@ -199,34 +221,28 @@ export function InitialSetupForm() {
                   </div>
                   {isSelected && (
                     <UiChip className="ml-auto shrink-0 text-[10px]" background={w.accent} color="#ffffff">
-                      選択中
+                      えらび中
                     </UiChip>
                   )}
-                </button>
+                </label>
               );
             })}
           </div>
         </div>
 
-        {/* 初期相棒選択 */}
+        {/* 初期相棒表示 */}
         {starterOptions.length > 0 && selectedWorld && (
           <div className="flex flex-col gap-2">
             <p className="text-[11px] font-black tracking-[0.14em] text-stone-400">
-              最初の仲間
+              さいしょの なかま
             </p>
             <div className="flex flex-col gap-2">
               {starterOptions.map((s) => {
-                const isSelected = starterMonsterId === s.id;
                 return (
-                  <button
+                  <div
                     key={s.id}
-                    type="button"
-                    onClick={() => setStarterMonsterId(s.id)}
-                  className="relative flex items-center gap-3 overflow-hidden rounded-[24px] border-2 px-4 py-4 text-left shadow-sm transition active:scale-95"
-                    style={isSelected
-                      ? { borderColor: selectedWorld.accent, background: selectedWorld.bgGrad }
-                      : { borderColor: '#e7e5e4', background: 'white' }
-                    }
+                    className="relative flex items-center gap-3 overflow-hidden rounded-[24px] border-2 px-4 py-4 text-left shadow-sm"
+                    style={{ borderColor: selectedWorld.accent, background: selectedWorld.bgGrad }}
                   >
                     {/* スタンド画像サムネイル */}
                     {MONSTER_STAND_IMG[s.id] && (
@@ -246,18 +262,16 @@ export function InitialSetupForm() {
                     <div className="flex flex-col gap-0.5">
                       <span
                         className="text-base font-black"
-                        style={{ color: isSelected ? selectedWorld.accent : '#292524' }}
+                        style={{ color: selectedWorld.accent }}
                       >
                         {s.label}
                       </span>
-                      <span className="text-xs text-stone-400">Lv.1 からスタート</span>
+                      <span className="text-xs text-stone-400">Lv.1 から はじまる</span>
                     </div>
-                    {isSelected && (
-                      <UiChip className="ml-auto shrink-0 text-[10px]" background={selectedWorld.accent} color="#ffffff">
-                        選択中
-                      </UiChip>
-                    )}
-                  </button>
+                    <UiChip className="ml-auto shrink-0 text-[10px]" background={selectedWorld.accent} color="#ffffff">
+                      じどう
+                    </UiChip>
+                  </div>
                 );
               })}
             </div>
@@ -266,15 +280,21 @@ export function InitialSetupForm() {
 
         {/* 送信ボタン */}
         <PrimaryButton
-          type="submit"
-          disabled={!canSubmit}
+          type="button"
+          onClick={handleSubmit}
           className="mt-2 text-base"
-          background={canSubmit ? `linear-gradient(135deg, ${ctaAccentDk}, ${ctaAccent})` : '#d6d3d1'}
+          disabled={isSubmitting}
+          background={`linear-gradient(135deg, ${ctaAccentDk}, ${ctaAccent})`}
         >
-          {isSubmitting ? '保存中...' : '🗺️ 冒険を始める'}
+          {isSubmitting ? 'ほぞん中...' : '🗺️ ぼうけんを はじめる'}
         </PrimaryButton>
+        {missingReasons.length > 0 && (
+          <p className="text-center text-xs text-stone-400">
+            あと {missingReasons.join('・')} で はじめられるよ。
+          </p>
+        )}
 
       </div>
-    </form>
+    </div>
   );
 }
