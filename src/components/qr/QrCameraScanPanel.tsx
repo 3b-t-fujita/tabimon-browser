@@ -34,6 +34,10 @@ export default function QrCameraScanPanel({ onTextDecoded, disabled }: QrCameraS
 
   useEffect(() => stopCamera, []);
 
+  useEffect(() => {
+    if (disabled) stopCamera();
+  }, [disabled]);
+
   const scanFrame = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -60,6 +64,9 @@ export default function QrCameraScanPanel({ onTextDecoded, disabled }: QrCameraS
   };
 
   const startCamera = async () => {
+    if (disabled) return;
+
+    stopCamera();
     setErrorMessage(null);
     setMessage('カメラを ひらいています');
     decodedRef.current = false;
