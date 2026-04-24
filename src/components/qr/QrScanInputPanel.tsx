@@ -25,11 +25,11 @@ export default function QrScanInputPanel({ onFilePicked, disabled }: QrScanInput
     >
       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#eef7f8] text-4xl">📷</div>
       <div className="flex flex-col gap-1">
-        <span className="text-lg font-black text-[#2c302b]">コードの がぞうを えらぶ</span>
-        <span className="text-sm text-[#595c57]">しゃしんでも OK。</span>
+        <span className="text-lg font-black text-[#2c302b]">しゃしんから よむ</span>
+        <span className="text-sm text-[#595c57]">コードの がぞうを えらんでね。</span>
       </div>
       <div className="pointer-events-none">
-        <PrimaryButton className="w-auto px-5 py-2 text-xs shadow-sm">がぞうを えらぶ</PrimaryButton>
+        <PrimaryButton className="w-auto px-5 py-2 text-xs shadow-sm">しゃしんを えらぶ</PrimaryButton>
       </div>
       <input
         id="qr-scan-input"

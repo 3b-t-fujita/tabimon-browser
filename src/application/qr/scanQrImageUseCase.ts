@@ -3,8 +3,8 @@
  * 詳細設計 v4 §9 検証ステップ①「画像読取」に準拠。
  *
  * 使用ライブラリ: jsqr
- * - 初期版は画像アップロード（File）読取
- * - カメラ直読取は次フェーズ
+ * - 画像アップロード（File）読取
+ * - カメラ映像から切り出した ImageData 読取
  *
  * jsqr は ImageData（ピクセル配列）を要求するため、
  * ブラウザでは <canvas> を使って変換する。
@@ -28,14 +28,22 @@ export class ScanQrImageUseCase {
   async execute(file: File): Promise<Result<ScanQrImagePayload, ScanQrImageErrorCode>> {
     try {
       const imageData = await fileToImageData(file);
-      const result = jsQR(imageData.data, imageData.width, imageData.height);
-      if (!result) {
-        return fail(QrErrorCode.ParseFailed, 'QRコードを読み取れませんでした');
-      }
-      return ok({ text: result.data });
+      return this.fromImageData(imageData);
     } catch (err) {
       return fail(QrErrorCode.ParseFailed, `QR読取エラー: ${String(err)}`);
     }
+  }
+
+  /**
+   * Canvas などから取得した ImageData から QR テキストを読み取る。
+   * カメラ読取でもこの入口を使う。
+   */
+  fromImageData(imageData: ImageData): Result<ScanQrImagePayload, ScanQrImageErrorCode> {
+    const result = jsQR(imageData.data, imageData.width, imageData.height);
+    if (!result) {
+      return fail(QrErrorCode.ParseFailed, 'QRコードを読み取れませんでした');
+    }
+    return ok({ text: result.data });
   }
 
   /**

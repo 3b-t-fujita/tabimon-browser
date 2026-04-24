@@ -2,17 +2,18 @@
 
 /**
  * QRスキャンページ。
- * 画像アップロードで QR を読み取り、検証を経て /qr/confirm へ遷移する。
+ * カメラまたは画像アップロードで QR を読み取り、検証を経て /qr/confirm へ遷移する。
  *
  * 検証順（崩してはいけない）:
- *   1. 画像読取 (ScanQrImageUseCase)
- *   2. 文字列復号 → JSON解析 (ParseQrPayloadUseCase)
+ *   1. カメラ / 画像から文字列読取 (ScanQrImageUseCase)
+ *   2. JSON解析 (ParseQrPayloadUseCase)
  *   3. version確認 (ValidateQrVersionUseCase)
  *   4. checksum確認 (ValidateQrChecksumUseCase)
  *   5. → /qr/confirm へ遷移（重複確認は受取時に行う）
  */
 import { useRouter } from 'next/navigation';
 import { GameLayout } from '@/components/common/GameLayout';
+import QrCameraScanPanel from '@/components/qr/QrCameraScanPanel';
 import QrScanInputPanel from '@/components/qr/QrScanInputPanel';
 import { useQrStore } from '@/stores/qrStore';
 import { ScanQrImageUseCase } from '@/application/qr/scanQrImageUseCase';
@@ -26,22 +27,11 @@ export default function QrScanPage() {
 
   const isProcessing = phase !== 'QR_IDLE' && phase !== 'QR_ERROR';
 
-  const handleFilePicked = async (file: File) => {
-    reset();
-
-    // ---- ① 画像読取 ----
-    setPhase('QR_SCANNING');
-    const scanner = new ScanQrImageUseCase();
-    const scanResult = await scanner.execute(file);
-    if (!scanResult.ok) {
-      setError(scanResult.message ?? scanResult.errorCode);
-      return;
-    }
-
+  const processDecodedText = async (text: string) => {
     // ---- ② JSON解析 ----
     setPhase('QR_PARSE_JSON');
     const parser = new ParseQrPayloadUseCase();
-    const parseResult = parser.execute(scanResult.value.text);
+    const parseResult = parser.execute(text);
     if (!parseResult.ok) {
       setError(parseResult.message ?? parseResult.errorCode);
       return;
@@ -70,11 +60,31 @@ export default function QrScanPage() {
     router.push('/qr/confirm');
   };
 
+  const handleFilePicked = async (file: File) => {
+    reset();
+
+    // ---- ① 画像読取 ----
+    setPhase('QR_SCANNING');
+    const scanner = new ScanQrImageUseCase();
+    const scanResult = await scanner.execute(file);
+    if (!scanResult.ok) {
+      setError(scanResult.message ?? scanResult.errorCode);
+      return;
+    }
+
+    await processDecodedText(scanResult.value.text);
+  };
+
+  const handleCameraTextDecoded = async (text: string) => {
+    reset();
+    await processDecodedText(text);
+  };
+
   const phaseLabel: Record<string, string> = {
-    QR_SCANNING:           '画像を読み取り中...',
-    QR_PARSE_JSON:         'データを解析中...',
-    QR_VALIDATE_VERSION:   'バージョンを確認中...',
-    QR_VALIDATE_CHECKSUM:  'チェックサムを確認中...',
+    QR_SCANNING:           'がぞうを よんでいます...',
+    QR_PARSE_JSON:         'データを みています...',
+    QR_VALIDATE_VERSION:   'コードを たしかめています...',
+    QR_VALIDATE_CHECKSUM:  'コードを たしかめています...',
   };
 
   return (
@@ -91,10 +101,12 @@ export default function QrScanPage() {
           </button>
           <p className="mt-4 text-[10px] font-black tracking-[0.14em] text-[#6c4324]/70">コードを読む</p>
           <h1 className="mt-1 text-[clamp(26px,7vw,30px)] font-black leading-tight tracking-tight text-[#1f3528]">コードを読む</h1>
-          <p className="mt-2 text-sm text-[#595c57]">相手のコード画像を選択してください。</p>
+          <p className="mt-2 text-sm text-[#595c57]">カメラか がぞうで よめます。</p>
         </header>
 
         <div className="flex flex-1 flex-col gap-4 px-5 py-5">
+
+          <QrCameraScanPanel onTextDecoded={handleCameraTextDecoded} disabled={isProcessing} />
 
           <QrScanInputPanel onFilePicked={handleFilePicked} disabled={isProcessing} />
 

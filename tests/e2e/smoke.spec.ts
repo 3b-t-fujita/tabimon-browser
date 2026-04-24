@@ -35,4 +35,13 @@ test.describe('tabimon smoke', () => {
     await expect(page.getByRole('heading', { name: 'モンスター詳細' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'リザルト' })).toBeVisible();
   });
+
+  test('コード読取画面でカメラとしゃしんの入口を確認できる', async ({ page }) => {
+    await page.goto('/qr/scan');
+
+    await expect(page.getByRole('heading', { name: 'コードを読む' })).toBeVisible();
+    await expect(page.getByText('カメラで よむ').first()).toBeVisible();
+    await expect(page.getByText('しゃしんから よむ')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'カメラで よむ' })).toBeVisible();
+  });
 });
